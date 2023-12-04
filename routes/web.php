@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ToAmo\GuzzleToAmo;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,3 +20,4 @@ Route::get('/', function () {
 });
 
 Route::get('/test', PostController::class);
+Route::get('/testAmo', [GuzzleToAmo::class, 'sendLeadToAmo']);

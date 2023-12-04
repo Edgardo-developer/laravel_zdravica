@@ -11,7 +11,7 @@ class CreateDealInTransTable extends Command
      *
      * @var string
      */
-    protected $signature = 'laradeal:send {userId}';
+    protected $signature = 'laradeal:send {dealId}';
 
     /**
      * The console command description.
@@ -25,6 +25,6 @@ class CreateDealInTransTable extends Command
      */
     public function handle()
     {
-        return '1';
+
     }
 }
