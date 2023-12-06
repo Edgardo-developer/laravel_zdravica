@@ -19,5 +19,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('laradeal:send {dealId}', function(int $dealId){
-   $this->info("Sending the deal with ID {$dealId} to the AmoCRM");
-});
+   $this->info("Sending the lead with ID {$dealId} to the AmoCRM");
+})->purpose('Sending the lead to the AmoCRM');

@@ -18,6 +18,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/test', PostController::class);
-Route::get('/testAmo', [GuzzleToAmo::class, 'sendLeadToAmo']);

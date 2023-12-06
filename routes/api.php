@@ -19,9 +19,3 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('/createSubdPatient', [SubdSide::class, 'createPatient']);
-Route::post('/createSubdLead', [SubdSide::class, 'createLead']);
-
-Route::post('/createAmoPatient', [AmoSide::class, 'createPatient']);
-Route::post('/createAmoLead', [AmoSide::class, 'createLead']);
