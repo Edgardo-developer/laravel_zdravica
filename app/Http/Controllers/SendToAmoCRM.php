@@ -59,9 +59,9 @@ class SendToAmoCRM extends Controller
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
             $PrepareEntityController = new PrepareEntityController();
-            $contactAmoId = $PrepareEntityController->prepareContact($builderEntity['contact']);
-            print_r($contactAmoId);
-            die();
+            $contactPrepared = $PrepareEntityController->prepareContact($builderEntity['contact']);
+            $client = new Client();
+            $contactAmoId = (new PresendEntityController)->getTheContactID($client, $contactPrepared);
             $lead = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
         }
     }
@@ -75,14 +75,20 @@ class SendToAmoCRM extends Controller
         if (!$refreshToken){
             $token = AmoCRMData::all()->where('key', '=', 'access_token')
                 ->pluck('value');
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Cookie' => 'user_lang=ru',
+                'Authorization' => 'Bearer '.$token,
+            ];
         }else{
             $token = AmoCRMData::all()->where('key', '=', 'refresh_token')
                 ->pluck('value');
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Cookie' => 'user_lang=ru'
+            ];
         }
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Cookie' => 'user_lang=ru'
-        ];
+
         $body = '{
             "client_id": '.self::$client_id.',
             "client_secret": '.self::$client_secret.',

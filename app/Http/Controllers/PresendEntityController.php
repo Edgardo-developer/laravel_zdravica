@@ -49,11 +49,22 @@ class PresendEntityController extends Controller
         return '';
     }
 
-    private function createContactAmo($client, $contactDB){
+    /**
+     * @param $client
+     * @param $contactDB
+     * @return string|int
+     * Description: returns the ID of AmoCRM contact
+     */
+    private function createContactAmo($client, $contactDB) : string|int{
         $getRequestExt = SendToAmoCRM::getRequestExt();
         $headers = $getRequestExt['headers'];
         $preparedContact = (new PrepareEntityController)->prepareContact($contactDB);
         $request = new Request('POST', self::$contactsURI, $headers, $preparedContact);
         $res = $client->sendAsync($request)->wait();
+        $result = $res->getBody();
+        if (isset($result) && $result['_embedded']){
+            return $result['_embedded']['contacts']['id'];
+        }
+        return '';
     }
 }
