@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('ULICA');
             $table->string('DOM');
             $table->string('KVARTIRA');
+            $table->string('updated_at')->default(time());
+            $table->string('created_at')->default(time());
         });
     }
 

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Log;
 
 class PresendEntityController extends Controller
 {
+    private static $contactsURI = 'https://zdravitsa.amocrm.ru/api/v4/contacts';
+
     public function getTheContactID($client, $clientDB){
         $contactID = $this->getClientAmo($client, $clientDB);
 
@@ -15,7 +17,7 @@ class PresendEntityController extends Controller
         }
         return $contactID;
     }
-    private static $contactsURI = 'https://zdravitsa.amocrm.ru/api/v4/contacts';
+
     private function getClientAmo($client, $contact) : string{
         $headers = [
             'Content-Type' => 'application/json',

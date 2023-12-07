@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\PATIENTS;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BuilderEntityController extends Controller
@@ -32,6 +31,7 @@ class BuilderEntityController extends Controller
 
     private function getColumns($declareVisit) : array{
         $columns = [
+            'id', // ID
             'NOM', 'PRENOM', 'PATRONYME', // FIO
             'MOBIL_NYY', // Mobile
             'EMAIL', // Email

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ToAmo\GuzzleToAmo;
+use App\Models\PATIENTS;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,5 +17,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    dd(PATIENTS::factory()->create());
     return view('welcome');
 });

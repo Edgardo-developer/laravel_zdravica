@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AmoCRMData;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,29 +18,83 @@ class SendToAmoCRM extends Controller
     // URLS
     private static $leadsURI = 'https://zdravitsa.amocrm.ru/api/v4/leads';
 
-    public function sendDealToAmoCRM($leadId){
+    /**
+     * @return void
+     * Description: update access token to the AmoCRM
+     */
+    public function updateAccess(){
+        $getRequestExt = $this->getRequestExt(true);
+        $headers = $getRequestExt['headers'];
+        $body = $getRequestExt['body'];
+
         $client = new Client();
-        $curl = $this->connectToAmoCRM($client);
+        $request = new Request('POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers, $body);
+        $res = $client->sendAsync($request)->wait();
+
+
+        try {
+            $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        }catch (\JsonException $e){
+            Log::log(1, $e);
+            die();
+        }
+
+        AmoCRMData::query()->truncate();
+
+        foreach ($result as $resultLineName => $resultLine){
+            AmoCRMData::create([
+                'key'   => $resultLineName,
+                'value' => $resultLine
+            ]);
+        }
+    }
+
+    /**
+     * @param $leadId
+     * @return void
+     * Description: The main method, that sends the lead to AmoCRM
+     */
+    public function sendDealToAmoCRM($leadId){
         $builderEntity = (new BuilderEntityController)->buildEntity($leadId);
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
+            $client = new Client();
+            $curl = $this->connectToAmoCRM($client);
             $PrepareEntityController = new PrepareEntityController();
             $client = $PrepareEntityController->prepareClient($builderEntity['contact']);
             $lead = $PrepareEntityController->prepareLead($builderEntity['lead']);
         }
     }
 
-    private function connectToAmoCRM($client){
+    /**
+     * @param $refreshToken
+     * @return array
+     * Description: Method generates body and headers for request
+     */
+    private function getRequestExt($refreshToken = false){
+        if (!$refreshToken){
+            $token = AmoCRMData::all()->where('key', '=', 'access_token')
+                ->pluck('value');
+        }else{
+            $token = AmoCRMData::all()->where('key', '=', 'refresh_token')
+                ->pluck('value');
+        }
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'user_lang=ru'
+        ];
         $body = '{
             "client_id": '.self::$client_id.',
             "client_secret": '.self::$client_secret.',
             "grant_type": '.self::$grant_type.',
-            "code": '.self::$code.',
+            "code": '.$token.',
             "redirect_uri": '.self::$redirect.',
         }';
 
-        $request = new Request('POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers, $body);
-        $res = $client->sendAsync($request)->wait();
-        $res->getBody();
+        return [
+            'headers' => $headers,
+            'body'    => $body,
+        ];
     }
+
 }
