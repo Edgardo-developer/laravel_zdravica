@@ -21,6 +21,7 @@ class PatientsFactory extends Factory
             'PRENOM' => fake()->name(),
             'PATRONYME' => fake()->name(),
             'EMAIL' => fake()->email(),
+            'MOBIL_NYY' => fake()->numberBetween(1111111, 9999999),
             'POL' => fake()->numberBetween(0, 1),
             'GOROD' => fake()->city(),
             'NE_LE' => fake()->date('Y.m.d', 'now - 18 years'),

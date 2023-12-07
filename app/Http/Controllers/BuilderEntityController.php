@@ -13,7 +13,21 @@ class BuilderEntityController extends Controller
      * Description: return the DB rows of contact and lead
      */
     public function buildEntity(int $leadID){
-        $lead = $this->getLead($leadID);
+//        $lead = $this->getLead($leadID);
+        $lead = [
+            'PATIENTS_ID'   =>  1,
+            'declareVisit'  => true,
+            'summa' =>  350,
+            'status'    => 1,
+            'napravlenie'   =>  'pravoe',
+            'filial'    => 'isani',
+            'vrach' => 'specializacii',
+            'usluga'    =>  'usluga',
+            'date'  => '23.01.2001',
+            'visit' => 1,
+            'created_at'    => '10.07.2023',
+            'updated_at'    => '12.07.2023',
+        ];
         return [
             'contact'   => $lead ? $this->getContactRow($lead['PATIENTS_ID'], $lead['declareVisit']) : '', // Нужна проверка на первое посещение
             'lead'      => $lead ?: '',
@@ -40,9 +54,9 @@ class BuilderEntityController extends Controller
      * Description: get row of the contact
      */
     private function getContactRow(int $contactId, bool $declareVisit = false) : array{
-        return PATIENTS::all()
+        return PATIENTS::all($this->getColumns($declareVisit))
             ->where('id', '=', $contactId)
-            ->first($this->getColumns($declareVisit))->toArray();
+            ->first()->toArray();
     }
 
     /**
@@ -59,6 +73,8 @@ class BuilderEntityController extends Controller
             'POL', // POL
             'GOROD', // CITY
             'NE_LE', //  DATE OF BIRTH
+            'created_at', //  DATE OF BIRTH
+            'updated_at', //  DATE OF BIRTH
         ];
         if ($declareVisit){
             $columns = array_merge($columns, [

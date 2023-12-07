@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('NOM');
             $table->string('PRENOM');
             $table->string('PATRONYME');
+            $table->string('MOBIL_NYY');
             $table->string('EMAIL');
             $table->string('POL');
             $table->string('GOROD');

@@ -59,7 +59,9 @@ class SendToAmoCRM extends Controller
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
             $PrepareEntityController = new PrepareEntityController();
-            $contactAmoId = $PrepareEntityController->prepareClient($builderEntity['contact']);
+            $contactAmoId = $PrepareEntityController->prepareContact($builderEntity['contact']);
+            print_r($contactAmoId);
+            die();
             $lead = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
         }
     }
