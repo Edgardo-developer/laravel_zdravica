@@ -58,11 +58,9 @@ class SendToAmoCRM extends Controller
         $builderEntity = (new BuilderEntityController)->buildEntity($leadId);
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
-            $client = new Client();
-            $curl = $this->connectToAmoCRM($client);
             $PrepareEntityController = new PrepareEntityController();
-            $client = $PrepareEntityController->prepareClient($builderEntity['contact']);
-            $lead = $PrepareEntityController->prepareLead($builderEntity['lead']);
+            $contactAmoId = $PrepareEntityController->prepareClient($builderEntity['contact']);
+            $lead = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
         }
     }
 
@@ -71,7 +69,7 @@ class SendToAmoCRM extends Controller
      * @return array
      * Description: Method generates body and headers for request
      */
-    private function getRequestExt($refreshToken = false){
+    public static function getRequestExt($refreshToken = false){
         if (!$refreshToken){
             $token = AmoCRMData::all()->where('key', '=', 'access_token')
                 ->pluck('value');

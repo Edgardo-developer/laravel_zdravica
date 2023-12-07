@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class PrepareEntityController extends Controller
 {
+    // fields of Contact in the AmoCRM
     private $mergedContactFields = [
         'name',
         'first_name',
@@ -22,15 +23,28 @@ class PrepareEntityController extends Controller
             391185 => 'POL',
         ]
     ];
+
+    // fields of the lead in the AmoCRM
     private $mergedLeadFields = [
 
     ];
 
-    public function prepareContact(array $clientDB){
+    /**
+     * @param array $clientDB
+     * @return array
+     * Description: prepares the array for the contact
+     */
+    public function prepareContact(array $clientDB) : array{
 
     }
 
-    public function prepareLead(array $leadDB) : array{
+    /**
+     * @param array $leadDB
+     * @param int $contactId
+     * @return array
+     * Description: prepares the array of the lead
+     */
+    public function prepareLead(array $leadDB, int $contactId) : array{
 
     }
 }

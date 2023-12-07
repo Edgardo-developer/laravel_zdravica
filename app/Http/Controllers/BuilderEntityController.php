@@ -7,15 +7,25 @@ use Illuminate\Support\Facades\DB;
 
 class BuilderEntityController extends Controller
 {
-    public function buildEntity($leadID){
+    /**
+     * @param int $leadID
+     * @return array
+     * Description: return the DB rows of contact and lead
+     */
+    public function buildEntity(int $leadID){
         $lead = $this->getLead($leadID);
         return [
-            'contact'   => $lead ? $this->getContactArray($lead['contactId'], $lead['declareVisit']) : '', // Нужна проверка на первое посещение
+            'contact'   => $lead ? $this->getContactRow($lead['PATIENTS_ID'], $lead['declareVisit']) : '', // Нужна проверка на первое посещение
             'lead'      => $lead ?: '',
         ];
     }
 
-    private function getLead($leadID) : array{
+    /**
+     * @param int $leadID
+     * @return array
+     * Description: get Lead row from the DB
+     */
+    private function getLead(int $leadID) : array{
         $lead = DB::query()->where('ID', $leadID)->first();
         if ($lead){
             return $lead->toArray();
@@ -23,13 +33,24 @@ class BuilderEntityController extends Controller
         return [];
     }
 
-    private function getContactArray($contactId, $declareVisit = false) : array{
+    /**
+     * @param int $contactId
+     * @param bool $declareVisit
+     * @return array
+     * Description: get row of the contact
+     */
+    private function getContactRow(int $contactId, bool $declareVisit = false) : array{
         return PATIENTS::all()
             ->where('id', '=', $contactId)
             ->first($this->getColumns($declareVisit))->toArray();
     }
 
-    private function getColumns($declareVisit) : array{
+    /**
+     * @param bool $declareVisit
+     * @return string[]
+     * Description: returns columns regarding the declare visit
+     */
+    private function getColumns(bool $declareVisit) : array{
         $columns = [
             'id', // ID
             'NOM', 'PRENOM', 'PATRONYME', // FIO
