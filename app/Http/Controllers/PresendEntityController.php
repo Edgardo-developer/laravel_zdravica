@@ -24,6 +24,25 @@ class PresendEntityController extends Controller
         return $contactID;
     }
 
+    public function getTheLeadID($client, $DBLead) : int{
+        $RequestExt = SendToAmoCRM::getRequestExt();
+        $headers = $RequestExt['headers'];
+        $query = '?query='.$DBLead['Дата визита'].' '.$DBLead['mobile'];
+        $request = new Request('GET', self::$contactsURI.$query, $headers);
+        $res = $client->sendAsync($request);
+
+        try {
+            $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
+        }catch (\JsonException $exception){
+            Log::log('1', $exception);
+        }
+
+        if (isset($result) && $result['_embedded']){
+            return $result['id'];
+        }
+        return 0;
+    }
+
     /**
      * @param $client
      * @param $contact

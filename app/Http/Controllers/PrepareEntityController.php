@@ -25,8 +25,18 @@ class PrepareEntityController extends Controller
     ];
 
     // fields of the lead in the AmoCRM
-    private $mergedLeadFields = [
-
+    private static array $mergedLeadFields = [
+        'name',
+        'price',
+        'responsible_user_id',
+        'custom_fields_values'  =>  [
+            454373  => "Направление деятельности специалиста",
+            454375  => "Филиал",
+            454379  => "Врач",
+            454381  => "Услуга",
+            454377  => "Врач специализации",
+            1571885 => "Визит не состоялся"
+        ],
     ];
 
     /**
@@ -58,7 +68,28 @@ class PrepareEntityController extends Controller
      * Description: prepares the array of the lead
      */
     public function prepareLead(array $leadDB, int $contactId) : array{
-
+        $prepared = [
+            '_embedded' =>  array(
+                'contacts'  => array(
+                    'id'    => $contactId
+                )
+            )
+        ];
+        foreach (self::$mergedLeadFields as $fieldValue){
+            if (is_string($fieldValue)){
+                $prepared[$fieldValue] = $this->matchFieldsLead($fieldValue, $leadDB);
+            }else{
+                foreach ($fieldValue as $subFieldKey => $subFieldValue){
+                    $prepared['custom_fields_values'][] = [
+                        "field_id"  =>  $subFieldKey,
+                        "values"    =>  [
+                            "value" =>  $this->matchFieldsLead($subFieldValue, $leadDB)
+                        ]
+                    ];
+                }
+            }
+        }
+        return $prepared;
     }
 
     /**
@@ -79,6 +110,25 @@ class PrepareEntityController extends Controller
             'FIO',  =>  $contactDB['NOM'] . ' ' . $contactDB['PRENOM'] . ' ' . $contactDB['PATRONYME'],
             'Birthday', =>  $contactDB['NE_LE'],
             'POL',  =>  $contactDB['POL'] ? 'Мужской' : 'Женский',
+        };
+    }
+
+    /**
+     * @param string $mergedContactField
+     * @param array $contactDB
+     * @return mixed|string
+     * Description: sets the new values
+     */
+    private function matchFieldsLead(string $mergedLeadFields, array $leadDB){
+        return match($mergedLeadFields){
+            'name'  => $leadDB['id'],
+            "Направление деятельности специалиста"  => '',
+            "Филиал"    => '',
+            "Врач"  => '',
+            "Услуга"    => '',
+            "Врач специализации"    => '',
+            "Дата визита"    => '',
+            "Визит не состоялся" => '',
         };
     }
 }

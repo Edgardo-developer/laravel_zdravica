@@ -23,7 +23,7 @@ class SendToAmoCRM extends Controller
      * Description: update access token to the AmoCRM
      */
     public function updateAccess(){
-        $getRequestExt = $this->getRequestExt(true);
+        $getRequestExt = self::getRequestExt(true);
         $headers = $getRequestExt['headers'];
         $body = $getRequestExt['body'];
 
@@ -50,19 +50,47 @@ class SendToAmoCRM extends Controller
     }
 
     /**
-     * @param $leadId
+     * @param $DBleadId
      * @return void
-     * Description: The main method, that sends the lead to AmoCRM
+     * Description: The main method, that manage the requests and main stack
      */
-    public function sendDealToAmoCRM($leadId){
-        $builderEntity = (new BuilderEntityController)->buildEntity($leadId);
+    public function sendDealToAmoCRM($DBleadId){
+        $builderEntity = (new BuilderEntityController)->buildEntity($DBleadId);
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
             $PrepareEntityController = new PrepareEntityController();
-            $contactPrepared = $PrepareEntityController->prepareContact($builderEntity['contact']);
+            $PresendEntityController = new PresendEntityController();
             $client = new Client();
-            $contactAmoId = (new PresendEntityController)->getTheContactID($client, $contactPrepared);
-            $lead = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
+            $contactPrepared = $PrepareEntityController->prepareContact($builderEntity['contact']);
+            $contactAmoId = $PresendEntityController->getTheContactID($client, $contactPrepared);
+            $leadPrepared = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
+            $AmoLeadId = $PresendEntityController->getTheLeadID($client, $leadPrepared);
+
+            $this->sendLead($client, $AmoLeadId, $leadPrepared);
+        }
+    }
+
+    /**
+     * @param $client
+     * @param $AmoLeadId
+     * @param $leadPrepared
+     * @return void
+     */
+    private function sendLead($client, $AmoLeadId, $leadPrepared){
+        $getRequestExt = self::getRequestExt(false);
+        $headers = $getRequestExt['headers'];
+        $body = $leadPrepared;
+        $insert = $AmoLeadId > 0;
+        $request = new Request($insert ? 'POST' : 'PATCH', $insert ?
+            'https://zdravitsa.amocrm.ru/api/v4/leads/'.$AmoLeadId : 'https://zdravitsa.amocrm.ru/api/v4/leads/',
+            $headers, $body);
+        $res = $client->sendAsync($request)->wait();
+
+        try {
+            $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        }catch (\JsonException $e){
+            Log::log(1, $e);
+            die();
         }
     }
 
