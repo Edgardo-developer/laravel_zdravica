@@ -32,6 +32,7 @@ class PrepareEntityController extends Controller
             454379  => "fioDoc",
             454381  => "offers",
             454377  => "specDoc",
+            1571881  => "date",
             1571885 => "declareVisit"
         ],
     ];
@@ -118,7 +119,7 @@ class PrepareEntityController extends Controller
             "offers"    => $leadDB['offers'],
             "specDoc"    => $leadDB['specDoc'],
             "date"    => $leadDB['date'],
-            "declareVisit" => $leadDB['declareVisit'] === 1,
+            "declareVisit" => (int)$leadDB['declareVisit'] === 1,
         };
     }
 }

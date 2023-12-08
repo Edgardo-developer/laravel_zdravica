@@ -55,12 +55,16 @@ class SendToAmoCRM extends Controller
      * @param $DBleadId
      * @return void
      * Description: The main method, that manage the requests and main stack
+     * @throws \JsonException
      */
     public function sendDealToAmoCRM($DBleadId) : void{
         $builderEntity = (new BuilderEntityController)->buildEntity($DBleadId);
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
             $leadRaw=AmoCRMLead::find($DBleadId);
+            $leadRaw->responsibleFIO = fake()->name;
+            $leadRaw->leadDBId = 2345456;
+            $leadRaw->save();
             $PrepareEntityController = new PrepareEntityController();
             $PresendEntityController = new PresendEntityController();
             $client = new Client(['verify' => false]);
@@ -80,6 +84,19 @@ class SendToAmoCRM extends Controller
                 $AmoLeadId = $builderEntity['lead']['amoLeadID'];
             }
             $this->sendLead($client, $AmoLeadId, $leadPrepared);
+
+            // Эти поля необходимо добавить в JOIN
+            //•	Дата визита (дата и время)
+            //•	Визит не состоялся (чекбокс/флаг)
+
+            // responsibleFIO - необходимо добавить в карточку сделки
+            // С помощью responsible_user_id достаем:
+            // ID этого пользователя в AmoCRM
+            // FIO этого пользователя в СУБД
+
+            // Необходимо обновлять контакт при отправке Request на его проверку
+
+            // триггеры
         }
     }
 

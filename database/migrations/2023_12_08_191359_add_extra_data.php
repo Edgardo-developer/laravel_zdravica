@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('amocrm_lead', function(Blueprint $table){
-            $table->string('leadDBId')->nullable();
-            $table->string('amoLeadID')->nullable();
-            $table->string('amoContactID')->nullable();
+            $table->integer('leadDBId')->nullable();
+            $table->integer('amoLeadID')->nullable();
+            $table->integer('amoContactID')->nullable();
+            $table->string('responsibleFIO')->nullable();
+            $table->integer('responsible_user_id')->nullable();
         });
     }
 
@@ -25,8 +27,10 @@ return new class extends Migration
     {
         Schema::table('amocrm_lead', function(Blueprint $table){
             $table->dropColumn('amoLeadID');
-            $table->dropColumn('amoContactID');
             $table->dropColumn('leadDBId');
+            $table->dropColumn('amoContactID');
+            $table->dropColumn('responsible_fio');
+            $table->dropColumn('responsible_user_ID');
         });
     }
 };
