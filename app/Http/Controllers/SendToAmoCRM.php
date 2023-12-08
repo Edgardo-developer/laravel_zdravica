@@ -64,16 +64,10 @@ class SendToAmoCRM extends Controller
             $client = new Client(['verify' => false]);
             $contactPrepared = $PrepareEntityController->prepareContact($builderEntity['contact']);
             $contactAmoId = $PresendEntityController->getTheContactID($client, $builderEntity['contact'], $contactPrepared);
-            dd($contactAmoId);
             $leadPrepared = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
-            $AmoLeadId = $PresendEntityController->getTheLeadID($client, $leadPrepared);
-
+            $AmoLeadId = $PresendEntityController->getTheLeadID($client, $builderEntity['lead']);
             $this->sendLead($client, $AmoLeadId, $leadPrepared);
         }
-        // refresh the token
-        // find the best way for searching the right lead
-        // add new data for "managers"
-        // finish the work on lead
     }
 
     /**

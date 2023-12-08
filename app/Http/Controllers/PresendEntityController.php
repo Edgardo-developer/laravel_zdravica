@@ -26,7 +26,8 @@ class PresendEntityController extends Controller
     public function getTheLeadID($client, $DBLead) : int{
         $RequestExt = SendToAmoCRM::getRequestExt();
         $headers = $RequestExt['headers'];
-        $query = '?query='.$DBLead['Дата визита'].' '.$DBLead['mobile'];
+        dd($DBLead);
+        $query = '?query='.$DBLead['date'].' '.$DBLead['mobile'];
         $request = new Request('GET', self::$contactsURI.$query, $headers);
         $res = $client->sendAsync($request);
         if ($res->getStatusCode() === 400){
