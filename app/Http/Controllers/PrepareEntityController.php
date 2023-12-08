@@ -10,8 +10,8 @@ class PrepareEntityController extends Controller
         'first_name',
         'last_name',
 //        'responsible_user_id',
-        'created_by',
-        'updated_by',
+//        'created_by',
+//        'updated_by',
         'custom_fields_values'  => [
             170783 => 'mobile',
             170785 => 'email',
@@ -50,12 +50,12 @@ class PrepareEntityController extends Controller
                 foreach ($mergedContactField as $customFieldsKey => $customFieldsValue){
                     $prepared['custom_fields_values'][] = [
                         'field_id'  =>  $customFieldsKey,
-                        'values'    =>  $this->matchFieldsContact($customFieldsValue, $contactDB),
+                        'values'    =>  [['value'=> $this->matchFieldsContact($customFieldsValue, $contactDB)]],
                     ];
                 }
             }
         }
-        return $prepared;
+        return array($prepared);
     }
 
     /**
@@ -68,7 +68,7 @@ class PrepareEntityController extends Controller
         $prepared = ['_embedded' =>  array('contacts'  => array('id'    => $contactId))];
         foreach (self::$mergedLeadFields as $fieldValue){
             if (is_string($fieldValue)){
-                $prepared[$fieldValue] = $this->matchFieldsLead($fieldValue, $leadDB);
+                $prepared[$fieldValue] = array($this->matchFieldsLead($fieldValue, $leadDB));
             }else{
                 foreach ($fieldValue as $subFieldKey => $subFieldValue){
                     $prepared['custom_fields_values'][] = [

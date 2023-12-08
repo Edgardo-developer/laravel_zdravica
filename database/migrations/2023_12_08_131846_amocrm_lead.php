@@ -17,10 +17,14 @@ return new class extends Migration
             $table->string('specDoc');
             $table->integer('patID');
             $table->string('fioDoc');
+            $table->boolean('declareVisit');
+            $table->string('filial');
+            $table->date('date');
             $table->integer('billID')->nullable();
             $table->float('billSum')->nullable();
             $table->string('offers')->nullable();
-            $table->string('manager')->nullable();
+            $table->string('managerName')->nullable();
+            $table->string('amoManagerID')->nullable();
         });
     }
 

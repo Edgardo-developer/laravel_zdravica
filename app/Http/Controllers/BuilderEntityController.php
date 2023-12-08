@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AmoCRMLead;
 use App\Models\PATIENTS;
 use App\Models\PLANNING;
 use Illuminate\Support\Facades\DB;
@@ -15,22 +16,9 @@ class BuilderEntityController extends Controller
      */
     public function buildEntity(int $leadID){
 //        $lead = $this->getLead($leadID);
-        $lead = [
-            'PATIENTS_ID'   =>  1,
-            'declareVisit'  => true,
-            'summa' =>  350,
-            'status'    => 1,
-            'napravlenie'   =>  'pravoe',
-            'filial'    => 'isani',
-            'vrach' => 'specializacii',
-            'usluga'    =>  'usluga',
-            'date'  => '23.01.2001',
-            'visit' => 1,
-            'created_at'    => '10.07.2023',
-            'updated_at'    => '12.07.2023',
-        ];
+        $lead = AmoCRMLead::all()->where('id', '=', $leadID)->first()->toArray();
         return [
-            'contact'   => $lead ? $this->getContactRow($lead['PATIENTS_ID'], $lead['declareVisit']) : '', // Нужна проверка на первое посещение
+            'contact'   => $lead ? $this->getContactRow($lead['patID'], $lead['declareVisit']) : '', // Нужна проверка на первое посещение
             'lead'      => $lead ?: '',
         ];
     }

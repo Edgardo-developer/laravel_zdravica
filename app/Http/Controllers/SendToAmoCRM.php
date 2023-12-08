@@ -21,14 +21,15 @@ class SendToAmoCRM extends Controller
     /**
      * @return void
      * Description: update access token to the AmoCRM
+     * @throws \JsonException
      */
-    public function updateAccess(){
+    public static function updateAccess($client){
         $getRequestExt = self::getRequestExt(true);
         $headers = $getRequestExt['headers'];
         $body = $getRequestExt['body'];
-
-        $client = new Client();
-        $request = new Request('POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers, $body);
+        $request = new Request('POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
+            json_encode($body, JSON_THROW_ON_ERROR)
+        );
         $res = $client->sendAsync($request)->wait();
 
 
@@ -54,7 +55,7 @@ class SendToAmoCRM extends Controller
      * @return void
      * Description: The main method, that manage the requests and main stack
      */
-    public function sendDealToAmoCRM($DBleadId){
+    public function sendDealToAmoCRM($DBleadId) : void{
         $builderEntity = (new BuilderEntityController)->buildEntity($DBleadId);
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
@@ -62,7 +63,8 @@ class SendToAmoCRM extends Controller
             $PresendEntityController = new PresendEntityController();
             $client = new Client(['verify' => false]);
             $contactPrepared = $PrepareEntityController->prepareContact($builderEntity['contact']);
-            $contactAmoId = $PresendEntityController->getTheContactID($client, $contactPrepared);
+            $contactAmoId = $PresendEntityController->getTheContactID($client, $builderEntity['contact'], $contactPrepared);
+            dd($contactAmoId);
             $leadPrepared = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
             $AmoLeadId = $PresendEntityController->getTheLeadID($client, $leadPrepared);
 
@@ -72,6 +74,42 @@ class SendToAmoCRM extends Controller
         // find the best way for searching the right lead
         // add new data for "managers"
         // finish the work on lead
+    }
+
+    /**
+     * @param $refreshToken
+     * @return array
+     * Description: Method generates body and headers for request
+     */
+    public static function getRequestExt($refreshToken = false){
+        if (!$refreshToken){
+            $token = AmoCRMData::all()->where('key', '=', 'access_token')->first()->toArray();
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Cookie' => 'user_lang=ru',
+                'Authorization' => 'Bearer '.$token['value'],
+            ];
+        }else{
+            $token = AmoCRMData::all()->where('key', '=', 'refresh_token')
+                ->pluck('value')->toArray()[0];
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Cookie' => 'user_lang=ru'
+            ];
+        }
+
+        $body = [
+            "client_id" => self::$client_id,
+            "client_secret" => self::$client_secret,
+            "grant_type"    => self::$grant_type,
+            "code"  => $token,
+            "redirect_uri"  => self::$redirect,
+        ];
+
+        return [
+            'headers' => $headers,
+            'body'    => $body,
+        ];
     }
 
     /**
@@ -90,49 +128,17 @@ class SendToAmoCRM extends Controller
             $headers, $body);
         $res = $client->sendAsync($request)->wait();
 
+        if ($res->getStatusCode() === 400){
+            SendToAmoCRM::updateAccess($client);
+            $this->sendLead($client, $AmoLeadId, $leadPrepared);
+        }
+
         try {
             $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
         }catch (\JsonException $e){
             Log::log(1, $e);
             die();
         }
-    }
-
-    /**
-     * @param $refreshToken
-     * @return array
-     * Description: Method generates body and headers for request
-     */
-    public static function getRequestExt($refreshToken = false){
-        if (!$refreshToken){
-            $token = AmoCRMData::all()->where('key', '=', 'access_token')
-                ->pluck('value');
-            $headers = [
-                'Content-Type' => 'application/json',
-                'Cookie' => 'user_lang=ru',
-                'Authorization' => 'Bearer '.$token,
-            ];
-        }else{
-            $token = AmoCRMData::all()->where('key', '=', 'refresh_token')
-                ->pluck('value');
-            $headers = [
-                'Content-Type' => 'application/json',
-                'Cookie' => 'user_lang=ru'
-            ];
-        }
-
-        $body = '{
-            "client_id": '.self::$client_id.',
-            "client_secret": '.self::$client_secret.',
-            "grant_type": '.self::$grant_type.',
-            "code": '.$token.',
-            "redirect_uri": '.self::$redirect.',
-        }';
-
-        return [
-            'headers' => $headers,
-            'body'    => $body,
-        ];
     }
 
 }
