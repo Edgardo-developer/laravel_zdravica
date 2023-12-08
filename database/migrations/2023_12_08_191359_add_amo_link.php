@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('amocrm_lead', function(Blueprint $table){
+            $table->string('leadDBId')->nullable();
             $table->string('amoLeadID')->nullable();
             $table->string('amoContactID')->nullable();
         });
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('amocrm_lead', function(Blueprint $table){
             $table->dropColumn('amoLeadID');
             $table->dropColumn('amoContactID');
+            $table->dropColumn('leadDBId');
         });
     }
 };

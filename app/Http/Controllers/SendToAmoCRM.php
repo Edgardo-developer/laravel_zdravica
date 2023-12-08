@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AmoCRMData;
+use App\Models\AmoCRMLead;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
@@ -59,13 +60,25 @@ class SendToAmoCRM extends Controller
         $builderEntity = (new BuilderEntityController)->buildEntity($DBleadId);
 
         if ($builderEntity['contact'] && $builderEntity['lead']){
+            $leadRaw=AmoCRMLead::find($DBleadId);
             $PrepareEntityController = new PrepareEntityController();
             $PresendEntityController = new PresendEntityController();
             $client = new Client(['verify' => false]);
             $contactPrepared = $PrepareEntityController->prepareContact($builderEntity['contact']);
-            $contactAmoId = $PresendEntityController->getTheContactID($client, $builderEntity['contact'], $contactPrepared);
+
+            if (!$builderEntity['lead']['amoContactID']){
+                $contactAmoId = $PresendEntityController->getTheContactID($client, $builderEntity['contact'], $contactPrepared);
+                $leadRaw->update(['amoContactID'  => $contactAmoId]);
+            }else{
+                $contactAmoId = $builderEntity['lead']['amoContactID'];
+            }
             $leadPrepared = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
-            $AmoLeadId = $PresendEntityController->getTheLeadID($client, $builderEntity['lead']);
+            if (!$builderEntity['lead']['amoLeadID']){
+                $AmoLeadId = $PresendEntityController->getTheLeadID($client, $builderEntity['lead']);
+                $leadRaw->update(['amoLeadID'  => $AmoLeadId]);
+            }else{
+                $AmoLeadId = $builderEntity['lead']['amoLeadID'];
+            }
             $this->sendLead($client, $AmoLeadId, $leadPrepared);
         }
     }
@@ -115,11 +128,11 @@ class SendToAmoCRM extends Controller
     private function sendLead($client, $AmoLeadId, $leadPrepared) : void{
         $getRequestExt = self::getRequestExt(false);
         $headers = $getRequestExt['headers'];
-        $body = $leadPrepared;
-        $insert = $AmoLeadId > 0;
-        $request = new Request($insert ? 'POST' : 'PATCH', $insert ?
-            'https://zdravitsa.amocrm.ru/api/v4/leads/'.$AmoLeadId : 'https://zdravitsa.amocrm.ru/api/v4/leads/',
-            $headers, $body);
+        $body = json_encode($leadPrepared, JSON_THROW_ON_ERROR);
+        $isUpdate = $AmoLeadId > 0;
+        $method = $isUpdate ? 'PATCH': 'POST';
+        $uri =  'https://zdravitsa.amocrm.ru/api/v4/leads/' . ($isUpdate ? $AmoLeadId : '');
+        $request = new Request($method, $uri, $headers, $body);
         $res = $client->sendAsync($request)->wait();
 
         if ($res->getStatusCode() === 400){
@@ -129,6 +142,7 @@ class SendToAmoCRM extends Controller
 
         try {
             $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            dd($result);
         }catch (\JsonException $e){
             Log::log(1, $e);
             die();

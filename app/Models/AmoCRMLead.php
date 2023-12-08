@@ -10,4 +10,5 @@ class AmoCRMLead extends Model
     use HasFactory;
     public $timestamps = false;
     protected $table = 'amocrm_lead';
+    protected $fillable = ['amoContactID', 'amoLeadID', 'leadDBId'];
 }

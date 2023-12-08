@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class PresendEntityController extends Controller
 {
     private static string $contactsURI = 'https://zdravitsa.amocrm.ru/api/v4/contacts';
+    private static string $leadURI = 'https://zdravitsa.amocrm.ru/api/v4/leads';
 
     /**
      * @param $client
@@ -26,10 +27,9 @@ class PresendEntityController extends Controller
     public function getTheLeadID($client, $DBLead) : int{
         $RequestExt = SendToAmoCRM::getRequestExt();
         $headers = $RequestExt['headers'];
-        dd($DBLead);
-        $query = '?query='.$DBLead['date'].' '.$DBLead['mobile'];
-        $request = new Request('GET', self::$contactsURI.$query, $headers);
-        $res = $client->sendAsync($request);
+        $query = '?query='.$DBLead['amoContactID'];
+        $request = new Request('GET', self::$leadURI.$query, $headers);
+        $res = $client->sendAsync($request)->wait();
         if ($res->getStatusCode() === 400){
             SendToAmoCRM::updateAccess($client);
             return $this->createContactAmo($client, $DBLead);
@@ -37,11 +37,14 @@ class PresendEntityController extends Controller
         try {
             $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
         }catch (\JsonException $exception){
-            Log::log('1', $exception);
+            Log::debug($exception);
         }
-            dd($result);
         if (isset($result) && $result['_embedded']){
-            return $result['id'];
+            foreach ($result['_embedded']['leads'] as $lead){
+                if (!$lead['custom_fields_values']){
+                    return $lead['id'];
+                }
+            }
         }
         return 0;
     }
