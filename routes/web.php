@@ -3,6 +3,9 @@
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ToAmo\GuzzleToAmo;
 use App\Models\PATIENTS;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +20,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    dd(PATIENTS::factory()->create());
+//    dd(PATIENTS::factory()->create());
     return view('welcome');
+});
+
+Route::get('/g', function(){
+    print_r(DB::select('SELECT SUSER_NAME();'));
+//    print_r($response);
 });

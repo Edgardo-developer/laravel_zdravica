@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-
 class PrepareEntityController extends Controller
 {
     // fields of Contact in the AmoCRM
@@ -68,13 +65,7 @@ class PrepareEntityController extends Controller
      * Description: prepares the array of the lead
      */
     public function prepareLead(array $leadDB, int $contactId) : array{
-        $prepared = [
-            '_embedded' =>  array(
-                'contacts'  => array(
-                    'id'    => $contactId
-                )
-            )
-        ];
+        $prepared = ['_embedded' =>  array('contacts'  => array('id'    => $contactId))];
         foreach (self::$mergedLeadFields as $fieldValue){
             if (is_string($fieldValue)){
                 $prepared[$fieldValue] = $this->matchFieldsLead($fieldValue, $leadDB);

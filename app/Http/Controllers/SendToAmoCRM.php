@@ -60,7 +60,7 @@ class SendToAmoCRM extends Controller
         if ($builderEntity['contact'] && $builderEntity['lead']){
             $PrepareEntityController = new PrepareEntityController();
             $PresendEntityController = new PresendEntityController();
-            $client = new Client();
+            $client = new Client(['verify' => false]);
             $contactPrepared = $PrepareEntityController->prepareContact($builderEntity['contact']);
             $contactAmoId = $PresendEntityController->getTheContactID($client, $contactPrepared);
             $leadPrepared = $PrepareEntityController->prepareLead($builderEntity['lead'], $contactAmoId);
@@ -68,6 +68,10 @@ class SendToAmoCRM extends Controller
 
             $this->sendLead($client, $AmoLeadId, $leadPrepared);
         }
+        // refresh the token
+        // find the best way for searching the right lead
+        // add new data for "managers"
+        // finish the work on lead
     }
 
     /**
@@ -76,7 +80,7 @@ class SendToAmoCRM extends Controller
      * @param $leadPrepared
      * @return void
      */
-    private function sendLead($client, $AmoLeadId, $leadPrepared){
+    private function sendLead($client, $AmoLeadId, $leadPrepared) : void{
         $getRequestExt = self::getRequestExt(false);
         $headers = $getRequestExt['headers'];
         $body = $leadPrepared;
