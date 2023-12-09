@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Leads;
 
+use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SendToAmoCRM;
 use Illuminate\Http\Request;

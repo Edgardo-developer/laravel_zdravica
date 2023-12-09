@@ -30,16 +30,16 @@ class LeadPrepareController extends PrepareEntityController
      * @return array
      * Description: prepares the array of the lead
      */
-    public function prepare(array $leadDB, int $contactId) : array{
+    public static function prepare(array $leadDB, int $contactId) : array{
         $prepared = ['_embedded' =>  ['contacts'  => [['id'    => $contactId]]]];
         foreach (self::$amoFields as $fieldValue){
             if (is_string($fieldValue)){
-                $prepared[$fieldValue] = $this->matchFields($fieldValue, $leadDB);
+                $prepared[$fieldValue] = self::matchFields($fieldValue, $leadDB);
             }else{
                 foreach ($fieldValue as $subFieldKey => $subFieldValue){
                     $prepared['custom_fields_values'][] = [
                         "field_id"  =>  $subFieldKey,
-                        "values"    =>  [["value" =>  $this->matchFields($subFieldValue, $leadDB)]]
+                        "values"    =>  [["value" =>  self::matchFields($subFieldValue, $leadDB)]]
                     ];
                 }
             }
@@ -53,7 +53,7 @@ class LeadPrepareController extends PrepareEntityController
      * @return mixed|string
      * Description: sets the new values
      */
-    private function matchFields(string $mergedLeadFields, array $leadDB){
+    private static function matchFields(string $mergedLeadFields, array $leadDB){
         return match($mergedLeadFields){
             'name'  => $leadDB['leadDBId'] ?? 125,
             'price'  => (integer)$leadDB['billSum'],

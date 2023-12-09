@@ -31,41 +31,41 @@ class ContactsPrepareController extends PrepareEntityController
      * @return array
      * Description: prepares the array for the contact
      */
-    public function prepare(array $contactDB, $contactID = 0) : array{
+    public static function prepare(array $contactDB, $contactID = 0) : array{
         $prepared = array();
         foreach (self::$amoFields as $mergedContactField){
             if (is_string($mergedContactField)){
-                $prepared[$mergedContactField] = $this->matchFields($mergedContactField, $contactDB);
+                $prepared[$mergedContactField] = self::matchFields($mergedContactField, $contactDB);
             }else{
                 foreach ($mergedContactField as $customFieldsKey => $customFieldsValue){
                     $prepared['custom_fields_values'][] = [
                         'field_id'  =>  $customFieldsKey,
-                        'values'    =>  [['value'=> $this->matchFields($customFieldsValue, $contactDB)]],
+                        'values'    =>  [['value'=> self::matchFields($customFieldsValue, $contactDB)]],
                     ];
                 }
             }
         }
-        return array($prepared);
+        return [$prepared];
     }
 
     /**
      * @param string $mergedContactField
      * @param array $contactDB
-     * @return mixed|string
+     * @return string
      * Description: sets the new values
      */
-    private function matchFields(string $mergedContactField, array $contactDB): mixed
+    private static function matchFields(string $mergedContactField, array $contactDB): string
     {
         return match($mergedContactField){
             'name'  => $contactDB['NOM'] . ' ' . $contactDB['PRENOM'],
-            'first_name'  => $contactDB['NOM'],
-            'last_name'  => $contactDB['PRENOM'],
-            'created_by'  => $contactDB['created_at'],
-            'updated_by'  => $contactDB['updated_at'],
-            'mobile',   =>  $contactDB['MOBIL_NYY'],
-            'email',    =>  $contactDB['EMAIL'],
+            'first_name'  => $contactDB['NOM'] ?? '',
+            'last_name'  => $contactDB['PRENOM'] ?? '',
+            'created_by'  => $contactDB['created_at'] ?? '',
+            'updated_by'  => $contactDB['updated_at'] ?? '',
+            'mobile',   =>  $contactDB['MOBIL_NYY'] ?? '',
+            'email',    =>  $contactDB['EMAIL'] ?? '',
             'FIO',  =>  $contactDB['NOM'] . ' ' . $contactDB['PRENOM'] . ' ' . $contactDB['PATRONYME'],
-            'Birthday', =>  $contactDB['NE_LE'],
+            'Birthday', =>  $contactDB['NE_LE'] ?? '',
             'POL',  =>  $contactDB['POL'] ? 'Мужской' : 'Женский',
         };
     }

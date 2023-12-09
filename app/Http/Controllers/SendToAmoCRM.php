@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Contacts\BuilderController;
 use App\Http\Controllers\Contacts\ContactsBuilderController;
+use App\Http\Controllers\Contacts\ContactsPrepareController;
+use App\Http\Controllers\Contacts\ContactsPresendController;
 use App\Http\Controllers\Leads\LeadBuilderController;
+use App\Http\Controllers\Leads\LeadPrepareController;
+use App\Http\Controllers\Leads\LeadPresendController;
 use App\Models\AmoCRMData;
 use App\Models\AmoCRMLead;
 use GuzzleHttp\Client;
@@ -23,23 +27,22 @@ class SendToAmoCRM extends Controller
     public function sendDealToAmoCRM($DBleadId) : void{
         $buildLead = LeadBuilderController::getRow($DBleadId);
         $buildContact = ContactsBuilderController::getRow($buildLead['patID']);
+
         if ($buildLead && $buildContact){
+            $PresendLead = new LeadPresendController();
+            $PresendContact = new ContactsPresendController();
             $leadRaw=AmoCRMLead::find($DBleadId);
-            $PrepareEntityController = new PrepareEntityController();
-            $PresendEntityController = new PresendEntityController();
             $client = new Client(['verify' => false]);
-            $contactPrepared = $PrepareEntityController->prepareContact($buildContact);
 
             if (!$buildLead['amoContactID']){
-                $contactAmoId = $PresendEntityController->getTheContactID($client, $buildContact, $contactPrepared);
+                $contactAmoId = $PresendContact->getAmoID($client, $buildContact);
                 $leadRaw->update(['amoContactID'  => $contactAmoId]);
             }else{
                 $contactAmoId = $buildLead['amoContactID'];
             }
-
-            $leadPrepared = $PrepareEntityController->prepareLead($buildLead, $contactAmoId);
+            $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
             if (!$buildLead['amoLeadID']){
-                $AmoLeadId = $PresendEntityController->getTheLeadID($client, $buildLead);
+                $AmoLeadId = $PresendContact->getAmoID($client, $buildLead);
                 $leadRaw->update(['amoLeadID'  => $AmoLeadId]);
             }else{
                 $AmoLeadId = $buildLead['amoLeadID'];

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SendToAmoCRM;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContactsRequestController extends \App\Http\Controllers\RequestController
 {
@@ -13,7 +14,7 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
 
     public static function create($client, $preparedData){
         $RequestExt = self::getRequestExt();
-        $headers = $RequestExt;
+        $headers = $RequestExt['headers'];
         $request = new Request('POST', self::$URI, $headers, json_encode($preparedData));
         $res = $client->sendAsync($request)->wait();
         self::handleResponseCodes($res->getStatusCode());
@@ -26,14 +27,15 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
 
     public static function get($client, $query) : array{
         $RequestExt = self::getRequestExt();
-        $headers = $RequestExt;
+        $headers = $RequestExt['headers'];
         $request = new Request('GET', self::$URI.$query, $headers);
         $res = self::handleErrors($client, $request);
         self::handleResponseCodes($res->getStatusCode());
         try {
-            $result = $res->getBody() !== '' ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
+            $result = json_decode($res->getBody(), 'true');
+            return $result ?? [];
         }catch (\JsonException $exception){
-            print_r($exception);
+            Log::debug($exception);
         }
     }
 }
