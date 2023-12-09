@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Contacts;
 
 use App\Http\Controllers\BuilderEntityController;
-use App\Http\Controllers\Controller;
 use App\Models\PATIENTS;
-use Illuminate\Http\Request;
 
 class ContactsBuilderController extends BuilderEntityController
 {

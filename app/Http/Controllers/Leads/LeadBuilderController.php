@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\BuilderEntityController;
-use App\Http\Controllers\Controller;
 use App\Models\AmoCRMLead;
-use App\Models\PATIENTS;
 use App\Models\PLANNING;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LeadBuilderController extends BuilderEntityController

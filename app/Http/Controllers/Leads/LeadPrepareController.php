@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Leads;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\PrepareEntityController;
-use Illuminate\Http\Request;
 
 class LeadPrepareController extends PrepareEntityController
 {

@@ -40,13 +40,15 @@ class SendToAmoCRM extends Controller
             }else{
                 $contactAmoId = $buildLead['amoContactID'];
             }
-            $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
+
+
             if (!$buildLead['amoLeadID']){
-                $AmoLeadId = $PresendContact->getAmoID($client, $buildLead);
+                $AmoLeadId = $PresendLead->getAmoID($client, $buildLead);
                 $leadRaw->update(['amoLeadID'  => $AmoLeadId]);
             }else{
                 $AmoLeadId = $buildLead['amoLeadID'];
             }
+            $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
             $this->sendLead($client, $AmoLeadId, $leadPrepared);
 
             // Эти поля необходимо добавить в JOIN

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Contacts;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\SendToAmoCRM;
-use GuzzleHttp\Exception\ClientException;
+
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -16,7 +14,7 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request('POST', self::$URI, $headers, json_encode($preparedData));
-        $res = $client->sendAsync($request)->wait();
+        $res = self::handleErrors($client, $request);
         self::handleResponseCodes($res->getStatusCode());
         return $res;
     }
@@ -37,5 +35,6 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
         }catch (\JsonException $exception){
             Log::debug($exception);
         }
+        return [];
     }
 }

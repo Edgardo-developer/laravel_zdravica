@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Contacts;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\PrepareEntityController;
 
-class ContactsPresendController extends Controller
+use App\Http\Controllers\PresendEntityController;
+
+class ContactsPresendController extends PresendEntityController
 {
 
     /**
@@ -14,7 +14,7 @@ class ContactsPresendController extends Controller
      * @return int
      * Description: return the AmoCRM contact ID
      */
-    public function getAmoID($client, $contactDB) : int{
+    public function getAmoID($client, $contactDB, $contactPrepared = []) : int{
         $contactID = $this->checkExists($client, $contactDB);
         if (!$contactID){
             $contactPrepared = ContactsPrepareController::prepare($contactDB);

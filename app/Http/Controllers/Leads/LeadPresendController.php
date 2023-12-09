@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers\Leads;
 
-use App\Http\Controllers\Contacts\ContactsPrepareController;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\SendToAmoCRM;
-use Illuminate\Http\Request;
+use App\Http\Controllers\PresendEntityController;
 use Illuminate\Support\Facades\Log;
 
-class LeadPresendController extends Controller
+class LeadPresendController extends PresendEntityController
 {
-    private static string $leadURI = 'https://zdravitsa.amocrm.ru/api/v4/leads';
 
-    public function getAmoID($client, $DBLead) : int{
-        $RequestExt = SendToAmoCRM::getRequestExt();
-        $headers = $RequestExt['headers'];
-        $query = '?query='.$DBLead['amoContactID'];
-        $request = new \GuzzleHttp\Psr7\Request('GET', self::$leadURI.$query, $headers);
-        $res = $client->sendAsync($request)->wait();
-        if ($res->getStatusCode() === 401){
-            SendToAmoCRM::updateAccess($client);
-            return $this->getAmoID($client, $DBLead);
+    public function getAmoID($client, $DBLead, $contactPrepared = []) : int{
+        $contactID = $this->checkExists($client, $DBLead);
+        if (!$contactID){
+            $contactPrepared = LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']);
+            $contactID = $this->createAmo($client, $contactPrepared);
         }
+        return $contactID;
+
+    }
+
+    private function checkExists($client, $DBLead){
+        $query = '?query='.$DBLead['amoContactID'];
+        $res = LeadRequestController::get($client, $query);
         try {
             $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
         }catch (\JsonException $exception){
@@ -34,6 +33,10 @@ class LeadPresendController extends Controller
                 }
             }
         }
+        return 0;
+    }
+
+    private function createAmo($client, $contactPrepared) : int{
         return 0;
     }
 }
