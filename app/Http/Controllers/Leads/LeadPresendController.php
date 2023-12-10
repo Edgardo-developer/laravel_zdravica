@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\Log;
 class LeadPresendController extends PresendEntityController
 {
 
-    public function getAmoID($client, $DBLead, $contactPrepared = []) : int{
-        $contactID = $this->checkExists($client, $DBLead);
-        if (!$contactID){
-            $contactPrepared = LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']);
-            $contactID = $this->createAmo($client, $contactPrepared);
+    public function getAmoID($client, $DBLead, $leadPrepared = []) : int{
+        $leadID = $this->checkExists($client, $DBLead);
+        if (!$leadID){
+            $leadPrepared = LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']);
+            $leadID = $this->createAmo($client, $leadPrepared);
         }
-        return $contactID;
-
+        return $leadID;
     }
 
     private function checkExists($client, $DBLead){
@@ -37,6 +36,15 @@ class LeadPresendController extends PresendEntityController
     }
 
     private function createAmo($client, $contactPrepared) : int{
+        $res = LeadRequestController::create($client, $contactPrepared);
+        try {
+            $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
+            if ($result && $result['_embedded']){
+                return $result['_embedded']['leads'][0]['id'];
+            }
+        }catch (\JsonException $exception){
+            Log::debug($exception);
+        }
         return 0;
     }
 }

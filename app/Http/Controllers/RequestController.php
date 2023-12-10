@@ -21,6 +21,8 @@ class RequestController extends Controller
 
     public static function get($client, $query){}
 
+    public static function delete($client, $amoID){}
+
     /**
      * @param $refreshToken
      * @return array
