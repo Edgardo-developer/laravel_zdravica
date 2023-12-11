@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\RequestController;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 
 class LeadRequestController extends RequestController
 {
-    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads/';
+    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads';
 
     public static function create($client, $preparedData) : mixed{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('POST', self::$URI, [$headers], json_encode($preparedData));
+        $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
         return self::handleErrors($client, $request);
     }
 
@@ -23,9 +24,12 @@ class LeadRequestController extends RequestController
      * Description: works on updating
      */
     public static function update($client, $preparedData){
+        $amoLeadId = $preparedData['AmoLeadId'];
+        unset($preparedData['AmoLeadId']);
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('PATCH', self::$URI.'/'.$preparedData['id'], json_encode($preparedData), $headers);
+        $request = new Request('PATCH', self::$URI.'/'.$amoLeadId, $headers,
+        json_encode($preparedData));
         return self::handleErrors($client, $request);
     }
 

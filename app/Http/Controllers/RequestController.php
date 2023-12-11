@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AmoCRMData;
+use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -32,14 +32,14 @@ class RequestController extends Controller
      */
     protected static function getRequestExt($refreshToken = false){
         if (!$refreshToken){
-            $token = AmoCRMData::all()->where('key', '=', 'access_token')->first()->toArray();
+            $token = AmoCrmTable::all()->where('key', '=', 'access_token')->first()->toArray();
             $headers = [
                 'Content-Type' => 'application/json',
                 'Cookie' => 'user_lang=ru',
                 'Authorization' => 'Bearer '.$token['value'],
             ];
         }else{
-            $token = AmoCRMData::all()->where('key', '=', 'refresh_token')->first()->toArray()['value'];
+            $token = AmoCrmTable::all()->where('key', '=', 'refresh_token')->first()->toArray()['value'];
             $headers = [
                 'Content-Type' => 'application/json',
                 'Cookie' => 'user_lang=ru'
@@ -82,10 +82,10 @@ class RequestController extends Controller
             die();
         }
 
-        AmoCRMData::query()->truncate();
+        AmoCrmTable::query()->truncate();
 
         foreach ($result as $resultLineName => $resultLine){
-            AmoCRMData::create([
+            AmoCrmTable::create([
                 'key'   => $resultLineName,
                 'value' => $resultLine
             ]);

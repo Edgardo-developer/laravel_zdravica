@@ -27,10 +27,10 @@ class deleteLead extends Command
      */
     public function handle(SendToAmoCRM $sendDealToAmoCRM)
     {
-        $dealAmoIDsArray = explode(',', trim($this->argument('dealAmoIDs'), '{}'));
+        $dealAmoIDsArray = explode(',', $this->argument('dealAmoIDs'));
 
-        if (count($dealAmoIDsArray > 0)){
-            $client = new Client();
+        if (count($dealAmoIDsArray) > 0){
+            $client = new Client(['verify' => false]);
             foreach ($dealAmoIDsArray as $dealAmoID){
                 $ID = (int)$dealAmoID;
                 if ($ID > 0){

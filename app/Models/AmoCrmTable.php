@@ -5,7 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OptionsModel extends Model
+class AmoCrmTable extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+    protected $table = 'amocrmtable';
+    protected $fillable = ['key', 'value'];
 }

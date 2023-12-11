@@ -40,7 +40,6 @@ class LeadPresendController extends PresendEntityController
 
     private function createAmo($client, $contactPrepared) : int{
         $res = LeadRequestController::create($client, $contactPrepared);
-        dd($res);
         try {
             $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
             if ($result && $result['_embedded']){

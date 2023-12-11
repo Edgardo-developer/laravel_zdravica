@@ -3,8 +3,9 @@
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Http\Controllers\ToAmo\GuzzleToAmo;
-use App\Models\AmoCRMLead;
+use App\Models\AmoCrmLead;
 use App\Models\PATIENTS;
+use App\Models\Post;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\DB;

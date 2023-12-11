@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Contacts\BuilderController;
-use App\Models\AmoCRMLead;
+use App\Models\AmoCrmLead;
 
 class BuilderEntityController extends Controller
 {
@@ -15,7 +15,7 @@ class BuilderEntityController extends Controller
     public function buildEntity(int $leadID)
     {
 //        $lead = BuilderLeadController::getLead($leadID);
-        $lead = AmoCRMLead::all()->where('id', '=', $leadID)->first()->toArray();
+        $lead = AmoCrmLead::all()->where('id', '=', $leadID)->first()->toArray();
         return [
             'contact' => $lead ? BuilderController::getRow($lead['patID'], $lead['declareVisit']) : '',
             // Нужна проверка на первое посещение

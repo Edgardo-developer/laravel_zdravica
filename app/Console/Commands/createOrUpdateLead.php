@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\SendToAmoCRM;
-use App\Models\AmoCRMData;
+use App\Models\AmoCrmTable;
 use Illuminate\Console\Command;
 
 class createOrUpdateLead extends Command
@@ -27,7 +27,7 @@ class createOrUpdateLead extends Command
      */
     public function handle(SendToAmoCRM $SendToAmoCRM)
     {
-        $dealID = trim($this->argument('dealId'), '{}');
+        $dealID = $this->argument('dealId');
         if ($dealID > 0){
             $SendToAmoCRM->sendDealToAmoCRM($dealID);
         }

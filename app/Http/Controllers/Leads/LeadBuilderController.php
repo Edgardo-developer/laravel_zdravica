@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\BuilderEntityController;
-use App\Models\AmoCRMLead;
+use App\Models\AmoCrmLead;
 use App\Models\PLANNING;
 use Illuminate\Support\Facades\DB;
 
@@ -16,11 +16,7 @@ class LeadBuilderController extends BuilderEntityController
      */
     public static function getRow(int $id) : array{
 //        $lead = self::getColumns($id);
-        $lead = AmoCRMLead::find(1)->toArray();
-        if ($lead){
-            return $lead;
-        }
-        return [];
+        return AmoCrmLead::find(1)->toArray() ?? [];
     }
 
     protected static function getColumns(int $leadID): array
