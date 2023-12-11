@@ -9,6 +9,7 @@ use App\Http\Controllers\Contacts\ContactsPresendController;
 use App\Http\Controllers\Leads\LeadBuilderController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
+use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmoCRMData;
 use App\Models\AmoCRMLead;
 use GuzzleHttp\Client;
@@ -94,4 +95,16 @@ class SendToAmoCRM extends Controller
         }
     }
 
+    public function closeLead($client, $leadID){
+        $leadRaw = AmoCRMLead::find($leadID);
+        if ($leadRaw && $leadRaw->amoLeadID){
+            $leadArray = [
+                'id'    => $leadRaw->amoLeadID,
+                'closed_at' => time(),
+                'loss_reason_id'    => null,
+            ];
+            LeadRequestController::updateOrClose($client, $leadArray);
+            $leadRaw->delete();
+        }
+    }
 }

@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Http\Controllers\SendToAmoCRM;
+use Illuminate\Console\Command;
+
+class createLead extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'laradeal:send {dealId}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Send the deal to the AmoCRM';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle($dealId)
+    {
+        (new SendToAmoCRM)->sendDealToAmoCRM($dealId);
+    }
+}

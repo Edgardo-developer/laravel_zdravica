@@ -19,7 +19,7 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
         return $res;
     }
 
-    public static function update($client){
+    public static function update($client, $preparedData = null){
         // does not need
     }
 

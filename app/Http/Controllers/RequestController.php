@@ -17,7 +17,7 @@ class RequestController extends Controller
 
     public static function create($client, $preparedData){}
 
-    public static function update($client){}
+    public static function update($client, $preparedData){}
 
     public static function get($client, $query){}
 
