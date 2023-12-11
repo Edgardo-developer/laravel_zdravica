@@ -12,11 +12,17 @@ class LeadRequestController extends RequestController
     public static function create($client, $preparedData) : mixed{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('POST', self::$URI, json_encode($preparedData), $headers);
+        $request = new Request('POST', self::$URI, [$headers], json_encode($preparedData));
         return self::handleErrors($client, $request);
     }
 
-    public static function updateOrClose($client, $preparedData){
+    /**
+     * @param $client
+     * @param $preparedData
+     * @return array|void
+     * Description: works on updating
+     */
+    public static function update($client, $preparedData){
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request('PATCH', self::$URI.'/'.$preparedData['id'], json_encode($preparedData), $headers);

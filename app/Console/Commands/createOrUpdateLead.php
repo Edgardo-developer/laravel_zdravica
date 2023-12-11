@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\SendToAmoCRM;
+use App\Models\AmoCRMData;
 use Illuminate\Console\Command;
 
-class createLead extends Command
+class createOrUpdateLead extends Command
 {
     /**
      * The name and signature of the console command.
@@ -24,8 +25,11 @@ class createLead extends Command
     /**
      * Execute the console command.
      */
-    public function handle($dealId)
+    public function handle(SendToAmoCRM $SendToAmoCRM)
     {
-        (new SendToAmoCRM)->sendDealToAmoCRM($dealId);
+        $dealID = trim($this->argument('dealId'), '{}');
+        if ($dealID > 0){
+            $SendToAmoCRM->sendDealToAmoCRM($dealID);
+        }
     }
 }

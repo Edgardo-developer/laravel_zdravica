@@ -10,7 +10,7 @@ class LeadPrepareController extends PrepareEntityController
     private static array $amoFields = [
         'name',
         'price',
-//        'responsible_user_id',
+        'responsible_user_id',
         'custom_fields_values'  =>  [
             454373  => "direction",
             454375  => "filial",
@@ -18,7 +18,8 @@ class LeadPrepareController extends PrepareEntityController
             454381  => "offers",
             454377  => "specDoc",
             1571881  => "date",
-            1571885 => "declareVisit"
+            1571885 => "declareVisit",
+            1572983 => "responsibleFIO",
         ],
     ];
 
@@ -53,14 +54,16 @@ class LeadPrepareController extends PrepareEntityController
      */
     private static function matchFields(string $mergedLeadFields, array $leadDB){
         return match($mergedLeadFields){
-            'name'  => $leadDB['leadDBId'] ?? 125,
+            'name'  => $leadDB['leadDBId'],
             'price'  => (integer)$leadDB['billSum'],
             "direction"  => $leadDB['direction'],
             "filial"    => $leadDB['filial'],
             "fioDoc"  => $leadDB['fioDoc'],
             "offers"    => $leadDB['offers'],
             "specDoc"    => $leadDB['specDoc'],
+            "responsible_user_id"    => $leadDB['responsible_user_id'] ?? 10182090,
             "date"    => $leadDB['date'],
+            "responsibleFIO"    => $leadDB['responsibleFIO'],
             "declareVisit" => (int)$leadDB['declareVisit'] === 1,
         };
     }

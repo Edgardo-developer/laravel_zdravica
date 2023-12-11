@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AmoCRMData;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Http\Request;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 
 class RequestController extends Controller
@@ -37,8 +39,7 @@ class RequestController extends Controller
                 'Authorization' => 'Bearer '.$token['value'],
             ];
         }else{
-            $token = AmoCRMData::all()->where('key', '=', 'refresh_token')
-                ->pluck('value')->toArray()[0];
+            $token = AmoCRMData::all()->where('key', '=', 'refresh_token')->first()->toArray()['value'];
             $headers = [
                 'Content-Type' => 'application/json',
                 'Cookie' => 'user_lang=ru'
@@ -68,7 +69,7 @@ class RequestController extends Controller
         $getRequestExt = self::getRequestExt(true);
         $headers = $getRequestExt['headers'];
         $body = $getRequestExt['body'];
-        $request = new \GuzzleHttp\Psr7\Request('POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
+        $request = new Request('POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
             json_encode($body, JSON_THROW_ON_ERROR)
         );
         $res = $client->sendAsync($request)->wait();
@@ -91,19 +92,25 @@ class RequestController extends Controller
         }
     }
 
-    protected static function handleErrors($client, $request){
+    protected static function handleErrors(Client $client, Request $request){
         try {
             return $client->sendAsync($request)->wait();
-        }catch (ClientException $e){
-            self::updateAccess($client);
-            return [];
-        }
-    }
-
-    protected static function handleResponseCodes($code) : void{
-        if ($code === 401){
-            self::updateAccess();
+        }catch(RequestException $e){
+            if($e->getCode() === 401){
+                self::updateAccess($client);
+                return self::changeAndTryRequest($client, $request);
+            }
+            if ($e->getCode() === 404 || $e->getCode() === 500){
+                print_r($e->getCode());
+                return null;
+            }
         }
         return;
+    }
+
+    private static function changeAndTryRequest(Client $client, \GuzzleHttp\Psr7\Request $request){
+        $getRequestExt = self::getRequestExt();
+        $request->withHeader('Authorization', $getRequestExt['headers']['Authorization']);
+        return $client->sendAsync($request)->wait();
     }
 }

@@ -25,15 +25,17 @@ class deleteLead extends Command
     /**
      * Execute the console command.
      */
-    public function handle(string $dealAmoIDs)
+    public function handle(SendToAmoCRM $sendDealToAmoCRM)
     {
-        $dealAmoIDsArray = explode(',', $dealAmoIDs);
+        $dealAmoIDsArray = explode(',', trim($this->argument('dealAmoIDs'), '{}'));
 
         if (count($dealAmoIDsArray > 0)){
-            $sendDealToAmoCRM = new SendToAmoCRM();
             $client = new Client();
             foreach ($dealAmoIDsArray as $dealAmoID){
-                $sendDealToAmoCRM->closeLead($client, $dealAmoID);
+                $ID = (int)$dealAmoID;
+                if ($ID > 0){
+                    $sendDealToAmoCRM->closeLead($client, $ID);
+                }
             }
         }
     }

@@ -14,9 +14,7 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request('POST', self::$URI, $headers, json_encode($preparedData));
-        $res = self::handleErrors($client, $request);
-        self::handleResponseCodes($res->getStatusCode());
-        return $res;
+        return self::handleErrors($client, $request);
     }
 
     public static function update($client, $preparedData = null){
@@ -28,7 +26,6 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
         $headers = $RequestExt['headers'];
         $request = new Request('GET', self::$URI.$query, $headers);
         $res = self::handleErrors($client, $request);
-        self::handleResponseCodes($res->getStatusCode());
         try {
             $result = json_decode($res->getBody(), 'true');
             return $result ?? [];
