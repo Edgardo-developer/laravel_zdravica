@@ -25,18 +25,29 @@ class CronAmo extends Controller
     public function reactOnCron(){
         $lastTimeStamp = AmoCrmTable::all()->where('key', '=', 'timestamp')->first();
         $lastTimeStampVal = $lastTimeStamp?->value;
+        $previousDay = time() - strtotime("-1 days");
         if ($lastTimeStampVal){
+            $client = new Client(['verify' => false]);
+
+            $deletedLeads = AmoCrmLead::all('id')
+                ->where('created_at', '<', 1702386880)
+                ->where('amoLeadID', '>', 0)
+                ->where('declareVisit', '=', 0)
+                ->toArray();
+            if ($deletedLeads){
+                $this->deleteLeads($deletedLeads, $client);
+            }
+
             $UpdatedLeads = AmoCrmLead::all()
-                ->where('updated_at', '>', "1")
+                ->where('updated_at', '>', (integer)$lastTimeStampVal)
                 ->where('amoLeadID', '>', 0)
                 ->toArray();
             $createdLeads = AmoCrmLead::all()
                 ->where('created_at', '>', (integer)$lastTimeStampVal)
                 ->whereNull('amoLeadID')
                 ->toArray();
-            dd($UpdatedLeads, $createdLeads);
+            dd($UpdatedLeads, $createdLeads, $deletedLeads);
 
-            $client = new Client(['verify' => false]);
             if ($UpdatedLeads){
                 $this->updateLeads($UpdatedLeads, $client);
             }
@@ -61,6 +72,23 @@ class CronAmo extends Controller
             $sendLeads[] = LeadPrepareController::prepare($buildLead[0], $buildLead[1]);
         }
         LeadRequestController::update($client, $sendLeads);
+    }
+
+    private function deleteLeads(array $leadIds, $client){
+        $sendLeads = [];
+        foreach ($leadIds as $leadId){
+            $sendLeads[] =  [
+                'AmoLeadId' => $leadId['id'],
+                "name" => "1",
+                "closed_at"=> time() + 5,
+                "status_id"=> 143,
+                "updated_by"=> 0
+            ];
+        }
+        LeadRequestController::update($client, $sendLeads);
+        foreach ($leadIds as $leadId){
+            AmoCrmLead::find($leadId['id'])->delete();
+        }
     }
 
     /**
