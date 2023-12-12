@@ -11,7 +11,6 @@ use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmoCrmLead;
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use function Amp\async;
@@ -30,7 +29,7 @@ class CronAmo extends Controller
             $client = new Client(['verify' => false]);
 
             $deletedLeads = AmoCrmLead::all('id')
-                ->where('created_at', '<', 1702386880)
+                ->where('created_at', '<', $previousDay)
                 ->where('amoLeadID', '>', 0)
                 ->where('declareVisit', '=', 0)
                 ->toArray();
@@ -84,11 +83,9 @@ class CronAmo extends Controller
                 "status_id"=> 143,
                 "updated_by"=> 0
             ];
+            AmoCrmLead::find($leadId['id'])?->delete();
         }
         LeadRequestController::update($client, $sendLeads);
-        foreach ($leadIds as $leadId){
-            AmoCrmLead::find($leadId['id'])->delete();
-        }
     }
 
     /**

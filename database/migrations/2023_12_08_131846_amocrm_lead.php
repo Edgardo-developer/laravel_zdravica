@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('specDoc');
             $table->integer('patID');
             $table->string('fioDoc');
-            $table->boolean('declareVisit');
+            $table->boolean('declareVisit')->default(false);
             $table->string('filial');
             $table->date('date');
-            $table->integer('updated_at')->default(time());
-            $table->integer('created_at')->default(time());
+            $table->integer('updated_at')->default($this->getTimestamp());
+            $table->integer('created_at')->default($this->getTimestamp());
             $table->integer('billID')->nullable();
             $table->float('billSum')->nullable();
             $table->string('offers')->nullable();
@@ -31,6 +31,11 @@ return new class extends Migration
         });
     }
 
+    private function getTimestamp(){
+        $arr = (array)DB::select("SELECT DATEDIFF(s, '1970-01-01', GETUTCDATE())")[0];
+        reset($arr);
+        return $arr[key($arr)];
+    }
     /**
      * Reverse the migrations.
      */

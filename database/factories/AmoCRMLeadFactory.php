@@ -29,6 +29,8 @@ class AmoCRMLeadFactory extends Factory
             'declareVisit'  => fake()->boolean,
             'filial'    => fake()->address,
             'date'  => fake()->date,
+            'created_at'    => time(),
+            'updated_at'    => time(),
         ];
     }
 }

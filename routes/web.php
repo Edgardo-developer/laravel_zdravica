@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CronAmo;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Http\Controllers\ToAmo\GuzzleToAmo;
@@ -24,8 +23,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $cronJob = new CronAmo();
-    $cronJob->reactOnCron();
+//    AmoCrmLead::factory()->create();
+//    PATIENTS::factory()->create();
+    $arr = (array)DB::select("SELECT DATEDIFF(s, '1970-01-01', GETUTCDATE())")[0];
+    reset($arr);
+    $key = $arr[key($arr)];
+    dd($key);
     return view('welcome');
 });
 
