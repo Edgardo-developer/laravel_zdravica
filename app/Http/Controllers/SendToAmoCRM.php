@@ -20,11 +20,11 @@ class SendToAmoCRM extends Controller
 
     /**
      * @param $DBleadId
-     * @return void
+     * @return bool
      * Description: The main method, that manage the requests and main stack
      * @throws \JsonException
      */
-    public function sendDealToAmoCRM(int $DBleadId) : void{
+    public function sendDealToAmoCRM(int $DBleadId) : bool{
         $buildLead = LeadBuilderController::getRow($DBleadId);
         $buildContact = ContactsBuilderController::getRow($buildLead['patID']);
         if ($buildLead && $buildContact){
@@ -52,7 +52,7 @@ class SendToAmoCRM extends Controller
                 $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
                 $this->sendLead($client, $AmoLeadId, $leadPrepared);
             }
-
+            return true;
             // Эти поля необходимо добавить в JOIN
             //•	Дата визита (дата и время)
             //•	Визит не состоялся (чекбокс/флаг)
@@ -64,15 +64,16 @@ class SendToAmoCRM extends Controller
 
             // триггеры
         }
+        return false;
     }
 
     /**
      * @param $client
      * @param $AmoLeadId
      * @param $leadPrepared
-     * @return void
+     * @return bool
      */
-    private function sendLead($client, $AmoLeadId, $leadPrepared) : void{
+    private function sendLead($client, $AmoLeadId, $leadPrepared) : bool{
         $isUpdate = $AmoLeadId > 0;
         if ($isUpdate){
             $leadPrepared['AmoLeadId'] = $AmoLeadId;
@@ -86,6 +87,7 @@ class SendToAmoCRM extends Controller
         }catch (\JsonException $e){
             dd($e);
         }
+        return true;
     }
 
     public function closeLead($client, $leadID){

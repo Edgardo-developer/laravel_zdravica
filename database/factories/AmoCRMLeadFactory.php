@@ -28,7 +28,7 @@ class AmoCRMLeadFactory extends Factory
             'amoManagerID'  => fake()->numberBetween(1000, 19990),
             'declareVisit'  => fake()->boolean,
             'filial'    => fake()->address,
-            'date'  => fake()->date
+            'date'  => fake()->date,
         ];
     }
 }

@@ -29,8 +29,8 @@ return new class extends Migration
             $table->dropColumn('amoLeadID');
             $table->dropColumn('leadDBId');
             $table->dropColumn('amoContactID');
-            $table->dropColumn('responsible_fio');
-            $table->dropColumn('responsible_user_ID');
+            $table->dropColumn('responsibleFIO');
+            $table->dropColumn('responsible_user_id');
         });
     }
 };

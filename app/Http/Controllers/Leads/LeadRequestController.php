@@ -24,11 +24,9 @@ class LeadRequestController extends RequestController
      * Description: works on updating
      */
     public static function update($client, $preparedData){
-        $amoLeadId = $preparedData['AmoLeadId'];
-        unset($preparedData['AmoLeadId']);
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('PATCH', self::$URI.'/'.$amoLeadId, $headers,
+        $request = new Request('PATCH', self::$URI, $headers,
         json_encode($preparedData));
         return self::handleErrors($client, $request);
     }

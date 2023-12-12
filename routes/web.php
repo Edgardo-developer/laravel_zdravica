@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronAmo;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Http\Controllers\ToAmo\GuzzleToAmo;
@@ -23,8 +24,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $SendToAmoCRM = new SendToAmoCRM();
-    $SendToAmoCRM->sendDealToAmoCRM(1);
+    $cronJob = new CronAmo();
+    $cronJob->reactOnCron();
     return view('welcome');
 });
 

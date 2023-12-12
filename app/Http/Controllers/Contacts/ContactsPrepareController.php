@@ -13,9 +13,6 @@ class ContactsPrepareController extends PrepareEntityController
         'name',
         'first_name',
         'last_name',
-//        'responsible_user_id',
-//        'created_by',
-//        'updated_by',
         'custom_fields_values'  => [
             170783 => 'mobile',
             170785 => 'email',
