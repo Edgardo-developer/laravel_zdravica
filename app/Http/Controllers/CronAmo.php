@@ -12,9 +12,9 @@ use App\Models\AmoCrmLead;
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
-use Amp\ReactAdapter\ReactAdapter;
 
 use function Amp\async;
+use function Amp\delay;
 
 class CronAmo extends Controller
 {
@@ -26,8 +26,12 @@ class CronAmo extends Controller
         $lastTimeStamp = AmoCrmTable::all()->where('key', '=', 'timestamp')->first();
         $lastTimeStampVal = $lastTimeStamp?->value;
         $previousDay = time() - strtotime("-1 days");
+
         if ($lastTimeStampVal){
-            $client = new Client(['verify' => false]);
+            $RequestController = new RequestController();
+            $stack = \GuzzleHttp\HandlerStack::create();
+            $stack->push(new \App\Http\Controllers\HttpClientEventsMiddleware());
+            $client = new \GuzzleHttp\Client(['verify'=>false, 'handler' => $stack]);
 
             $deletedLeads = AmoCrmLead::all('id')
                 ->where('created_at', '<', $previousDay)
@@ -59,7 +63,7 @@ class CronAmo extends Controller
             }
         }
         $lastTimeStamp->value = DB::raw('CURRENT_TIMESTAMP');
-        $lastTimeStamp->update();
+        $lastTimeStamp->save();
     }
 
     /**
@@ -107,18 +111,27 @@ class CronAmo extends Controller
         LeadBuilderController $LeadBuilderController,
         ContactsBuilderController $ContactsBuilderController){
         $PresendLead = new LeadPresendController();
+//        $futures = [];
         foreach ($leadIds as $leadId){
-            $preparedLead = $this->prepareLead($leadId['id'], $client, $LeadBuilderController, $ContactsBuilderController);
-            if ($preparedLead){
-                $leadRaw = $preparedLead[0];
-                $buildLead = $leadRaw->toArray();
-                $buildLead['amoContactID'] = $preparedLead[1];
-                $PresendLead->getAmoID($client, $buildLead, $leadRaw);
-//                $AmoLeadId = $PresendLead->getAmoID($client, $buildLead, $leadRaw);
-//                $leadRaw->update(['amoLeadID' => $AmoLeadId]);
-//                $leadRaw->save();
-            }
+//            $futures[] = async(function() use ($leadId, $client, $LeadBuilderController, $ContactsBuilderController, $PresendLead){
+                $this->sendLeadToAmo($leadId, $client, $LeadBuilderController, $ContactsBuilderController, $PresendLead);
+//            });
             unset($leadId, $leadRaw);
+        }
+//        foreach ($futures as $futuresKey => $future){
+//            if (array_key_last($futures) === $futuresKey){
+//                $future->await();
+//            }
+//        }
+    }
+
+    private function sendLeadToAmo($leadId, $client, $LeadBuilderController, $ContactsBuilderController, $PresendLead){
+        $preparedLead = $this->prepareLead($leadId['id'], $client, $LeadBuilderController, $ContactsBuilderController);
+        if ($preparedLead){
+            $leadRaw = $preparedLead[0];
+            $buildLead = $leadRaw->toArray();
+            $buildLead['amoContactID'] = $preparedLead[1];
+            $PresendLead->getAmoID($client, $buildLead, $leadRaw);
         }
     }
 
@@ -152,7 +165,7 @@ class CronAmo extends Controller
     private function getContactAmoID($leadRaw, $client, $buildContact){
         $PresendContact = new ContactsPresendController();
         $contactAmoId = $PresendContact->getAmoID($client, $buildContact);
-        $leadRaw->update(['amoContactID'  => $contactAmoId]);
+        $leadRaw->amoContactID  = $contactAmoId;
         $leadRaw->save();
         return $contactAmoId;
     }

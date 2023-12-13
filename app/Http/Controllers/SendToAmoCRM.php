@@ -34,7 +34,7 @@ class SendToAmoCRM extends Controller
             if (!$buildLead['amoContactID']){
                 $PresendContact = new ContactsPresendController();
                 $contactAmoId = $PresendContact->getAmoID($client, $buildContact);
-                $leadRaw->update(['amoContactID'  => $contactAmoId]);
+                $leadRaw->amoContactID = $contactAmoId;
                 $leadRaw->save();
             }else{
                 $contactAmoId = $buildLead['amoContactID'];
@@ -45,7 +45,7 @@ class SendToAmoCRM extends Controller
                 $buildLead['amoContactID'] = $contactAmoId;
                 $PresendLead = new LeadPresendController();
                 $AmoLeadId = $PresendLead->getAmoID($client, $buildLead);
-                $leadRaw->update(['amoLeadID'  => $AmoLeadId]);
+                $leadRaw->amoLeadID  = $AmoLeadId;
                 $leadRaw->save();
             }else{
                 $AmoLeadId = $buildLead['amoLeadID'];

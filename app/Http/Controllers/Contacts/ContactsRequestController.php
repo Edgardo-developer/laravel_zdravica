@@ -26,11 +26,13 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
         $headers = $RequestExt['headers'];
         $request = new Request('GET', self::$URI.$query, $headers);
         $res = self::handleErrors($client, $request, true);
-        try {
-            $result = json_decode($res->getBody(), 'true');
-            return $result ?? [];
-        }catch (\JsonException $exception){
-            Log::debug($exception);
+        if ($res){
+            try {
+                $result = json_decode($res->getBody(), 'true');
+                return $result ?? [];
+            }catch (\JsonException $exception){
+                Log::debug($exception);
+            }
         }
         return [];
     }

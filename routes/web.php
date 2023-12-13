@@ -1,14 +1,11 @@
 <?php
 
-use Amp\ReactAdapter\ReactAdapter;
+
 use App\Http\Controllers\CronAmo;
-use App\Models\AmoCrmTable;
 use Illuminate\Support\Facades\Route;
-use React\EventLoop\Loop;
-use React\Promise\Promise;
-use Revolt\EventLoop;
-use Spatie\Async\Pool;
-use VXM\Async\AsyncFacade as Async;
+
+use function Amp\delay;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +21,14 @@ use VXM\Async\AsyncFacade as Async;
 Route::get('/', function () {
 //    AmoCrmLead::factory()->create();
 //    PATIENTS::factory()->create();
-
+//    phpinfo();
+    // While we create leads, we should put the logic:
+    // - Create all contacts within one request and save them to each DB lead
+    // - Create all leads within one request including the contact ID
     $CronAmo = new CronAmo();
     $CronAmo->reactOnCron();
+
+    echo PHP_EOL;
     return view('welcome');
 });
 Route::get('/g', function(){

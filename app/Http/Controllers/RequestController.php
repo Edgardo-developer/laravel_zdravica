@@ -31,7 +31,7 @@ class RequestController extends Controller
      * @return array
      * Description: Method generates body and headers for request
      */
-    protected static function getRequestExt($refreshToken = false){
+    public static function getRequestExt($refreshToken = false){
         if (!$refreshToken){
             $token = AmoCrmTable::all()->where('key', '=', 'access_token')->first()->toArray();
             $headers = [
@@ -93,7 +93,7 @@ class RequestController extends Controller
         }
     }
 
-    protected static function handleErrors(Client $client, Request $request, bool $wait, $leadRaw = ''){
+    protected static function handleErrors(Client $client, $request, bool $wait, $leadRaw = ''){
         try {
             if ($wait){
                 return $client->sendAsync($request)->wait();
@@ -101,7 +101,7 @@ class RequestController extends Controller
             $client->sendAsync($request)->then(
                 static function($output) use ($leadRaw){
                  self::handleSuccess($output, $leadRaw);
-                });
+                })->wait(false);
         }catch(RequestException $e){
             if($e->getCode() === 401){
                 self::updateAccess($client);
