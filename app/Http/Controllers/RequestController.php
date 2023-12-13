@@ -17,7 +17,7 @@ class RequestController extends Controller
     private static string $grant_type = "authorization_code";
     private static string $redirect = "https://good-offer.ru/";
 
-    public static function create($client, $preparedData){}
+    public static function create($client, $preparedData, $rawFromTable){}
 
     public static function update($client, $preparedData){}
 
@@ -92,9 +92,15 @@ class RequestController extends Controller
         }
     }
 
-    protected static function handleErrors(Client $client, Request $request){
+    protected static function handleErrors(Client $client, Request $request, bool $wait, $leadRaw = ''){
         try {
-            return $client->sendAsync($request)->wait();
+            if ($wait){
+                return $client->sendAsync($request)->wait();
+            }
+            return $client->sendAsync($request)->then(
+                static function($output) use ($leadRaw){
+                 self::handleSuccess($output, $leadRaw);
+                });
         }catch(RequestException $e){
             if($e->getCode() === 401){
                 self::updateAccess($client);
@@ -113,4 +119,6 @@ class RequestController extends Controller
         $request->withHeader('Authorization', $getRequestExt['headers']['Authorization']);
         return $client->sendAsync($request)->wait();
     }
+
+    protected static function handleSuccess($output, $DBModel){}
 }

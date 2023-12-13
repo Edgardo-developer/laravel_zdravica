@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Leads;
 
-use App\Http\Controllers\PresendEntityController;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 
-class LeadPresendController extends PresendEntityController
+class LeadPresendController extends Controller
 {
-
-    public function getAmoID($client, $DBLead, $leadPrepared = []) : int{
+    public function getAmoID($client, $DBLead, $leadRaw) : void{
         $leadID = $this->checkExists($client, $DBLead);
         if (!$leadID){
-            $leadPrepared = LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']);
-            $leadID = $this->createAmo($client, $leadPrepared);
+            LeadRequestController::create($client, LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']), $leadRaw);
+//            $leadID = $this->createAmo($client,
+//                LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']), $leadRaw);
         }
-        return $leadID;
     }
 
     private function checkExists($client, $DBLead){
@@ -38,16 +37,7 @@ class LeadPresendController extends PresendEntityController
         return 0;
     }
 
-    private function createAmo($client, $contactPrepared) : int{
-        $res = LeadRequestController::create($client, $contactPrepared);
-        try {
-            $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
-            if ($result && $result['_embedded']){
-                return $result['_embedded']['leads'][0]['id'];
-            }
-        }catch (\JsonException $exception){
-            Log::debug($exception);
-        }
-        return 0;
-    }
+//    private function createAmo($client, $contactPrepared, $leadRaw) : void{
+//        LeadRequestController::create($client, $contactPrepared, $leadRaw);
+//    }
 }

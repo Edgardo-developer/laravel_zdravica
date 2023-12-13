@@ -14,9 +14,9 @@ class LeadBuilderController extends BuilderEntityController
      * @return array
      * Description: get Lead row from the DB
      */
-    public static function getRow(int $id) : array{
+    public function getRow(int $id) : array{
 //        $lead = self::getColumns($id);
-        return AmoCrmLead::find(1)->toArray() ?? [];
+        return AmoCrmLead::find($id)->toArray() ?? [];
     }
 
     protected static function getColumns(int $leadID): array

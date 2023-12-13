@@ -12,6 +12,7 @@ use App\Models\AmoCrmLead;
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Amp\ReactAdapter\ReactAdapter;
 
 use function Amp\async;
 
@@ -45,13 +46,16 @@ class CronAmo extends Controller
                 ->where('created_at', '>', (integer)$lastTimeStampVal)
                 ->whereNull('amoLeadID')
                 ->toArray();
-            dd($UpdatedLeads, $createdLeads, $deletedLeads);
 
+            $LeadBuilderController = new LeadBuilderController();
+            $ContactsBuilderController = new ContactsBuilderController();
             if ($UpdatedLeads){
-                $this->updateLeads($UpdatedLeads, $client);
+                $this->updateLeads($UpdatedLeads, $client,
+                    $LeadBuilderController, $ContactsBuilderController);
             }
             if ($createdLeads){
-                $this->createLeads($createdLeads, $client);
+                $this->createLeads($createdLeads, $client,
+                    $LeadBuilderController, $ContactsBuilderController);
             }
         }
         $lastTimeStamp->value = DB::raw('CURRENT_TIMESTAMP');
@@ -64,11 +68,16 @@ class CronAmo extends Controller
      * @return void
      * Description: the method works on updating
      */
-    private function updateLeads(array $leadIds, $client) : void{
+    private function updateLeads(array $leadIds, $client,
+        LeadBuilderController $LeadBuilderController,
+        ContactsBuilderController $ContactsBuilderController
+        ) : void{
         $sendLeads = [];
         foreach ($leadIds as $leadId){
-            $buildLead = $this->prepareLead($leadId['id'], $client);
-            $sendLeads[] = LeadPrepareController::prepare($buildLead[0], $buildLead[1]);
+            $buildLead = $this->prepareLead($leadId['id'], $client, $LeadBuilderController, $ContactsBuilderController);
+            if ($buildLead){
+                $sendLeads[] = LeadPrepareController::prepare($buildLead[0]->toArray(), $buildLead[1]);
+            }
         }
         LeadRequestController::update($client, $sendLeads);
     }
@@ -94,34 +103,43 @@ class CronAmo extends Controller
      * @return void
      * Description: the method works on creating
      */
-    private function createLeads(array $leadIds, $client){
+    private function createLeads(array $leadIds, $client,
+        LeadBuilderController $LeadBuilderController,
+        ContactsBuilderController $ContactsBuilderController){
         $PresendLead = new LeadPresendController();
         foreach ($leadIds as $leadId){
-            async(function() use ($PresendLead, $leadId, $client) {
-                $preparedLead = $this->prepareLead($leadId, $client);
+            $preparedLead = $this->prepareLead($leadId['id'], $client, $LeadBuilderController, $ContactsBuilderController);
+            if ($preparedLead){
                 $leadRaw = $preparedLead[0];
+                $buildLead = $leadRaw->toArray();
                 $buildLead['amoContactID'] = $preparedLead[1];
-                $AmoLeadId = $PresendLead->getAmoID($client, $buildLead);
-                $leadRaw->update(['amoLeadID' => $AmoLeadId]);
-                $leadRaw->save();
-            });
+                $PresendLead->getAmoID($client, $buildLead, $leadRaw);
+//                $AmoLeadId = $PresendLead->getAmoID($client, $buildLead, $leadRaw);
+//                $leadRaw->update(['amoLeadID' => $AmoLeadId]);
+//                $leadRaw->save();
+            }
+            unset($leadId, $leadRaw);
         }
     }
 
     /**
      * @param int $DBleadId
      * @param $client
-     * @return array|void
+     * @return array
      * Description: method creates a contact and returns the model of a lead
      */
-    private function prepareLead(int $DBleadId, $client){
-        $buildLead = LeadBuilderController::getRow($DBleadId);
-        $buildContact = ContactsBuilderController::getRow($buildLead['patID']);
+    private function prepareLead(int $DBleadId, $client,
+        LeadBuilderController $LeadBuilderController,
+        ContactsBuilderController $ContactsBuilderController
+    ) : array{
+        $buildLead = $LeadBuilderController->getRow($DBleadId);
+        $buildContact = $ContactsBuilderController->getRow($buildLead['patID']);
         if ($buildLead && $buildContact){
-            $leadRaw=AmoCrmLead::find($DBleadId)->first()->toArray();
+            $leadRaw= AmoCrmLead::all()->where('id', '=', $DBleadId)->first();
             $contactAmoId = $buildLead['amoContactID'] ?? $this->getContactAmoID($leadRaw, $client, $buildContact);
             return [$leadRaw, $contactAmoId];
         }
+        return [];
     }
 
     /**
