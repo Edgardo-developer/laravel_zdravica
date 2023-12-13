@@ -10,11 +10,11 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/contacts';
 
-    public static function create($client, $preparedData){
+    public static function create($client, $preparedData, $contactlead = ''){
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request('POST', self::$URI, $headers, json_encode($preparedData));
-        return self::handleErrors($client, $request, false);
+        return self::handleErrors($client, $request, true);
     }
 
     public static function update($client, $preparedData = null){

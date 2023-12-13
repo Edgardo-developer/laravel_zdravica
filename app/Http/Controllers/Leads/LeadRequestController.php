@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\RequestController;
-use App\Models\AmoCrmLead;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Log;
 
 class LeadRequestController extends RequestController
 {
@@ -38,14 +35,5 @@ class LeadRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $request = new Request('GET', self::$URI.$query, $headers);
         return self::handleErrors($client, $request, true);
-    }
-
-    public static function handleSuccess($output, $leadRaw) : void{
-        if ($output){
-            $result = json_decode($output->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
-            if ($result && $result['_embedded']){
-                $leadRaw->amoLeadID = $result['_embedded']['leads'][0]['id'];
-            }
-        }
     }
 }

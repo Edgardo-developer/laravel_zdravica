@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -97,7 +98,7 @@ class RequestController extends Controller
             if ($wait){
                 return $client->sendAsync($request)->wait();
             }
-            return $client->sendAsync($request)->then(
+            $client->sendAsync($request)->then(
                 static function($output) use ($leadRaw){
                  self::handleSuccess($output, $leadRaw);
                 });
@@ -120,5 +121,13 @@ class RequestController extends Controller
         return $client->sendAsync($request)->wait();
     }
 
-    protected static function handleSuccess($output, $DBModel){}
+    protected static function handleSuccess($output, $leadRaw){
+        if ($output){
+            $result = json_decode($output->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
+            if ($result && $result['_embedded']){
+                $leadRaw->amoLeadID = $result['_embedded']['leads'][0]['id'];
+                $leadRaw->save();
+            }
+        }
+    }
 }
