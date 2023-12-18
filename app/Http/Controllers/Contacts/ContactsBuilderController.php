@@ -7,7 +7,7 @@ use App\Models\PATIENTS;
 
 class ContactsBuilderController extends BuilderEntityController
 {
-    public function getRow(int $id, bool $declareVisit = false) : array{
+    public static function getRow(int $id, bool $declareVisit = false) : array{
         return PATIENTS::all(self::getColumns($declareVisit ? 1 : 0))
             ->where('id', '=', $id)
             ->first()->toArray();

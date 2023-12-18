@@ -18,7 +18,7 @@ class RequestController extends Controller
     private static string $grant_type = "authorization_code";
     private static string $redirect = "https://good-offer.ru/";
 
-    public static function create($client, $preparedData, $rawFromTable){}
+    public static function create($client, $preparedData){}
 
     public static function update($client, $preparedData){}
 
@@ -93,16 +93,26 @@ class RequestController extends Controller
         }
     }
 
-    protected static function handleErrors(Client $client, $request, bool $wait, $leadRaw = ''){
+    protected static function handleErrors(Client $client, $request, bool $wait){
         try {
             if ($wait){
                 return $client->sendAsync($request)->wait();
             }
-            $client->sendAsync($request)->then(
-                static function($output) use ($leadRaw){
-                 self::handleSuccess($output, $leadRaw);
-                })->wait(false);
+            $res = $client->sendAsync($request)->wait();
+            if ($res){
+                $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
+                if ($result && $result['_embedded']){
+                    return $result['_embedded']['leads'][0]['id'];
+//                    $leadRaw->amoLeadID = $result['_embedded']['leads'][0]['id'];
+//                    $leadRaw->save();
+                }
+            }
+//            $client->sendAsync($request)->then(
+//                static function($output) use ($leadRaw){
+//                 self::handleSuccess($output, $leadRaw);
+//                })->wait(false);
         }catch(RequestException $e){
+            dd($e->getMessage());
             if($e->getCode() === 401){
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);

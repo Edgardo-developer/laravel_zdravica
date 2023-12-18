@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Leads\LeadRequestController;
 use App\Http\Controllers\SendToAmoCRM;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -13,7 +14,7 @@ class deleteLead extends Command
      *
      * @var string
      */
-    protected $signature = 'laradeal:delete {dealAmoIDs}';
+    protected $signature = 'laradeal:delete {--amoLeadIDs=null}';
 
     /**
      * The console command description.
@@ -27,15 +28,20 @@ class deleteLead extends Command
      */
     public function handle(SendToAmoCRM $sendDealToAmoCRM)
     {
-        $dealAmoIDsArray = explode(',', $this->argument('dealAmoIDs'));
-
-        if (count($dealAmoIDsArray) > 0){
-            $client = new Client(['verify' => false]);
-            foreach ($dealAmoIDsArray as $dealAmoID){
-                $ID = (int)$dealAmoID;
-                if ($ID > 0){
-                    $sendDealToAmoCRM->closeLead($client, $ID);
+        $amoLeadIDs = $this->option('amoLeadIDs') ? explode(',', $this->option('amoLeadIDs')) : array();
+        if ($amoLeadIDs){
+            $leadArray = [];
+            foreach ($amoLeadIDs as $amoLeadID){
+                if ($amoLeadID){
+                    $client = new Client(['verify' => false]);
+                    $ID = (int)$amoLeadID;
+                    if ($ID > 0){
+                        $leadArray[] =  $sendDealToAmoCRM->closeLead($client, $ID);
+                    }
                 }
+            }
+            if (count($leadArray[0]) > 0){
+                LeadRequestController::update($client, $leadArray);
             }
         }
     }

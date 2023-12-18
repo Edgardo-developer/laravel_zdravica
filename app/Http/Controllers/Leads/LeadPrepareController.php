@@ -32,6 +32,9 @@ class LeadPrepareController extends PrepareEntityController
     public static function prepare(array $leadDB, int $contactId) : array{
         $prepared = ['_embedded' =>  ['contacts'  => [['id'    => $contactId]]]];
         foreach (self::$amoFields as $fieldValue){
+            if ('responsible_user_id' === $fieldValue){
+                continue;
+            }
             if (is_string($fieldValue)){
                 $prepared[$fieldValue] = self::matchFields($fieldValue, $leadDB);
             }else{
@@ -61,7 +64,7 @@ class LeadPrepareController extends PrepareEntityController
             "fioDoc"  => $leadDB['fioDoc'],
             "offers"    => $leadDB['offers'],
             "specDoc"    => $leadDB['specDoc'],
-            "responsible_user_id"    => $leadDB['responsible_user_id'] ?? 10182090,
+//            "responsible_user_id"    => $leadDB['responsible_user_id'] === "NULL" ? 10182090 : $leadDB['responsible_user_id'],
             "date"    => $leadDB['date'],
             "responsibleFIO"    => $leadDB['responsibleFIO'],
             "declareVisit" => (int)$leadDB['declareVisit'] === 1,

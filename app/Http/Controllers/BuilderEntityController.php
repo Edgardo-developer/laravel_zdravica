@@ -23,7 +23,7 @@ class BuilderEntityController extends Controller
         ];
     }
 
-    public function getRow(int $id) : array{
+    public static function getRow(int $id) : array{
         return [];
     }
     protected static function getColumns(int $id) : array{

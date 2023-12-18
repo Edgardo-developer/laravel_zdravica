@@ -9,11 +9,11 @@ class LeadRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads';
 
-    public static function create($client, $preparedData, $leadRaw) : void{
+    public static function create($client, $preparedData) : string{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
-        self::handleErrors($client, $request, false, $leadRaw);
+        return self::handleErrors($client, $request, false);
     }
 
     /**

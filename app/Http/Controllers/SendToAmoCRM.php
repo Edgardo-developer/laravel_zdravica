@@ -5,15 +5,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Contacts\ContactsBuilderController;
 use App\Http\Controllers\Contacts\ContactsPresendController;
-use App\Http\Controllers\Leads\LeadBuilderController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmoCrmLead;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SendToAmoCRM extends Controller
 {
@@ -24,35 +20,40 @@ class SendToAmoCRM extends Controller
      * Description: The main method, that manage the requests and main stack
      * @throws \JsonException
      */
-    public function sendDealToAmoCRM(int $DBleadId) : bool{
-        $buildLead = LeadBuilderController::getRow($DBleadId);
+    public function sendDealToAmoCRM($DBlead) : bool{
+        $buildLead = $DBlead;
         $buildContact = ContactsBuilderController::getRow($buildLead['patID']);
         if ($buildLead && $buildContact){
-            $leadRaw=AmoCrmLead::find($DBleadId);
             $client = new Client(['verify' => false]);
 
-            if (!$buildLead['amoContactID']){
+            if (!$buildLead['amoContactID'] || $buildLead['amoContactID'] === 'null'){
                 $PresendContact = new ContactsPresendController();
                 $contactAmoId = $PresendContact->getAmoID($client, $buildContact);
-                $leadRaw->amoContactID = $contactAmoId;
-                $leadRaw->save();
+                $buildLead['amoContactID'] = $contactAmoId;
             }else{
                 $contactAmoId = $buildLead['amoContactID'];
             }
 
-
-            if (!$buildLead['amoLeadID']){
+            if (!$buildLead['amoLeadID'] || $buildLead['amoLeadID'] === 'null'){
                 $buildLead['amoContactID'] = $contactAmoId;
                 $PresendLead = new LeadPresendController();
                 $AmoLeadId = $PresendLead->getAmoID($client, $buildLead);
-                $leadRaw->amoLeadID  = $AmoLeadId;
-                $leadRaw->save();
-            }else{
-                $AmoLeadId = $buildLead['amoLeadID'];
-                $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
-                $this->sendLead($client, $AmoLeadId, $leadPrepared);
+                $buildLead['amoLeadID'] = $AmoLeadId;
             }
-            return true;
+            $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
+            $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
+            $this->sendLead($client, $leadPrepared);
+            $string = '';
+            foreach ($buildLead as $buildLeadKey => $buildLeadValue){
+                if (in_array($buildLeadKey, array('amoContactID', 'amoLeadID'))){
+                    $string .= $buildLeadValue;
+                    if ($buildLeadKey === 'amoLeadID'){
+                        $string .= ',';
+                    }
+                }
+            }
+            echo $string;
+            return false;
             // Эти поля необходимо добавить в JOIN
             //•	Дата визита (дата и время)
             //•	Визит не состоялся (чекбокс/флаг)
@@ -61,47 +62,41 @@ class SendToAmoCRM extends Controller
             // С помощью responsible_user_id достаем:
             // ID этого пользователя в AmoCRM
             // FIO этого пользователя в СУБД
-
-            // триггеры
         }
         return false;
     }
 
     /**
      * @param $client
-     * @param $AmoLeadId
      * @param $leadPrepared
      * @return bool
      */
-    private function sendLead($client, $AmoLeadId, $leadPrepared) : bool{
-        $isUpdate = $AmoLeadId > 0;
-        if ($isUpdate){
-            $leadPrepared['AmoLeadId'] = $AmoLeadId;
-            $res = LeadRequestController::update($client, $leadPrepared);
-        }else{
-            $res = LeadRequestController::create($client, $leadPrepared);
-        }
+    private function sendLead($client, $leadPrepared) : bool{
+//        $isUpdate = $AmoLeadId > 0;
+//        if ($isUpdate){
+            LeadRequestController::update($client, [$leadPrepared]);
+//        }else{
+//            $res = LeadRequestController::create($client, $leadPrepared);
+//        }
 
-        try {
-            $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        }catch (\JsonException $e){
-            dd($e);
-        }
+//        if ($res){
+//            try {
+//                $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
+//            }catch (\JsonException $e){
+//                dd($e);
+//            }
+//        }
         return true;
     }
 
-    public function closeLead($client, $leadID){
-        $leadRaw = AmoCrmLead::find($leadID);
-        if ($leadRaw && $leadRaw->amoLeadID){
-            $leadArray = [
-                'AmoLeadId' => $leadRaw->amoLeadID,
-                "name" => "1",
-                "closed_at"=> time() + 5,
-                "status_id"=> 143,
-                "updated_by"=> 0
-            ];
-            $req = LeadRequestController::update($client, $leadArray);
-//            $leadRaw->delete();
-        }
+    public function closeLead($client, $amoLeadID){
+        $leadArray = [
+            'id' => (integer)$amoLeadID,
+            "name" => "1",
+            "closed_at"=> time() + 5,
+            "status_id"=> 143,
+            "updated_by"=> 0
+        ];
+        return $leadArray;
     }
 }

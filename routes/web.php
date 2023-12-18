@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\CronAmo;
+use App\Models\AmoCrmLead;
 use Illuminate\Support\Facades\Route;
 
 use function Amp\delay;
@@ -19,14 +20,14 @@ use function Amp\delay;
 */
 
 Route::get('/', function () {
-//    AmoCrmLead::factory()->create();
+    AmoCrmLead::factory()->create();
 //    PATIENTS::factory()->create();
 //    phpinfo();
     // While we create leads, we should put the logic:
     // - Create all contacts within one request and save them to each DB lead
     // - Create all leads within one request including the contact ID
-    $CronAmo = new CronAmo();
-    $CronAmo->reactOnCron();
+//    $CronAmo = new CronAmo();
+//    $CronAmo->reactOnCron();
 
     echo PHP_EOL;
     return view('welcome');
