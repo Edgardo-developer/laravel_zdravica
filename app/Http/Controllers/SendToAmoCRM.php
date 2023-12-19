@@ -54,9 +54,6 @@ class SendToAmoCRM extends Controller
             }
             echo $string;
             return false;
-            // Эти поля необходимо добавить в JOIN
-            //•	Дата визита (дата и время)
-            //•	Визит не состоялся (чекбокс/флаг)
 
             // responsibleFIO - необходимо добавить в карточку сделки
             // С помощью responsible_user_id достаем:

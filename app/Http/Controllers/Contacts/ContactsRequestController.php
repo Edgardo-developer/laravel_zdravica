@@ -18,7 +18,12 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
     }
 
     public static function update($client, $preparedData = null){
-        // does not need
+        $RequestExt = self::getRequestExt();
+        $headers = $RequestExt['headers'];
+        $amoID = $preparedData['amoID'];
+        unset($preparedData['amoID']);
+        $request = new Request('PATCH', self::$URI.'/'.$amoID, $headers, json_encode($preparedData));
+        return self::handleErrors($client, $request, true);
     }
 
     public static function get($client, $query) : array{

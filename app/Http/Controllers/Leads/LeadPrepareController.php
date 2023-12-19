@@ -64,7 +64,7 @@ class LeadPrepareController extends PrepareEntityController
             "fioDoc"  => $leadDB['fioDoc'],
             "offers"    => $leadDB['offers'],
             "specDoc"    => $leadDB['specDoc'],
-//            "responsible_user_id"    => $leadDB['responsible_user_id'] === "NULL" ? 10182090 : $leadDB['responsible_user_id'],
+            "responsible_user_id"    => $leadDB['responsible_user_id'] === "NULL" ? 10182090 : $leadDB['responsible_user_id'],
             "date"    => $leadDB['date'],
             "responsibleFIO"    => $leadDB['responsibleFIO'],
             "declareVisit" => (int)$leadDB['declareVisit'] === 1,

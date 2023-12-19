@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('amocrm_lead', function(Blueprint $table){
             $table->id();
-            $table->string('direction');
-            $table->string('specDoc');
-            $table->integer('patID');
-            $table->string('fioDoc');
+            $table->string('direction')->nullable();
+            $table->string('specDoc')->nullable();
+            $table->integer('patID')->nullable();
+            $table->string('fioDoc')->nullable();
             $table->boolean('declareVisit')->default(false);
-            $table->string('filial');
+            $table->string('filial')->nullable();
             $table->date('date');
             $table->integer('updated_at')->default($this->getTimestamp());
             $table->integer('created_at')->default($this->getTimestamp());

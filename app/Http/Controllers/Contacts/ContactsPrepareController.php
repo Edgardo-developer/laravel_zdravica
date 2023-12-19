@@ -19,6 +19,14 @@ class ContactsPrepareController extends PrepareEntityController
             391181 => 'FIO',
             391183 => 'Birthday',
             391185 => 'POL',
+            1573507 => 'GOROD',
+            1573509 => 'RAYON_VYBORKA',
+            1573511 => 'ULICA',
+            1573513 => 'DOM',
+            1573515 => 'KVARTIRA',
+            1573517 => 'NUMBER',
+            1573519 => 'Doverenni',
+            170781 => 'Doljnost',
         ]
     ];
 
@@ -64,6 +72,13 @@ class ContactsPrepareController extends PrepareEntityController
             'FIO',  =>  $contactDB['NOM'] . ' ' . $contactDB['PRENOM'] . ' ' . $contactDB['PATRONYME'],
             'Birthday', =>  $contactDB['NE_LE'] ?? '',
             'POL',  =>  $contactDB['POL'] ? 'Мужской' : 'Женский',
+            'RAYON_VYBORKA' => $contactDB['RAYON_VYBORKA'],
+            'ULICA' => $contactDB['ULICA'] ?? '',
+            'DOM' => $contactDB['DOM'] ?? '',
+            'KVARTIRA' => $contactDB['KVARTIRA'] ?? '',
+            'NUMBER' => $contactDB['NUMBER'] ?? '',
+            'Doverenni' => $contactDB['Doverenni'] ?? '',
+            'Doljnost' => $contactDB['Doljnost'] ?? '',
         };
     }
 }
