@@ -14,20 +14,20 @@ return new class extends Migration
     {
         Schema::create('amocrm_lead', function(Blueprint $table){
             $table->id();
-            $table->string('direction')->nullable();
-            $table->string('specDoc')->nullable();
+            $table->integer('amoManagerID')->nullable();
             $table->integer('patID')->nullable();
-            $table->string('fioDoc')->nullable();
+            $table->integer('billID')->nullable();
             $table->boolean('declareVisit')->default(false);
-            $table->string('filial')->nullable();
-            $table->date('date');
             $table->integer('updated_at')->default($this->getTimestamp());
             $table->integer('created_at')->default($this->getTimestamp());
-            $table->integer('billID')->nullable();
+            $table->string('direction')->nullable();
+            $table->string('specDoc')->nullable();
+            $table->string('fioDoc')->nullable();
+            $table->string('filial')->nullable();
+            $table->date('date')->nullable();
             $table->float('billSum')->nullable();
             $table->string('offers')->nullable();
             $table->string('managerName')->nullable();
-            $table->string('amoManagerID')->nullable();
         });
     }
 

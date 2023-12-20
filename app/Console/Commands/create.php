@@ -13,7 +13,7 @@ class create extends Command
      *
      * @var string
      */
-    protected $signature = 'laradeal:send
+    protected $signature = 'laradeal:sendLead
     {--id=null}
     {--direction=null}
     {--updated_at=null}
@@ -34,6 +34,7 @@ class create extends Command
     {--amoContactID=null}
     {--responsibleFIO=null}
     {--responsible_user_id=null}
+    {--finish=false}
 ';
 
     /**
@@ -50,6 +51,7 @@ class create extends Command
     {
         $options = [
             'direction' => $this->option('direction'),
+            'id' => $this->option('id'),
             'specDoc' => $this->option('specDoc'),
             'patID' => $this->option('patID'),
             'fioDoc' => $this->option('fioDoc'),

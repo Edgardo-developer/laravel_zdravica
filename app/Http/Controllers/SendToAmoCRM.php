@@ -8,7 +8,6 @@ use App\Http\Controllers\Contacts\ContactsPresendController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
-use App\Models\AmoCrmLead;
 use GuzzleHttp\Client;
 
 class SendToAmoCRM extends Controller
@@ -22,7 +21,7 @@ class SendToAmoCRM extends Controller
      */
     public function sendDealToAmoCRM($DBlead) : bool{
         $buildLead = $DBlead;
-        $buildContact = ContactsBuilderController::getRow($buildLead['patID']);
+        $buildContact = ContactsBuilderController::getRow((int)$buildLead['patID']);
         if ($buildLead && $buildContact){
             $client = new Client(['verify' => false]);
 
@@ -55,10 +54,11 @@ class SendToAmoCRM extends Controller
             echo $string;
             return false;
 
-            // responsibleFIO - необходимо добавить в карточку сделки
-            // С помощью responsible_user_id достаем:
-            // ID этого пользователя в AmoCRM
-            // FIO этого пользователя в СУБД
+            /*
+             * Tests:
+             * 1. Create the lead
+             * 2. Update the lead
+             */
         }
         return false;
     }
@@ -86,13 +86,21 @@ class SendToAmoCRM extends Controller
         return true;
     }
 
-    public function closeLead($client, $amoLeadID){
+    public function closeLead($amoLeadID){
         $leadArray = [
             'id' => (integer)$amoLeadID,
             "name" => "1",
             "closed_at"=> time() + 5,
             "status_id"=> 143,
             "updated_by"=> 0
+        ];
+        return $leadArray;
+    }
+
+    public function finishLead($amoLeadID){
+        $leadArray = [
+            'id' => (integer)$amoLeadID,
+            "status_id"=> 142,
         ];
         return $leadArray;
     }

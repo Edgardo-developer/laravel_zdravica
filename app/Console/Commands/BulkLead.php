@@ -7,14 +7,17 @@ use App\Http\Controllers\SendToAmoCRM;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
-class deleteLead extends Command
+class BulkLead extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'laradeal:delete {--amoLeadIDs=null}';
+    protected $signature = 'laradeal:bulkLead
+    {--amoLeadIDs=null}
+    {--finish=false}
+    ';
 
     /**
      * The console command description.
@@ -28,6 +31,7 @@ class deleteLead extends Command
      */
     public function handle(SendToAmoCRM $sendDealToAmoCRM)
     {
+        $finish = $this->option('finish');
         $amoLeadIDs = $this->option('amoLeadIDs') ? explode(',', $this->option('amoLeadIDs')) : array();
         if ($amoLeadIDs){
             $leadArray = [];
@@ -36,7 +40,8 @@ class deleteLead extends Command
                     $client = new Client(['verify' => false]);
                     $ID = (int)$amoLeadID;
                     if ($ID > 0){
-                        $leadArray[] =  $sendDealToAmoCRM->closeLead($client, $ID);
+                        $leadArray[] = $finish ?
+                            $sendDealToAmoCRM->closeLead($ID) : $sendDealToAmoCRM->finishLead($ID);
                     }
                 }
             }

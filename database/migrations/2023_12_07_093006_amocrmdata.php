@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('amocrmtable', function (Blueprint $table){
             $table->id();
             $table->string('key');
-            $table->text('value', 2000);
+            $table->text('value', 3000);
         });
     }
 

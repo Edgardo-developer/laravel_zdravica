@@ -60,14 +60,16 @@ class ContactsPrepareController extends PrepareEntityController
                     if ((!$contactID && !in_array($customFieldsValue, self::$secondRound, false))
                         ||
                         ($contactID && in_array($customFieldsValue, self::$secondRound, false))){
-                        $prepared['custom_fields_values'][] = [
-                            'field_id'  =>  $customFieldsKey,
-                            'values'    =>  [['value'=> self::matchFields($customFieldsValue, $contactDB)]],
-                        ];
+                        $val = self::matchFields($customFieldsValue, $contactDB);
+                        if ($val && $val !== 'null'){
+                            $prepared['custom_fields_values'][] = [
+                                'field_id'  =>  $customFieldsKey,
+                                'values'    =>  [['value'=> self::matchFields($customFieldsValue, $contactDB)]],
+                            ];
+                        }
                     }
                 }
             }
-//            print_r(self::$secondRound);
         }
         return [$prepared];
     }
@@ -88,6 +90,7 @@ class ContactsPrepareController extends PrepareEntityController
             'updated_by'  => $contactDB['updated_at'] ?? '',
             'mobile',   =>  $contactDB['MOBIL_NYY'] ?? '',
             'email',    =>  $contactDB['EMAIL'] ?? '',
+            'GOROD',    =>  $contactDB['GOROD'] ?? '',
             'FIO',  =>  $contactDB['NOM'] . ' ' . $contactDB['PRENOM'] . ' ' . $contactDB['PATRONYME'],
             'Birthday', =>  $contactDB['NE_LE'] ?? '',
             'POL',  =>  $contactDB['POL'] ? 'Мужской' : 'Женский',

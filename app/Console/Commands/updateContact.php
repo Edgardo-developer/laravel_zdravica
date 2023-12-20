@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\Contacts\ContactsBuilderController;
+
 use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
 use GuzzleHttp\Client;
