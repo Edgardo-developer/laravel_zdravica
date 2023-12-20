@@ -23,6 +23,7 @@ class updateContact extends Command
     {--NUMBER=null}
     {--DOM=null}
     {--KVARTIRA=null}
+    {--DOVERENNI=null}
     ';
 
     /**
@@ -44,19 +45,16 @@ class updateContact extends Command
             'NUMBER' => $this->option('NUMBER') ?? '',
             'DOM' => $this->option('DOM') ?? '',
             'KVARTIRA' => $this->option('KVARTIRA') ?? '',
-            'Doljnost' => $this->option('KVARTIRA') ?? '',
-            'Doverenni' => $this->option('KVARTIRA') ?? '',
+            'Doverenni' => $this->option('DOVERENNI') ?? '',
         ];
         if ($options['id']){
-            $amoID = DB::table('amocrm_lead')->get()
-                ->firstWhere('patID', '=', $options['id'])->amoContactID;
-
+            $amoID = $options['id'];
             $arr = ['Д','Ш','КМ','ДК','ГР','Т','О'];
             if ($options['NUMBER'] && (int)$options['NUMBER'] < 7){
                 $options['NUMBER'] = $arr[(int)$options['NUMBER']];
             }
             $prepared = ContactsPrepareController::prepare($options, 1);
-            if ($amoID && $prepared){
+            if ($prepared){
                 $prepared['amoID'] = $amoID;
                 $client = new Client(['verify' => false]);
                 ContactsRequestController::update($client, $prepared);

@@ -37,7 +37,6 @@ class BulkLead extends Command
             $leadArray = [];
             foreach ($amoLeadIDs as $amoLeadID){
                 if ($amoLeadID){
-                    $client = new Client(['verify' => false]);
                     $ID = (int)$amoLeadID;
                     if ($ID > 0){
                         $leadArray[] = $finish ?
@@ -46,6 +45,7 @@ class BulkLead extends Command
                 }
             }
             if (count($leadArray[0]) > 0){
+                $client = new Client(['verify' => false]);
                 LeadRequestController::update($client, $leadArray);
             }
         }

@@ -53,12 +53,6 @@ class SendToAmoCRM extends Controller
             }
             echo $string;
             return false;
-
-            /*
-             * Tests:
-             * 1. Create the lead
-             * 2. Update the lead
-             */
         }
         return false;
     }
@@ -69,20 +63,7 @@ class SendToAmoCRM extends Controller
      * @return bool
      */
     private function sendLead($client, $leadPrepared) : bool{
-//        $isUpdate = $AmoLeadId > 0;
-//        if ($isUpdate){
             LeadRequestController::update($client, [$leadPrepared]);
-//        }else{
-//            $res = LeadRequestController::create($client, $leadPrepared);
-//        }
-
-//        if ($res){
-//            try {
-//                $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
-//            }catch (\JsonException $e){
-//                dd($e);
-//            }
-//        }
         return true;
     }
 

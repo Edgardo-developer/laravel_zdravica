@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('amocrm_lead', function(Blueprint $table){
-            $table->integer('leadDBId')->nullable();
-            $table->integer('amoLeadID')->nullable();
+            $table->integer('leadDBId')->nullable()->unique();
+            $table->integer('amoLeadID')->nullable()->unique();
             $table->integer('amoContactID')->nullable();
             $table->string('responsibleFIO')->nullable();
             $table->integer('responsible_user_id')->nullable();
+            $table->integer('declareCall')->default(0);
         });
     }
 

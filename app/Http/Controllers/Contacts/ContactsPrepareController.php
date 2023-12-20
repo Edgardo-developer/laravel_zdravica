@@ -55,8 +55,6 @@ class ContactsPrepareController extends PrepareEntityController
                 }
             }else{
                 foreach ($mergedContactField as $customFieldsKey => $customFieldsValue){
-                    // separate fields by first and second call
-//                    echo $customFieldsValue . ' ' . ($contactID ? 'true' : 'false') . '   ///   ';
                     if ((!$contactID && !in_array($customFieldsValue, self::$secondRound, false))
                         ||
                         ($contactID && in_array($customFieldsValue, self::$secondRound, false))){

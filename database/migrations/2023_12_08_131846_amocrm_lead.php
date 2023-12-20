@@ -13,21 +13,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('amocrm_lead', function(Blueprint $table){
-            $table->id();
+            $table->id()->unique()->autoIncrement();
             $table->integer('amoManagerID')->nullable();
             $table->integer('patID')->nullable();
             $table->integer('billID')->nullable();
-            $table->boolean('declareVisit')->default(false);
             $table->integer('updated_at')->default($this->getTimestamp());
             $table->integer('created_at')->default($this->getTimestamp());
+            $table->string('offers')->nullable();
+            $table->string('managerName')->nullable();
             $table->string('direction')->nullable();
             $table->string('specDoc')->nullable();
             $table->string('fioDoc')->nullable();
             $table->string('filial')->nullable();
             $table->date('date')->nullable();
             $table->float('billSum')->nullable();
-            $table->string('offers')->nullable();
-            $table->string('managerName')->nullable();
+            $table->boolean('declareVisit')->default(false);
         });
     }
 
