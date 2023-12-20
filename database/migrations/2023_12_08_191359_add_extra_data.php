@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('amoContactID')->nullable();
             $table->string('responsibleFIO')->nullable();
             $table->integer('responsible_user_id')->nullable();
-            $table->integer('declareCall')->default(0);
         });
     }
 
