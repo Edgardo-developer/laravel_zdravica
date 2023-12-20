@@ -12,6 +12,7 @@ class LeadRequestController extends RequestController
     public static function create($client, $preparedData) : string{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
+        $preparedData['status_id'] = 61034286;
         $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
         return self::handleErrors($client, $request, false);
     }

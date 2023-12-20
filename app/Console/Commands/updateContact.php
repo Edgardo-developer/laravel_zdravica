@@ -38,20 +38,27 @@ class updateContact extends Command
     public function handle()
     {
         $options = [
-            'id' => $this->option('amoID'),
-            'ULICA' => $this->option('ULICA'),
-            'RAYON_VYBORKA' => $this->option('RAYON_VYBORKA'),
-            'NUMBER' => $this->option('NUMBER'),
-            'DOM' => $this->option('DOM'),
-            'KVARTIRA' => $this->option('KVARTIRA'),
+            'id' => $this->option('id') ?? '',
+            'ULICA' => $this->option('ULICA') ?? '',
+            'RAYON_VYBORKA' => $this->option('RAYON_VYBORKA') ?? '',
+            'NUMBER' => $this->option('NUMBER') ?? '',
+            'DOM' => $this->option('DOM') ?? '',
+            'KVARTIRA' => $this->option('KVARTIRA') ?? '',
+            'Doljnost' => $this->option('KVARTIRA') ?? '',
+            'Doverenni' => $this->option('KVARTIRA') ?? '',
         ];
-        if ($options['amoID']){
-            $amoID = DB::table('PLANNING')->where('amoContactID', '=', $options['amoID'])->first();
-            $prepared = ContactsPrepareController::prepare($options);
+        if ($options['id']){
+            $amoID = DB::table('amocrm_lead')->get()
+                ->firstWhere('patID', '=', $options['id'])->amoContactID;
 
+            $arr = ['Д','Ш','КМ','ДК','ГР','Т','О'];
+            if ($options['NUMBER'] && (int)$options['NUMBER'] < 7){
+                $options['NUMBER'] = $arr[(int)$options['NUMBER']];
+            }
+            $prepared = ContactsPrepareController::prepare($options, 1);
             if ($amoID && $prepared){
-                $prepared['id'] = $amoID;
-                $client = new Client();
+                $prepared['amoID'] = $amoID;
+                $client = new Client(['verify' => false]);
                 ContactsRequestController::update($client, $prepared);
             }
         }

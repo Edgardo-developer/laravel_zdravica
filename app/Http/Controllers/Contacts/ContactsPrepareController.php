@@ -30,6 +30,16 @@ class ContactsPrepareController extends PrepareEntityController
         ]
     ];
 
+    private static array $secondRound = [
+        'RAYON_VYBORKA',
+        'ULICA',
+        'DOM',
+        'KVARTIRA',
+        'NUMBER',
+        'Doverenni',
+        'Doljnost'
+    ];
+
     /**
      * @param array $contactDB
      * @param int $contactID
@@ -40,15 +50,24 @@ class ContactsPrepareController extends PrepareEntityController
         $prepared = array();
         foreach (self::$amoFields as $mergedContactField){
             if (is_string($mergedContactField)){
-                $prepared[$mergedContactField] = self::matchFields($mergedContactField, $contactDB);
+                if (!$contactID){
+                    $prepared[$mergedContactField] = self::matchFields($mergedContactField, $contactDB);
+                }
             }else{
                 foreach ($mergedContactField as $customFieldsKey => $customFieldsValue){
-                    $prepared['custom_fields_values'][] = [
-                        'field_id'  =>  $customFieldsKey,
-                        'values'    =>  [['value'=> self::matchFields($customFieldsValue, $contactDB)]],
-                    ];
+                    // separate fields by first and second call
+//                    echo $customFieldsValue . ' ' . ($contactID ? 'true' : 'false') . '   ///   ';
+                    if ((!$contactID && !in_array($customFieldsValue, self::$secondRound, false))
+                        ||
+                        ($contactID && in_array($customFieldsValue, self::$secondRound, false))){
+                        $prepared['custom_fields_values'][] = [
+                            'field_id'  =>  $customFieldsKey,
+                            'values'    =>  [['value'=> self::matchFields($customFieldsValue, $contactDB)]],
+                        ];
+                    }
                 }
             }
+//            print_r(self::$secondRound);
         }
         return [$prepared];
     }

@@ -22,7 +22,7 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
         $headers = $RequestExt['headers'];
         $amoID = $preparedData['amoID'];
         unset($preparedData['amoID']);
-        $request = new Request('PATCH', self::$URI.'/'.$amoID, $headers, json_encode($preparedData));
+        $request = new Request('PATCH', self::$URI.'/'.$amoID, $headers, json_encode($preparedData[0]));
         return self::handleErrors($client, $request, true);
     }
 
