@@ -30,6 +30,7 @@ Route::get('/', function () {
     // - Create all leads within one request including the contact ID
 //    $CronAmo = new CronAmo();
 //    $CronAmo->reactOnCron();
+    DB::table('PATIENTS')->get()->where('id','=',1);
     return view('welcome');
 });
 Route::get('/g', function(){

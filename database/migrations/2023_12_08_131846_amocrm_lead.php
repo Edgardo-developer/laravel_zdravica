@@ -27,7 +27,8 @@ return new class extends Migration
             $table->string('filial')->nullable();
             $table->date('date')->nullable();
             $table->float('billSum')->nullable();
-            $table->boolean('declareVisit')->default(false);
+            $table->integer('declareVisit')->default(0); // Check if the client come
+            $table->integer('declareCall')->default(0); // Check if the client called
         });
     }
 
