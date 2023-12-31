@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PATIENTS extends Model
 {
     use HasFactory;
-    protected $table = 'patients';
+    protected $connection = 'sqlsrv2';
+    protected $table = 'master.guest.PATIENTS';
 }

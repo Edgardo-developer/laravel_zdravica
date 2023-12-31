@@ -89,16 +89,26 @@ class ContactsPrepareController extends PrepareEntityController
             'mobile',   =>  $contactDB['MOBIL_NYY'] ?? '',
             'email',    =>  $contactDB['EMAIL'] ?? '',
             'GOROD',    =>  $contactDB['GOROD'] ?? '',
-            'FIO',  =>  $contactDB['NOM'] . ' ' . $contactDB['PRENOM'] . ' ' . $contactDB['PATRONYME'],
+            'FIO',  =>  $contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME'],
             'Birthday', =>  $contactDB['NE_LE'] ?? '',
-            'POL',  =>  $contactDB['POL'] ? 'Мужской' : 'Женский',
+            'POL',  =>  self::checkPol($contactDB['NOM'], $contactDB['PATRONYME']),
             'RAYON_VYBORKA' => $contactDB['RAYON_VYBORKA'],
             'ULICA' => $contactDB['ULICA'] ?? '',
             'DOM' => $contactDB['DOM'] ?? '',
             'KVARTIRA' => $contactDB['KVARTIRA'] ?? '',
             'NUMBER' => $contactDB['NUMBER'] ?? '',
             'Doverenni' => $contactDB['Doverenni'] ?? '',
-            'Doljnost' => $contactDB['Doljnost'] ?? '',
         };
+    }
+
+    private static function checkPol($lastName, $father) : string{
+        if (
+            !in_array(substr($lastName, -2), ['я', 'а'])
+            &&
+            !in_array(substr($father, -2), ['я', 'а'])
+        ){
+            return 'Мужской';
+        }
+        return 'Женский';
     }
 }

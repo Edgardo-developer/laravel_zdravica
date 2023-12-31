@@ -9,6 +9,7 @@ class AmoCrmTable extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $table = 'amocrmtable';
+    protected $connection = 'sqlsrv1';
+    protected $table = 'master.guest.amocrmtable';
     protected $fillable = ['key', 'value'];
 }

@@ -145,7 +145,7 @@ class CronAmo extends Controller
         LeadBuilderController $LeadBuilderController,
         ContactsBuilderController $ContactsBuilderController
     ) : array{
-        $buildLead = $LeadBuilderController->getRow($DBleadId);
+        $buildLead = LeadBuilderController::getRow($DBleadId);
         $buildContact = $ContactsBuilderController->getRow($buildLead['patID']);
         if ($buildLead && $buildContact){
             $leadRaw= AmoCrmLead::all()->where('id', '=', $DBleadId)->first();

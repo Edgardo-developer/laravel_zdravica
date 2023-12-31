@@ -25,9 +25,9 @@ return new class extends Migration
             $table->string('specDoc')->nullable();
             $table->string('fioDoc')->nullable();
             $table->string('filial')->nullable();
+            $table->string('confident')->nullable();
             $table->date('date')->nullable();
             $table->float('billSum')->nullable();
-            $table->integer('declareVisit')->default(0); // Check if the client come
             $table->integer('declareCall')->default(0); // Check if the client called
         });
     }

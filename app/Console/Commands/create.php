@@ -22,6 +22,7 @@ class create extends Command
     {--patID=null}
     {--fioDoc=null}
     {--declareVisit=null}
+    {--declareCall=null}
     {--filial=null}
     {--date=null}
     {--billID=null}
@@ -64,12 +65,13 @@ class create extends Command
             'managerName' => $this->option('managerName'),
             'amoManagerID' => $this->option('amoManagerID'),
             'leadDBId' => $this->option('leadDBId'),
-            'amoLeadID' => $this->option('amoLeadID'),
+            //'amoLeadID' => $this->option('amoLeadID'),
             'updated_at' => $this->option('updated_at'),
             'created_at' => $this->option('created_at'),
-            'amoContactID' => $this->option('amoContactID'),
+            //'amoContactID' => $this->option('amoContactID'),
             'responsibleFIO' => $this->option('responsibleFIO'),
             'responsible_user_id' => $this->option('responsible_user_id'),
+            'declareCall' => $this->option('declareCall'),
         ];
         if ($options){
             $SendToAmoCRM->sendDealToAmoCRM($options);

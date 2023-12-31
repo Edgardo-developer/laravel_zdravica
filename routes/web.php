@@ -23,14 +23,13 @@ use function Amp\delay;
 
 Route::get('/', function () {
     //AmoCrmLead::factory()->create();
-    //PATIENTS::factory()->create();
-    DB::connection()->getPdo();
+    PATIENTS::factory()->create();
+//    DB::connection()->getPdo();
     // While we create leads, we should put the logic:
     // - Create all contacts within one request and save them to each DB lead
     // - Create all leads within one request including the contact ID
 //    $CronAmo = new CronAmo();
 //    $CronAmo->reactOnCron();
-    DB::table('PATIENTS')->get()->where('id','=',1);
     return view('welcome');
 });
 Route::get('/g', function(){

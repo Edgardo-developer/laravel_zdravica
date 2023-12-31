@@ -17,8 +17,8 @@ class LeadPrepareController extends PrepareEntityController
             454379  => "fioDoc",
             454381  => "offers",
             454377  => "specDoc",
-            1571881  => "date",
-            1571885 => "declareVisit",
+            1581797  => "date",
+//            1571885 => "declareVisit",
             1572983 => "responsibleFIO",
         ],
     ];
@@ -65,7 +65,7 @@ class LeadPrepareController extends PrepareEntityController
             "offers"    => $leadDB['offers'],
             "specDoc"    => $leadDB['specDoc'],
             "responsible_user_id"    => $leadDB['responsible_user_id'] === "NULL" ? 10182090 : $leadDB['responsible_user_id'],
-            "date"    => $leadDB['date'],
+            "date"    => strtotime($leadDB['date']),
             "responsibleFIO"    => $leadDB['responsibleFIO'],
             "declareVisit" => (int)$leadDB['declareVisit'] === 1,
         };
