@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class BillPresendController extends Controller
 {
+    /**
+     * @throws \JsonException
+     */
     public function getAmoID($client, $billDB) : string{
         return BillRequestController::create($client, BillPrepareController::prepare($billDB, $billDB['billStatus']));
     }

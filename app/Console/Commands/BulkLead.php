@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Bill\BillBuilderController;
+use App\Http\Controllers\Bill\BillRequestController;
 use App\Http\Controllers\Leads\LeadRequestController;
 use App\Http\Controllers\SendToAmoCRM;
+use App\Models\amocrmIDs;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
@@ -35,18 +38,24 @@ class BulkLead extends Command
         $amoLeadIDs = $this->option('amoLeadIDs') ? explode(',', $this->option('amoLeadIDs')) : array();
         if ($amoLeadIDs){
             $leadArray = [];
+            $billArray = [];
             foreach ($amoLeadIDs as $amoLeadID){
                 if ($amoLeadID){
-                    $ID = (int)$amoLeadID;
-                    if ($ID > 0){
+                    $leadID = (int)$amoLeadID;
+                    $billID = amocrmIDs::all()->where('amoLeadID', '=', $amoLeadID)->first()->amoBillID;
+
+                    if ($leadID > 0){
                         $leadArray[] = $finish ?
-                            $sendDealToAmoCRM->closeLead($ID) : $sendDealToAmoCRM->finishLead($ID);
+                            $sendDealToAmoCRM->closeLead($leadID) : $sendDealToAmoCRM->finishLead($leadID);
+                        $billArray[] = $finish ?
+                            BillBuilderController::closeBill($billID) : BillBuilderController::finishBill($billID);
                     }
                 }
             }
             if (count($leadArray[0]) > 0){
                 $client = new Client(['verify' => false]);
                 LeadRequestController::update($client, $leadArray);
+                BillRequestController::update($client, $billArray);
             }
         }
     }
