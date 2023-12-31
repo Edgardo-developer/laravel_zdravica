@@ -14,7 +14,7 @@ class BillPrepareController extends PrepareEntityController
             1550048  => "status",
             1550052  => "account",
             1550058  => "offers",
-            1550056  => "bought_date",
+//            1550056  => "bought_date",
         ],
     ];
 
@@ -23,13 +23,23 @@ class BillPrepareController extends PrepareEntityController
             'custom_fields_values'  => array(),
         ];
         foreach (self::$amoFields['custom_fields_values'] as $amoFieldKey => $amoFieldVal){
-            $locArr = array(
-                'field_id'  => $amoFieldKey,
+            if (isset($billDB[$amoFieldVal])){
+                $locArr = array(
+                    'field_id'  => $amoFieldKey,
+                    'values'    => [
+                        'value' => $billDB[$amoFieldVal],
+                    ]
+                );
+                $arr['custom_fields_values'][]  = $locArr;
+            }
+        }
+        if ($billStatus === 1){
+            $arr['custom_fields_values'][] = array(
+                'field_id'  => 1550056,
                 'values'    => [
-                    'value' => $billDB[$amoFieldVal],
+                    'value' => time(),
                 ]
             );
-            $arr['custom_fields_values'][]  = $locArr;
         }
         return $arr;
     }

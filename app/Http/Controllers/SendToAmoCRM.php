@@ -49,7 +49,11 @@ class SendToAmoCRM extends Controller
                 $billDB = array(
                     'offers'    => $buildLead['offers'],
                     'billStatus'    => 0,
-                    'account'   => $buildLead['amoContactID'],
+                    'status'    =>  'Создан',
+                    'account'   => array(
+                        "entity_type" => "contacts",
+                        "entity_id"=> $buildLead['amoContactID'],
+                    )
                 );
                 $PresendBill = new BillPresendController();
                 $AmoBillID = $PresendBill->getAmoID($client, $billDB);

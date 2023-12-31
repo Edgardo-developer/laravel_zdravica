@@ -10,10 +10,6 @@ use Illuminate\Http\Request;
 class BillPresendController extends Controller
 {
     public function getAmoID($client, $billDB) : string{
-//        $leadID = $this->checkExists($client, $DBLead);
-//        if (!$leadID){
-//            $leadID = LeadRequestController::create($client, LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']));
-//        }
         return BillRequestController::create($client, BillPrepareController::prepare($billDB, $billDB['billStatus']));
     }
 }
