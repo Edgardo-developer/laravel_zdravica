@@ -8,5 +8,7 @@ use Illuminate\Http\Request;
 
 class BillRequestController extends RequestController
 {
-    //
+    public static function create($client, $preparedData) : string{
+
+    }
 }

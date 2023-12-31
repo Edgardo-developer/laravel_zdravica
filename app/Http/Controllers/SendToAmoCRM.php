@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Controllers\Bill\BillPresendController;
 use App\Http\Controllers\Contacts\ContactsBuilderController;
 use App\Http\Controllers\Contacts\ContactsPresendController;
 use App\Http\Controllers\Leads\LeadPrepareController;
@@ -40,16 +41,30 @@ class SendToAmoCRM extends Controller
                 $AmoLeadId = $PresendLead->getAmoID($client, $buildLead);
                 $buildLead['amoLeadID'] = $AmoLeadId;
             }
+
+            if ((!isset($buildLead['amoBillID'], $buildLead['offers'], $buildLead['price'])
+                    || $buildLead['amoBillID'] === 'null') &&
+                (int)$buildLead['price'] > 0
+            ){
+                $billDB = array(
+                    'offers'    => $buildLead['offers'],
+                    'billStatus'    => 0,
+                    'account'   => $buildLead['amoContactID'],
+                );
+                $PresendBill = new BillPresendController();
+                $AmoBillID = $PresendBill->getAmoID($client, $billDB);
+                $buildLead['amoBillID'] = $AmoBillID;
+            }
+
             $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
             $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
             $this->sendLead($client, $leadPrepared);
-            $amoData = [];
-            foreach ($buildLead as $buildLeadKey => $buildLeadValue){
-                if (in_array($buildLeadKey, array('amoContactID', 'amoLeadID', 'amoBillID'))){
-                    $amoData[$buildLeadKey] = $buildLeadValue;
-                }
-            }
-            $amoData['leadDBId'] = $buildLead['leadDBId'];
+            $amoData = array(
+                'amoContactID'  => $buildLead['amoContactID'] ?? '',
+                'amoLeadID' => $buildLead['amoLeadID'] ?? '',
+                'amoBillID' => $buildLead['amoBillID'] ?? '',
+                'leadDBId' => $buildLead['amoBillID'] ?? ''
+            );
 
             amocrmIDs::updateOrCreate([
                 'leadDBId' => $buildLead['leadDBId']
