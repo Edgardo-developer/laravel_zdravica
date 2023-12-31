@@ -43,14 +43,17 @@ class SendToAmoCRM extends Controller
             $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
             $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
             $this->sendLead($client, $leadPrepared);
-            $arr = [];
+            $amoData = [];
             foreach ($buildLead as $buildLeadKey => $buildLeadValue){
-                if (in_array($buildLeadKey, array('amoContactID', 'amoLeadID'))){
-                    $arr[$buildLeadKey] = $buildLeadValue;
+                if (in_array($buildLeadKey, array('amoContactID', 'amoLeadID', 'amoBillID'))){
+                    $amoData[$buildLeadKey] = $buildLeadValue;
                 }
             }
-            $arr['leadDBId'] = $buildLead['leadDBId'];
-            amocrmIDs::create($arr);
+            $amoData['leadDBId'] = $buildLead['leadDBId'];
+
+            amocrmIDs::updateOrCreate([
+                'leadDBId' => $buildLead['leadDBId']
+            ],$amoData);
         }
     }
 
@@ -73,6 +76,9 @@ class SendToAmoCRM extends Controller
             }
             if ($raw['amoLeadID']){
                 $dbLead['amoLeadID'] = $rawArray['amoLeadID'];
+            }
+            if ($raw['amoBillID']){
+                $dbLead['amoBillID'] = $rawArray['amoBillID'];
             }
         }
         return $dbLead;
