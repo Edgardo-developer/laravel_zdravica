@@ -35,7 +35,6 @@ class create extends Command
     {--amoContactID=null}
     {--responsibleFIO=null}
     {--responsible_user_id=null}
-    {--finish=false}
 ';
 
     /**

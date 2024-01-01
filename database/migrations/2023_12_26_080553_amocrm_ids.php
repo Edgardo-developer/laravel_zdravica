@@ -17,6 +17,7 @@ return new class extends Migration
             $blueprint->integer('amoContactID')->nullable();
             $blueprint->integer('amoLeadID')->nullable();
             $blueprint->integer('amoBillID')->nullable();
+            $blueprint->string('amoOffers')->nullable();
         });
     }
 

@@ -11,7 +11,7 @@ use App\Http\Controllers\LeadLinks\LeadLinksRequestController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
-use App\Models\amocrmIDs;
+use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 
 class SendToAmoCRM extends Controller
@@ -41,9 +41,10 @@ class SendToAmoCRM extends Controller
                 'amoContactID'  => $buildLead['amoContactID'] ?? NULL,
                 'amoLeadID' => $buildLead['amoLeadID'] ?? NULL,
                 'amoBillID' => $buildLead['amoBillID'] ?? NULL,
+                'amoOffers' => $buildLead['offers'] ?? NULL,
                 'leadDBId' => $buildLead['leadDBId'] ?? NULL
             );
-            amocrmIDs::updateOrCreate([
+            AmocrmIDs::updateOrCreate([
                 'leadDBId' => $buildLead['leadDBId']
             ],$amoData);
         }
@@ -68,19 +69,20 @@ class SendToAmoCRM extends Controller
      * @throws \JsonException
      */
     private function getBillAmoID($client, $buildLead) : int{
+        $billDB = array(
+            'offers'    => $buildLead['offers'],
+            'billStatus'    => 0,
+            'status'    =>  'Создан',
+            'account'   => array(
+                "entity_type" => "contacts",
+                "entity_id"=> $buildLead['amoContactID'],
+            )
+        );
+
         if ((!isset($buildLead['amoBillID'], $buildLead['offers'], $buildLead['price'])
                 || $buildLead['amoBillID'] === 'null') &&
             (int)$buildLead['price'] > 0
         ){
-            $billDB = array(
-                'offers'    => $buildLead['offers'],
-                'billStatus'    => 0,
-                'status'    =>  'Создан',
-                'account'   => array(
-                    "entity_type" => "contacts",
-                    "entity_id"=> $buildLead['amoContactID'],
-                )
-            );
             $PresendBill = new BillPresendController();
             $AmoBillID = $PresendBill->getAmoID($client, $billDB);
 
@@ -89,7 +91,12 @@ class SendToAmoCRM extends Controller
             LeadLinksRequestController::create($client, $leadLinks);
             return $AmoBillID;
         }
-        return $buildLead['amoBillID'];
+
+        if($buildLead['amoOffers'] && $buildLead['offers'] !== $buildLead['amoOffers']){
+            $PresendBill = new BillPresendController();
+            $PresendBill->updateBill($client, $billDB);
+        }
+        return $buildLead['amoBillID'] ?? 0;
     }
 
     /**
@@ -106,14 +113,16 @@ class SendToAmoCRM extends Controller
     }
 
     private function checkAmo(array &$dbLead){
-        $raw = amocrmIDs::all()->where('leadDBId', '=', $dbLead['leadDBId'])?->first();
+        $raw = AmocrmIDs::all()->where('leadDBId', '=', $dbLead['leadDBId'])?->first();
         if ($raw){
             $rawArray = $raw->toArray();
-            $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID'];
+            $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID','amoOffers'];
 
             foreach ($keysToCopy as $key) {
                 if (isset($raw[$key])) {
                     $dbLead[$key] = $rawArray[$key];
+                }else{
+                    $dbLead[$key] = Null;
                 }
             }
         }

@@ -26,10 +26,12 @@ class BillPrepareController extends PrepareEntityController
             if (isset($billDB[$amoFieldVal])){
                 $locArr = array(
                     'field_id'  => $amoFieldKey,
-                    'values'    => [
-                        'value' => $billDB[$amoFieldVal],
-                    ]
                 );
+                if ($amoFieldVal !== 'offers'){
+                    $locArr['values']  = [['value' => $billDB[$amoFieldVal]]];
+                }else{
+                    $locArr['values'] = self::modifyOffers($billDB[$amoFieldVal]);
+                }
                 $arr['custom_fields_values'][]  = $locArr;
             }
         }
@@ -42,5 +44,21 @@ class BillPrepareController extends PrepareEntityController
             );
         }
         return $arr;
+    }
+
+    private static function modifyOffers($offers) : array{
+        $offersArr = [];
+        $offersPrices = explode(',',$offers);
+        foreach ($offersPrices as $offerPrice){
+            $offerPriceArr = explode(':',$offerPrice);
+            $offersArr[] = [
+                'value' => [
+                    'description'   => $offerPriceArr[0],
+                    'unit_price'   => $offerPriceArr[1],
+                    'quantity'   => 1,
+                ]
+            ];
+        }
+        return $offersArr;
     }
 }

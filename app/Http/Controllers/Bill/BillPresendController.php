@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Bill;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Bill\BillPrepareController;
-use App\Http\Controllers\Bill\BillRequestController;
-use Illuminate\Http\Request;
 
 class BillPresendController extends Controller
 {
@@ -14,5 +11,9 @@ class BillPresendController extends Controller
      */
     public function getAmoID($client, $billDB) : string{
         return BillRequestController::create($client, BillPrepareController::prepare($billDB, $billDB['billStatus']));
+    }
+
+    public function updateBill($client, $billDB) : void{
+        BillRequestController::update($client, BillPrepareController::prepare($billDB, $billDB['billStatus']));
     }
 }
