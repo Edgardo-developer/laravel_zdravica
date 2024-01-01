@@ -29,54 +29,20 @@ class SendToAmoCRM extends Controller
             $buildContact['MOBIL_NYY'] = '8'.$buildContact['MOBIL_NYY'];
             $client = new Client(['verify' => false]);
 
-            if (!isset($buildLead['amoContactID']) || $buildLead['amoContactID'] === 'null'){
-                $PresendContact = new ContactsPresendController();
-                $contactAmoId = $PresendContact->getAmoID($client, $buildContact);
-                $buildLead['amoContactID'] = $contactAmoId;
-            }else{
-                $contactAmoId = $buildLead['amoContactID'];
-            }
+            $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
+            $buildLead['amoLeadID'] = $this->getLeadAmoID($client, $buildLead);
+            $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead);
 
-            if (!isset($buildLead['amoLeadID']) || $buildLead['amoLeadID'] === 'null'){
-                $buildLead['amoContactID'] = $contactAmoId;
-                $PresendLead = new LeadPresendController();
-                $AmoLeadId = $PresendLead->getAmoID($client, $buildLead);
-                $buildLead['amoLeadID'] = $AmoLeadId;
-            }
-
-            if ((!isset($buildLead['amoBillID'], $buildLead['offers'], $buildLead['price'])
-                    || $buildLead['amoBillID'] === 'null') &&
-                (int)$buildLead['price'] > 0
-            ){
-                $billDB = array(
-                    'offers'    => $buildLead['offers'],
-                    'billStatus'    => 0,
-                    'status'    =>  'Создан',
-                    'account'   => array(
-                        "entity_type" => "contacts",
-                        "entity_id"=> $buildLead['amoContactID'],
-                    )
-                );
-                $PresendBill = new BillPresendController();
-                $AmoBillID = $PresendBill->getAmoID($client, $billDB);
-
-                $leadLinks = LeadLinksPrepareController::prepare($buildLead, $contactAmoId);
-                $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
-                LeadLinksRequestController::create($client, $leadLinks);
-
-                $buildLead['amoBillID'] = $AmoBillID;
-            }
-
-            $leadPrepared = LeadPrepareController::prepare($buildLead, $contactAmoId);
+            $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
             $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
-            $this->sendLead($client, $leadPrepared);
-            $amoData = array(
-                'amoContactID'  => $buildLead['amoContactID'] ?? '',
-                'amoLeadID' => $buildLead['amoLeadID'] ?? '',
-                'amoBillID' => $buildLead['amoBillID'] ?? '',
-                'leadDBId' => $buildLead['amoBillID'] ?? ''
-            );
+            LeadRequestController::update($client, [$leadPrepared]);
 
+            $amoData = array(
+                'amoContactID'  => $buildLead['amoContactID'] ?? NULL,
+                'amoLeadID' => $buildLead['amoLeadID'] ?? NULL,
+                'amoBillID' => $buildLead['amoBillID'] ?? NULL,
+                'leadDBId' => $buildLead['leadDBId'] ?? NULL
+            );
             amocrmIDs::updateOrCreate([
                 'leadDBId' => $buildLead['leadDBId']
             ],$amoData);
@@ -85,26 +51,70 @@ class SendToAmoCRM extends Controller
 
     /**
      * @param $client
-     * @param $leadPrepared
-     * @return bool
+     * @param $buildLead
+     * @return int
      */
-    private function sendLead($client, $leadPrepared) : bool{
-            LeadRequestController::update($client, [$leadPrepared]);
-        return true;
+    private function getLeadAmoID($client, $buildLead) : int{
+        if (!isset($buildLead['amoLeadID']) || $buildLead['amoLeadID'] === 'null'){
+            return (new LeadPresendController())->getAmoID($client, $buildLead);
+        }
+        return $buildLead['amoLeadID'];
+    }
+
+    /**
+     * @param $client
+     * @param $buildLead
+     * @return int
+     * @throws \JsonException
+     */
+    private function getBillAmoID($client, $buildLead) : int{
+        if ((!isset($buildLead['amoBillID'], $buildLead['offers'], $buildLead['price'])
+                || $buildLead['amoBillID'] === 'null') &&
+            (int)$buildLead['price'] > 0
+        ){
+            $billDB = array(
+                'offers'    => $buildLead['offers'],
+                'billStatus'    => 0,
+                'status'    =>  'Создан',
+                'account'   => array(
+                    "entity_type" => "contacts",
+                    "entity_id"=> $buildLead['amoContactID'],
+                )
+            );
+            $PresendBill = new BillPresendController();
+            $AmoBillID = $PresendBill->getAmoID($client, $billDB);
+
+            $leadLinks = LeadLinksPrepareController::prepare($buildLead, $buildLead['amoContactID']);
+            $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
+            LeadLinksRequestController::create($client, $leadLinks);
+            return $AmoBillID;
+        }
+        return $buildLead['amoBillID'];
+    }
+
+    /**
+     * @param $client
+     * @param $buildLead
+     * @param $buildContact
+     * @return int
+     */
+    private function getContactAmoID($client, $buildLead, $buildContact) : int{
+        if (!isset($buildLead['amoContactID']) || $buildLead['amoContactID'] === 'null'){
+            return (new ContactsPresendController())->getAmoID($client, $buildContact);
+        }
+        return $buildLead['amoContactID'];
     }
 
     private function checkAmo(array &$dbLead){
         $raw = amocrmIDs::all()->where('leadDBId', '=', $dbLead['leadDBId'])?->first();
         if ($raw){
             $rawArray = $raw->toArray();
-            if ($raw['amoContactID']){
-                $dbLead['amoContactID'] = $rawArray['amoContactID'];
-            }
-            if ($raw['amoLeadID']){
-                $dbLead['amoLeadID'] = $rawArray['amoLeadID'];
-            }
-            if ($raw['amoBillID']){
-                $dbLead['amoBillID'] = $rawArray['amoBillID'];
+            $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID'];
+
+            foreach ($keysToCopy as $key) {
+                if (isset($raw[$key])) {
+                    $dbLead[$key] = $rawArray[$key];
+                }
             }
         }
         return $dbLead;

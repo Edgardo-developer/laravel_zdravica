@@ -103,16 +103,9 @@ class RequestController extends Controller
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 if ($result && $result['_embedded']){
                     return $result['_embedded']['leads'][0]['id'];
-//                    $leadRaw->amoLeadID = $result['_embedded']['leads'][0]['id'];
-//                    $leadRaw->save();
                 }
             }
-//            $client->sendAsync($request)->then(
-//                static function($output) use ($leadRaw){
-//                 self::handleSuccess($output, $leadRaw);
-//                })->wait(false);
         }catch(RequestException $e){
-            dd($e->getMessage());
             if($e->getCode() === 401){
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
