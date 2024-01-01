@@ -44,12 +44,17 @@ class BulkLead extends Command
                     $leadID = (int)$amoLeadID;
                     $billID = amocrmIDs::all()->where('amoLeadID', '=', $amoLeadID)->first()->amoBillID;
 
-                    if ($leadID > 0){
+                    if ($leadID > 0) {
                         $leadArray[] = $finish ?
-                            $sendDealToAmoCRM->closeLead($leadID) : $sendDealToAmoCRM->finishLead($leadID);
-                        $billArray[] = $finish ?
-                            BillBuilderController::closeBill($billID) : BillBuilderController::finishBill($billID);
+                            $sendDealToAmoCRM->closeLead($leadID) :
+                            $sendDealToAmoCRM->finishLead($leadID);
                     }
+                    if ($billID > 0){
+                        $billArray[] = $finish ?
+                            BillBuilderController::closeBill($billID) :
+                            BillBuilderController::finishBill($billID);
+                    }
+
                 }
             }
             if (count($leadArray[0]) > 0){
