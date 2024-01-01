@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Bill\BillPresendController;
 use App\Http\Controllers\Contacts\ContactsBuilderController;
 use App\Http\Controllers\Contacts\ContactsPresendController;
+use App\Http\Controllers\LeadLinks\LeadLinksPrepareController;
+use App\Http\Controllers\LeadLinks\LeadLinksRequestController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
@@ -57,6 +59,11 @@ class SendToAmoCRM extends Controller
                 );
                 $PresendBill = new BillPresendController();
                 $AmoBillID = $PresendBill->getAmoID($client, $billDB);
+
+                $leadLinks = LeadLinksPrepareController::prepare($buildLead, $contactAmoId);
+                $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
+                LeadLinksRequestController::create($client, $leadLinks);
+
                 $buildLead['amoBillID'] = $AmoBillID;
             }
 

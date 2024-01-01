@@ -15,7 +15,7 @@ class BillRequestController extends RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new \GuzzleHttp\Psr7\Request('POST', self::$URI, $headers, json_encode([$preparedData]));
-        return self::validateCreateResponse(self::handleErrors($client, $request, false));
+        return self::validateCreateResponse(self::handleErrors($client, $request, true));
     }
 
     public static function update($client, $preparedData) : void{

@@ -7,14 +7,18 @@ use GuzzleHttp\Psr7\Request;
 
 class LeadLinksRequestController extends RequestController
 {
-    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads';
+    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads/%d/links';
 
     public static function create($client, $preparedData) : string{
-        $RequestExt = self::getRequestExt();
-        $headers = $RequestExt['headers'];
-        $preparedData['status_id'] = 61034286;
-        $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
-        return self::handleErrors($client, $request, false);
+        if ($preparedData['amoLeadID']){
+            $uri = sprintf(self::$URI, $preparedData['amoLeadID']);
+            unset($preparedData['amoLeadID']);
+            $RequestExt = self::getRequestExt();
+            $headers = $RequestExt['headers'];
+            $request = new Request('POST', $uri, $headers, json_encode([$preparedData]));
+            return self::handleErrors($client, $request, true);
+        }
+        return '';
     }
 
     /**
@@ -24,17 +28,12 @@ class LeadLinksRequestController extends RequestController
      * Description: works on updating
      */
     public static function update($client, $preparedData){
+        $uri = sprintf(self::$URI, $preparedData['amoLeadID']);
+        unset($preparedData['amoLeadID']);
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('PATCH', self::$URI, $headers,
+        $request = new Request('PATCH', $uri, $headers,
         json_encode($preparedData));
-        return self::handleErrors($client, $request, true);
-    }
-
-    public static function get($client, $query){
-        $RequestExt = self::getRequestExt();
-        $headers = $RequestExt['headers'];
-        $request = new Request('GET', self::$URI.$query, $headers);
         return self::handleErrors($client, $request, true);
     }
 }
