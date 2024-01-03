@@ -39,10 +39,13 @@ class LeadPrepareController extends PrepareEntityController
                 $prepared[$fieldValue] = self::matchFields($fieldValue, $leadDB);
             }else{
                 foreach ($fieldValue as $subFieldKey => $subFieldValue){
-                    $prepared['custom_fields_values'][] = [
-                        "field_id"  =>  $subFieldKey,
-                        "values"    =>  [["value" =>  self::matchFields($subFieldValue, $leadDB)]]
-                    ];
+                    $val = self::matchFields($subFieldValue, $leadDB);
+                    if ($val && $val !== 'null'){
+                        $prepared['custom_fields_values'][] = [
+                            "field_id"  =>  $subFieldKey,
+                            "values"    =>  [["value" =>  self::matchFields($subFieldValue, $leadDB)]]
+                        ];
+                    }
                 }
             }
         }

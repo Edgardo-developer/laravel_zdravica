@@ -50,27 +50,27 @@ class create extends Command
     public function handle(SendToAmoCRM $SendToAmoCRM)
     {
         $options = [
-            'direction' => $this->option('direction'),
             'id' => $this->option('id'),
-            'specDoc' => $this->option('specDoc'),
             'patID' => $this->option('patID'),
+            'billID' => $this->option('billID'),
+            'amoManagerID' => $this->option('amoManagerID'),
+            'leadDBId' => $this->option('leadDBId'),
+            'responsible_user_id' => $this->option('responsible_user_id'),
+            'direction' => $this->option('direction'),
+            'specDoc' => $this->option('specDoc'),
             'fioDoc' => $this->option('fioDoc'),
-            'declareVisit' => $this->option('declareVisit'),
             'filial' => $this->option('filial'),
             'date' => $this->option('date'),
-            'billID' => $this->option('billID'),
             'billSum' => $this->option('billSum'),
             'offers' => $this->option('offers'),
             'managerName' => $this->option('managerName'),
-            'amoManagerID' => $this->option('amoManagerID'),
-            'leadDBId' => $this->option('leadDBId'),
             //'amoLeadID' => $this->option('amoLeadID'),
             'updated_at' => $this->option('updated_at'),
             'created_at' => $this->option('created_at'),
             //'amoContactID' => $this->option('amoContactID'),
             'responsibleFIO' => $this->option('responsibleFIO'),
-            'responsible_user_id' => $this->option('responsible_user_id'),
             'declareCall' => $this->option('declareCall'),
+            'declareVisit' => $this->option('declareVisit'),
         ];
         if ($options){
             $SendToAmoCRM->sendDealToAmoCRM($options);

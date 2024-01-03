@@ -26,7 +26,7 @@ class AmoCRMLeadFactory extends Factory
             'offers'    => 'Общий анализ крови',
             'managerName'   => fake()->name,
             'amoManagerID'  => fake()->numberBetween(1000, 19990),
-            'declareVisit'  => fake()->boolean,
+            'declareCall'  => fake()->boolean,
             'filial'    => fake()->address,
             'date'  => fake()->date,
             'created_at'    => time(),

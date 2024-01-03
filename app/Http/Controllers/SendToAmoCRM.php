@@ -19,12 +19,13 @@ class SendToAmoCRM extends Controller
 
     /**
      * @param $DBlead
-     * @return void Description: The main method, that manage the requests and main stack
-     * Description: The main method, that manage the requests and main stack
+     * @return void
+     * @throws \JsonException
      */
     public function sendDealToAmoCRM($DBlead) : void{
         $buildLead = $this->checkAmo($DBlead);
-        $buildContact = ContactsBuilderController::getRow((int)$buildLead['patID'], (int)$buildLead['declareCall'] === 1);
+        $buildContact = ContactsBuilderController::getRow((int)$buildLead['patID'],
+            (int)$buildLead['declareCall'] === 1);
         if ($buildLead && $buildContact){
             $buildContact['MOBIL_NYY'] = '8'.$buildContact['MOBIL_NYY'];
             $client = new Client(['verify' => false]);
@@ -35,15 +36,19 @@ class SendToAmoCRM extends Controller
 
             $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
             $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
+            $leadPrepared['pipeline_id'] = 7332486;
+            $leadPrepared['status_id'] = 6103428;
             LeadRequestController::update($client, [$leadPrepared]);
 
-            $amoData = array(
-                'amoContactID'  => $buildLead['amoContactID'] ?? NULL,
-                'amoLeadID' => $buildLead['amoLeadID'] ?? NULL,
-                'amoBillID' => $buildLead['amoBillID'] ?? NULL,
-                'amoOffers' => $buildLead['offers'] ?? NULL,
-                'leadDBId' => $buildLead['leadDBId'] ?? NULL
-            );
+            $amoData  = ['amoContactID'=>'','amoLeadID'=>'','amoBillID'=>'','offers'=>'','leadDBId'=>''];
+            foreach ($amoData as $k => &$IdsName){
+                if ($buildLead[$k] && $buildLead[$k] !== 'null'){
+                    $amoData[$k] = $buildLead[$k];
+                }else{
+                    unset($amoData[$k]);
+                }
+            }
+            unset($IdsName);
             AmocrmIDs::updateOrCreate([
                 'leadDBId' => $buildLead['leadDBId']
             ],$amoData);
@@ -80,8 +85,7 @@ class SendToAmoCRM extends Controller
         );
 
         if ((!isset($buildLead['amoBillID'], $buildLead['offers'], $buildLead['price'])
-                || $buildLead['amoBillID'] === 'null') &&
-            (int)$buildLead['price'] > 0
+                || $buildLead['amoBillID'] === 'null') && (int)$buildLead['billSum'] > 0
         ){
             $PresendBill = new BillPresendController();
             $AmoBillID = $PresendBill->getAmoID($client, $billDB);
@@ -106,45 +110,35 @@ class SendToAmoCRM extends Controller
      * @return int
      */
     private function getContactAmoID($client, $buildLead, $buildContact) : int{
-        if (!isset($buildLead['amoContactID']) || $buildLead['amoContactID'] === 'null'){
-            return (new ContactsPresendController())->getAmoID($client, $buildContact);
-        }
-        return $buildLead['amoContactID'];
+        return $buildLead['amoContactID'] ?? (new ContactsPresendController())->getAmoID($client, $buildContact);
     }
 
-    private function checkAmo(array &$dbLead){
+    private function checkAmo(array &$dbLead) : array{
         $raw = AmocrmIDs::all()->where('leadDBId', '=', $dbLead['leadDBId'])?->first();
-        if ($raw){
-            $rawArray = $raw->toArray();
-            $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID','amoOffers'];
+        $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID','amoOffers'];
+        $rawArray = $raw ? $raw->toArray() : [Null,Null,Null,Null];
 
-            foreach ($keysToCopy as $key) {
-                if (isset($raw[$key])) {
-                    $dbLead[$key] = $rawArray[$key];
-                }else{
-                    $dbLead[$key] = Null;
-                }
-            }
+        foreach ($keysToCopy as $key) {
+            $dbLead[$key] = isset($raw[$key]) ? $rawArray[$key] : Null;
         }
+        ksort($dbLead, SORT_NATURAL);
         return $dbLead;
     }
 
     public function closeLead($amoLeadID){
-        $leadArray = [
+        return [
             'id' => (integer)$amoLeadID,
             "name" => "1",
             "closed_at"=> time() + 5,
             "status_id"=> 143,
             "updated_by"=> 0
         ];
-        return $leadArray;
     }
 
     public function finishLead($amoLeadID){
-        $leadArray = [
+        return [
             'id' => (integer)$amoLeadID,
             "status_id"=> 142,
         ];
-        return $leadArray;
     }
 }

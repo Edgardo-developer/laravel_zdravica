@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
@@ -27,18 +26,21 @@ class RequestController extends Controller
     public static function delete($client, $amoID){}
 
     /**
-     * @param $refreshToken
+     * @param bool $refreshToken
      * @return array
      * Description: Method generates body and headers for request
      */
-    public static function getRequestExt($refreshToken = false){
+    public static function getRequestExt(bool $refreshToken = false){
         if (!$refreshToken){
-            $token = AmoCrmTable::all()->where('key', '=', 'access_token')->first()->toArray();
-            $headers = [
-                'Content-Type' => 'application/json',
-                'Cookie' => 'user_lang=ru',
-                'Authorization' => 'Bearer '.$token['value'],
-            ];
+            $token = AmoCrmTable::all()->where('key', '=', 'access_token')?->first();
+            if ($token){
+                $token = $token->toArray();
+                $headers = [
+                    'Content-Type' => 'application/json',
+                    'Cookie' => 'user_lang=ru',
+                    'Authorization' => $token ? 'Bearer '.$token['value'] : '',
+                ];
+            }
         }else{
             $token = AmoCrmTable::all()->where('key', '=', 'refresh_token')->first()->toArray()['value'];
             $headers = [
@@ -95,27 +97,14 @@ class RequestController extends Controller
 
     protected static function handleErrors(Client $client, $request, bool $wait){
         try {
-            if ($wait){
-                return $client->sendAsync($request)->wait();
-            }
-            $res = $client->sendAsync($request)->wait();
-            if ($res){
-                $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
-                if ($result && $result['_embedded']){
-                    return $result['_embedded']['leads'][0]['id'];
-                }
-            }
+            return $client->sendAsync($request)->wait();
         }catch(RequestException $e){
-            if($e->getCode() === 401){
+            if($e->getCode() === 401 || $e->getCode() === 400){
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
             }
-            if ($e->getCode() === 404 || $e->getCode() === 500){
-                print_r($e->getCode());
-                return null;
-            }
+            dd($e->getMessage());
         }
-        return;
     }
 
     private static function changeAndTryRequest(Client $client, \GuzzleHttp\Psr7\Request $request){

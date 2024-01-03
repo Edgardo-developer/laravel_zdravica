@@ -29,7 +29,7 @@ class ContactsPresendController extends Controller
      * Description: Get the Contact ID using the request
      */
     private function checkExists($client, $contact) : string|object{
-        $query = '?query='.$contact['NOM'].' '.$contact['EMAIL'];
+        $query = '?query='.$contact['NOM'];
         $result = ContactsRequestController::get($client, $query);
         if ($result && $result['_embedded']){
             return $result['_embedded']['contacts'][0]['id'];

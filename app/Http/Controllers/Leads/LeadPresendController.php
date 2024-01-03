@@ -10,24 +10,21 @@ class LeadPresendController extends Controller
     public function getAmoID($client, $DBLead) : string{
         $leadID = $this->checkExists($client, $DBLead);
         if (!$leadID){
-            $leadID = LeadRequestController::create($client, LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']));
+            $leadID = LeadRequestController::create($client,
+                LeadPrepareController::prepare($DBLead, $DBLead['amoContactID']));
         }
         return $leadID;
     }
 
     private function checkExists($client, $DBLead){
-        $query = '?query='.$DBLead['amoContactID'];
+        $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034282&query='.$DBLead['amoContactID'];
         $res = LeadRequestController::get($client, $query);
         if ($res && $res->getStatusCode() === 200){
             try {
                 $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
                 if (isset($result) && $result['_embedded']){
-                    $a = 0;
                     foreach ($result['_embedded']['leads'] as $lead){
-                        if ($lead['created_at'] > $a){
-                            $a = $lead['created_at'];
-                        }
-                        if (time() - $lead['created_at'] > 0 && time() - $lead['created_at'] < 120){
+                        if ((time() - $lead['created_at'] > 0 && time() - $lead['created_at'] < 180) && empty($lead['custom_fields_values'])){
                             return $lead['id'];
                         }
                     }
@@ -38,8 +35,4 @@ class LeadPresendController extends Controller
         }
         return 0;
     }
-
-//    private function createAmo($client, $contactPrepared, $leadRaw) : void{
-//        LeadRequestController::create($client, $contactPrepared, $leadRaw);
-//    }
 }

@@ -23,7 +23,7 @@ use function Amp\delay;
 
 Route::get('/', function () {
     //AmoCrmLead::factory()->create();
-    PATIENTS::factory()->create();
+    //PATIENTS::factory()->create();
 //    DB::connection()->getPdo();
     // While we create leads, we should put the logic:
     // - Create all contacts within one request and save them to each DB lead

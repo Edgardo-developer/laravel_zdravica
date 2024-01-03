@@ -14,7 +14,14 @@ class LeadRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $preparedData['status_id'] = 61034286;
         $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
-        return self::handleErrors($client, $request, false);
+        $res = self::handleErrors($client, $request, false);
+        if ($res){
+            $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
+            if ($result && $result['_embedded']){
+                return $result['_embedded']['leads'][0]['id'];
+            }
+        }
+        return 0;
     }
 
     /**
