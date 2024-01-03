@@ -37,7 +37,7 @@ class SendToAmoCRM extends Controller
             $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
             $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
             $leadPrepared['pipeline_id'] = 7332486;
-            $leadPrepared['status_id'] = 6103428;
+            $leadPrepared['status_id'] = 61034286;
             LeadRequestController::update($client, [$leadPrepared]);
 
             $amoData  = ['amoContactID'=>'','amoLeadID'=>'','amoBillID'=>'','offers'=>'','leadDBId'=>''];
