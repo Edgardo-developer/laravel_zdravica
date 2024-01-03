@@ -13,7 +13,7 @@ class BillPrepareController extends PrepareEntityController
         'custom_fields_values'  =>  [
             1550048  => "status",
             1550052  => "account",
-            1550058  => "offers",
+            1550058  => "offersData",
 //            1550056  => "bought_date",
         ],
     ];
@@ -26,15 +26,15 @@ class BillPrepareController extends PrepareEntityController
             if (isset($billDB[$amoFieldVal])){
                 $locArr = array(
                     'field_id'  => $amoFieldKey,
+                    'values'    => $amoFieldVal !== 'offersData' ?
+                        [['value' => $billDB[$amoFieldVal]]] :
+                        self::modifyOffers($billDB[$amoFieldVal])
                 );
-                if ($amoFieldVal !== 'offers'){
-                    $locArr['values']  = [['value' => $billDB[$amoFieldVal]]];
-                }else{
-                    $locArr['values'] = self::modifyOffers($billDB[$amoFieldVal]);
-                }
+
                 $arr['custom_fields_values'][]  = $locArr;
             }
         }
+
         if ($billStatus === 1){
             $arr['custom_fields_values'][] = array(
                 'field_id'  => 1550056,
@@ -48,13 +48,11 @@ class BillPrepareController extends PrepareEntityController
 
     private static function modifyOffers($offers) : array{
         $offersArr = [];
-        $offersPrices = explode(',',$offers);
-        foreach ($offersPrices as $offerPrice){
-            $offerPriceArr = explode(':',$offerPrice);
+        foreach ($offers['offerNames'] as $k => $offerPrice){
             $offersArr[] = [
                 'value' => [
-                    'description'   => $offerPriceArr[0],
-                    'unit_price'   => $offerPriceArr[1],
+                    'description'   => $offerPrice,
+                    'unit_price'   => $offers['offerPrices'][$k],
                     'quantity'   => 1,
                 ]
             ];

@@ -30,6 +30,7 @@ class SendToAmoCRM extends Controller
             $buildContact['MOBIL_NYY'] = '8'.$buildContact['MOBIL_NYY'];
             $client = new Client(['verify' => false]);
 
+            $buildLead['offersData'] = self::explodeOffers($buildLead['offers']);
             $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
             $buildLead['amoLeadID'] = $this->getLeadAmoID($client, $buildLead);
             $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead);
@@ -55,6 +56,23 @@ class SendToAmoCRM extends Controller
         }
     }
 
+    public function closeLead($amoLeadID){
+        return [
+            'id' => (integer)$amoLeadID,
+            "name" => "1",
+            "closed_at"=> time() + 5,
+            "status_id"=> 143,
+            "updated_by"=> 0
+        ];
+    }
+
+    public function finishLead($amoLeadID){
+        return [
+            'id' => (integer)$amoLeadID,
+            "status_id"=> 142,
+        ];
+    }
+
     /**
      * @param $client
      * @param $buildLead
@@ -75,7 +93,7 @@ class SendToAmoCRM extends Controller
      */
     private function getBillAmoID($client, $buildLead) : int{
         $billDB = array(
-            'offers'    => $buildLead['offers'],
+            'offers'    => $buildLead['offersData'],
             'billStatus'    => 0,
             'status'    =>  'Создан',
             'account'   => array(
@@ -83,8 +101,7 @@ class SendToAmoCRM extends Controller
                 "entity_id"=> $buildLead['amoContactID'],
             )
         );
-
-        if ((!isset($buildLead['amoBillID'], $buildLead['offers'], $buildLead['price'])
+        if ((!isset($buildLead['amoBillID'], $buildLead['offersData']['offerNames'])
                 || $buildLead['amoBillID'] === 'null') && (int)$buildLead['billSum'] > 0
         ){
             $PresendBill = new BillPresendController();
@@ -96,7 +113,8 @@ class SendToAmoCRM extends Controller
             return $AmoBillID;
         }
 
-        if($buildLead['amoOffers'] && $buildLead['offers'] !== $buildLead['amoOffers']){
+        if($buildLead['offersData'] &&
+            $buildLead['amoOffers'] !== implode(',',$buildLead['offersData']['offerNames'])){
             $PresendBill = new BillPresendController();
             $PresendBill->updateBill($client, $billDB);
         }
@@ -125,20 +143,21 @@ class SendToAmoCRM extends Controller
         return $dbLead;
     }
 
-    public function closeLead($amoLeadID){
-        return [
-            'id' => (integer)$amoLeadID,
-            "name" => "1",
-            "closed_at"=> time() + 5,
-            "status_id"=> 143,
-            "updated_by"=> 0
+    private static function explodeOffers(string $offers) : array{
+        $arr = [
+            'offerNames'    => [],
+            'offerPrices'    => [],
         ];
-    }
-
-    public function finishLead($amoLeadID){
-        return [
-            'id' => (integer)$amoLeadID,
-            "status_id"=> 142,
-        ];
+        $manyOffers = explode(',', $offers);
+        if ($manyOffers){
+            foreach ($manyOffers as $singleOffer){
+                $explodeOffer = explode(':', $singleOffer);
+                if ($explodeOffer){
+                    $arr['offerNames']  = $singleOffer;
+                    $arr['offerPrices']  = $singleOffer;
+                }
+            }
+        }
+        return $arr;
     }
 }
