@@ -7,18 +7,17 @@ use GuzzleHttp\Psr7\Request;
 
 class LeadLinksRequestController extends RequestController
 {
-    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads/%d/links';
+    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads/%d/link';
 
-    public static function create($client, $preparedData) : string{
+    public static function create($client, $preparedData) : void{
         if ($preparedData['amoLeadID']){
             $uri = sprintf(self::$URI, $preparedData['amoLeadID']);
             unset($preparedData['amoLeadID']);
             $RequestExt = self::getRequestExt();
             $headers = $RequestExt['headers'];
-            $request = new Request('POST', $uri, $headers, json_encode([$preparedData]));
-            return self::handleErrors($client, $request, true);
+            $request = new Request('POST', $uri, $headers, json_encode($preparedData));
+            self::handleErrors($client, $request, true);
         }
-        return '';
     }
 
     /**
@@ -32,7 +31,7 @@ class LeadLinksRequestController extends RequestController
         unset($preparedData['amoLeadID']);
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('PATCH', $uri, $headers,
+        $request = new Request('PATCH', $uri.'s', $headers,
         json_encode($preparedData));
         return self::handleErrors($client, $request, true);
     }

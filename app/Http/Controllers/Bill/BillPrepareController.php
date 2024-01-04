@@ -13,7 +13,8 @@ class BillPrepareController extends PrepareEntityController
         'custom_fields_values'  =>  [
             1550048  => "status",
             1550052  => "account",
-            1550058  => "offersData",
+            1550058  => "offers",
+            1550062  => "price",
 //            1550056  => "bought_date",
         ],
     ];
@@ -26,7 +27,7 @@ class BillPrepareController extends PrepareEntityController
             if (isset($billDB[$amoFieldVal])){
                 $locArr = array(
                     'field_id'  => $amoFieldKey,
-                    'values'    => $amoFieldVal !== 'offersData' ?
+                    'values'    => $amoFieldVal !== 'offers' ?
                         [['value' => $billDB[$amoFieldVal]]] :
                         self::modifyOffers($billDB[$amoFieldVal])
                 );

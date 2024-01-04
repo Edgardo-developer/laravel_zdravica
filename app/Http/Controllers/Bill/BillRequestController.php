@@ -33,10 +33,10 @@ class BillRequestController extends RequestController
             try {
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 if ($result && $result['_embedded']){
-                    return $result['elements'][0]['id'];
+                    return $result['_embedded']['elements'][0]['id'];
                 }
             }catch(\JsonException $ex){
-                Log::warning($ex);
+                dd($ex);
             }
         }
         return 0;

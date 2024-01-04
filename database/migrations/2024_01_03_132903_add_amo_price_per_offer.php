@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('amocrm_ids', function(Blueprint $table){
-            $table->string('amoOfferPrices')->nullable();
+        Schema::table('amocrm_lead', function(Blueprint $table){
+            $table->string('offerLists')->nullable();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('amocrm_ids', function(Blueprint $table){
-            $table->dropColumn('amoOfferPrices');
+        Schema::table('amocrm_lead', function(Blueprint $table){
+            $table->dropColumn('offerLists');
         });
     }
 };

@@ -30,7 +30,7 @@ class SendToAmoCRM extends Controller
             $buildContact['MOBIL_NYY'] = '8'.$buildContact['MOBIL_NYY'];
             $client = new Client(['verify' => false]);
 
-            $buildLead['offersData'] = self::explodeOffers($buildLead['offers']);
+            $buildLead['offersData'] = self::explodeOffers($buildLead['offerLists']);
             $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
             $buildLead['amoLeadID'] = $this->getLeadAmoID($client, $buildLead);
             $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead);
@@ -94,6 +94,7 @@ class SendToAmoCRM extends Controller
     private function getBillAmoID($client, $buildLead) : int{
         $billDB = array(
             'offers'    => $buildLead['offersData'],
+            'price'    => $buildLead['billSum'],
             'billStatus'    => 0,
             'status'    =>  'Создан',
             'account'   => array(
@@ -101,20 +102,18 @@ class SendToAmoCRM extends Controller
                 "entity_id"=> $buildLead['amoContactID'],
             )
         );
-        if ((!isset($buildLead['amoBillID'], $buildLead['offersData']['offerNames'])
-                || $buildLead['amoBillID'] === 'null') && (int)$buildLead['billSum'] > 0
-        ){
+        if ($buildLead['amoBillID'] === null && count($buildLead['offersData']['offerNames']) > 0){
             $PresendBill = new BillPresendController();
             $AmoBillID = $PresendBill->getAmoID($client, $billDB);
-
-            $leadLinks = LeadLinksPrepareController::prepare($buildLead, $buildLead['amoContactID']);
+            $leadLinks = LeadLinksPrepareController::prepare($buildLead, $AmoBillID);
             $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
             LeadLinksRequestController::create($client, $leadLinks);
             return $AmoBillID;
         }
 
-        if($buildLead['offersData'] &&
-            $buildLead['amoOffers'] !== implode(',',$buildLead['offersData']['offerNames'])){
+
+        if($buildLead['offersData'] && $buildLead['offersData']['offerNames'] &&
+            $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null){
             $PresendBill = new BillPresendController();
             $PresendBill->updateBill($client, $billDB);
         }
@@ -153,8 +152,8 @@ class SendToAmoCRM extends Controller
             foreach ($manyOffers as $singleOffer){
                 $explodeOffer = explode(':', $singleOffer);
                 if ($explodeOffer){
-                    $arr['offerNames']  = $singleOffer;
-                    $arr['offerPrices']  = $singleOffer;
+                    $arr['offerNames'][]  = $explodeOffer[0];
+                    $arr['offerPrices'][]  = $explodeOffer[1];
                 }
             }
         }

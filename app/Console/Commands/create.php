@@ -28,6 +28,7 @@ class create extends Command
     {--billID=null}
     {--billSum=null}
     {--offers=null}
+    {--offerLists=null}
     {--managerName=null}
     {--amoManagerID=null}
     {--leadDBId=null}
@@ -63,6 +64,7 @@ class create extends Command
             'date' => $this->option('date'),
             'billSum' => $this->option('billSum'),
             'offers' => $this->option('offers'),
+            'offerLists' => $this->option('offerLists'),
             'managerName' => $this->option('managerName'),
             //'amoLeadID' => $this->option('amoLeadID'),
             'updated_at' => $this->option('updated_at'),

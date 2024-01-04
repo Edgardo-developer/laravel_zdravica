@@ -25,15 +25,14 @@ class LeadLinksPrepareController extends PrepareEntityController
 
     /**
      * @param array $leadDB
-     * @param int $contactId
+     * @param int $AmoBillID
      * @return array
      * Description: prepares the array of the lead
      */
-    public static function prepare(array $leadDB, int $contactId) : array{
-        $prepared = ["_embedded" => [
-            "links" => [
+    public static function prepare(array $leadDB, int $AmoBillID) : array{
+        return [
             [
-                "to_entity_id"=> $leadDB['amoBillID'],
+                "to_entity_id"=> $AmoBillID,
                 "to_entity_type"=> "catalog_elements",
                 "metadata"=> [
                 "quantity"=> 1.0,
@@ -41,15 +40,10 @@ class LeadLinksPrepareController extends PrepareEntityController
                 ]
             ],
             [
-                "to_entity_id" => 18717947,
+                "to_entity_id" => $leadDB['amoContactID'],
                 "to_entity_type"=> "contacts",
-                "metadata"=> [
-                    "main_contact"=> true
-                ]
             ]
-        ]
-        ]];
-        return $prepared;
+        ];
     }
 
     /**

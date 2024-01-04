@@ -99,7 +99,7 @@ class RequestController extends Controller
         try {
             return $client->sendAsync($request)->wait();
         }catch(RequestException $e){
-            if($e->getCode() === 401 || $e->getCode() === 400){
+            if($e->getCode() === 401){
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
             }

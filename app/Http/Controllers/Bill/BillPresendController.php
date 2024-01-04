@@ -10,7 +10,8 @@ class BillPresendController extends Controller
      * @throws \JsonException
      */
     public function getAmoID($client, $billDB) : string{
-        return BillRequestController::create($client, BillPrepareController::prepare($billDB, $billDB['billStatus']));
+        $preparedData = BillPrepareController::prepare($billDB, $billDB['billStatus']);
+        return BillRequestController::create($client, $preparedData);
     }
 
     public function updateBill($client, $billDB) : void{
