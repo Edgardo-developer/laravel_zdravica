@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Bill\BillBuilderController;
 use App\Http\Controllers\Bill\BillRequestController;
+use App\Http\Controllers\Leads\LeadBuilderController;
 use App\Http\Controllers\Leads\LeadRequestController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\amocrmIDs;
@@ -46,13 +47,11 @@ class BulkLead extends Command
 
                     if ($leadID > 0) {
                         $leadArray[] = $finish ?
-                            $sendDealToAmoCRM->closeLead($leadID) :
-                            $sendDealToAmoCRM->finishLead($leadID);
+                            LeadBuilderController::closeLead($leadID) :
+                            LeadBuilderController::finishLead($leadID);
                     }
-                    if ($billID > 0){
-                        $billArray[] = $finish ?
-                            BillBuilderController::closeBill($billID) :
-                            BillBuilderController::finishBill($billID);
+                    if ($billID > 0 && $finish){
+                        $billArray[] = BillBuilderController::finishBill($billID);
                     }
 
                 }
@@ -60,7 +59,9 @@ class BulkLead extends Command
             if (count($leadArray[0]) > 0){
                 $client = new Client(['verify' => false]);
                 LeadRequestController::update($client, $leadArray);
-                BillRequestController::update($client, $billArray);
+                if (count($billArray[0]) > 0){
+                    BillRequestController::update($client, $billArray);
+                }
             }
         }
     }

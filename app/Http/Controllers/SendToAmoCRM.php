@@ -30,10 +30,13 @@ class SendToAmoCRM extends Controller
             $buildContact['MOBIL_NYY'] = '8'.$buildContact['MOBIL_NYY'];
             $client = new Client(['verify' => false]);
 
-            $buildLead['offersData'] = self::explodeOffers($buildLead['offerLists']);
             $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
             $buildLead['amoLeadID'] = $this->getLeadAmoID($client, $buildLead);
-            $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead);
+
+            if ($buildLead['offerLists'] !== 'null' && $buildLead['offerLists'] !== ''){
+                $buildLead['offersData'] = self::explodeOffers($buildLead['offerLists']);
+                $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead);
+            }
 
             $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
             $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
@@ -54,23 +57,6 @@ class SendToAmoCRM extends Controller
                 'leadDBId' => $buildLead['leadDBId']
             ],$amoData);
         }
-    }
-
-    public function closeLead($amoLeadID){
-        return [
-            'id' => (integer)$amoLeadID,
-            "name" => "1",
-            "closed_at"=> time() + 5,
-            "status_id"=> 143,
-            "updated_by"=> 0
-        ];
-    }
-
-    public function finishLead($amoLeadID){
-        return [
-            'id' => (integer)$amoLeadID,
-            "status_id"=> 142,
-        ];
     }
 
     /**
@@ -148,7 +134,7 @@ class SendToAmoCRM extends Controller
             'offerPrices'    => [],
         ];
         $manyOffers = explode(',', $offers);
-        if ($manyOffers){
+        if (count($manyOffers) > 0){
             foreach ($manyOffers as $singleOffer){
                 $explodeOffer = explode(':', $singleOffer);
                 if ($explodeOffer){
