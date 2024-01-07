@@ -101,11 +101,12 @@ class ContactsPrepareController extends PrepareEntityController
         };
     }
 
-    private static function checkPol($lastName, $father) : string{
-        if (
-            !in_array(substr($lastName, -2), ['я', 'а'])
+    private static function checkPol($lastName, $fatherName) : string{
+        $lastLetters = ['а','я'];
+        if(
+            !in_array(substr($lastName, -2), $lastLetters)
             &&
-            !in_array(substr($father, -2), ['я', 'а'])
+            !in_array(substr($fatherName, -2), $lastLetters)
         ){
             return 'Мужской';
         }
