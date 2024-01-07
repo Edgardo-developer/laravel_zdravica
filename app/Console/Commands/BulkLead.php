@@ -58,10 +58,10 @@ class BulkLead extends Command
             }
             if (count($leadArray[0]) > 0){
                 $client = new Client(['verify' => false]);
-                LeadRequestController::update($client, $leadArray);
                 if (count($billArray[0]) > 0){
                     BillRequestController::update($client, $billArray);
                 }
+                LeadRequestController::update($client, $leadArray);
             }
         }
     }
