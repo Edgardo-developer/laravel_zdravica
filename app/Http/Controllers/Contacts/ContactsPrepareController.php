@@ -60,9 +60,12 @@ class ContactsPrepareController extends PrepareEntityController
                         ($contactID && in_array($customFieldsValue, self::$secondRound, false))){
                         $val = self::matchFields($customFieldsValue, $contactDB);
                         if ($val && $val !== 'null'){
+                            if ($contactID === 0 && $mergedContactField === 'mobile'){
+                                $val = '8'.$val;
+                            }
                             $prepared['custom_fields_values'][] = [
                                 'field_id'  =>  $customFieldsKey,
-                                'values'    =>  [['value'=> self::matchFields($customFieldsValue, $contactDB)]],
+                                'values'    =>  [['value'=> $val]],
                             ];
                         }
                     }

@@ -27,7 +27,7 @@ class SendToAmoCRM extends Controller
         $buildContact = ContactsBuilderController::getRow((int)$buildLead['patID'],
             (int)$buildLead['declareCall'] === 1);
         if ($buildLead && $buildContact){
-            $buildContact['MOBIL_NYY'] = '8'.$buildContact['MOBIL_NYY'];
+//            $buildContact['MOBIL_NYY'] = '8'.$buildContact['MOBIL_NYY'];
             $client = new Client(['verify' => false]);
 
             $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
