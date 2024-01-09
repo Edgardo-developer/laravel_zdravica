@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Controllers\Bill\BillPresendController;
+use App\Http\Controllers\Bill\ProductPresendController;
 use App\Http\Controllers\Contacts\ContactsBuilderController;
 use App\Http\Controllers\Contacts\ContactsPresendController;
 use App\Http\Controllers\LeadLinks\LeadLinksPrepareController;
@@ -89,7 +89,7 @@ class SendToAmoCRM extends Controller
             )
         );
         if ($buildLead['amoBillID'] === null && count($buildLead['offersData']['offerNames']) > 0){
-            $PresendBill = new BillPresendController();
+            $PresendBill = new ProductPresendController();
             $AmoBillID = $PresendBill->getAmoID($client, $billDB);
             $leadLinks = LeadLinksPrepareController::prepare($buildLead, $AmoBillID);
             $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
@@ -100,7 +100,7 @@ class SendToAmoCRM extends Controller
 
         if($buildLead['offersData'] && $buildLead['offersData']['offerNames'] &&
             $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null){
-            $PresendBill = new BillPresendController();
+            $PresendBill = new ProductPresendController();
             $PresendBill->updateBill($client, $billDB);
         }
         return $buildLead['amoBillID'] ?? 0;
