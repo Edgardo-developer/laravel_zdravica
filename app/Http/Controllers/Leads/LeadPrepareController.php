@@ -6,20 +6,18 @@ use App\Http\Controllers\PrepareEntityController;
 
 class LeadPrepareController extends PrepareEntityController
 {
-    // fields of the lead in the AmoCRM
     private static array $amoFields = [
         'name',
         'price',
         'responsible_user_id',
         'custom_fields_values'  =>  [
-            454373  => "direction",
-            454375  => "filial",
-            454379  => "fioDoc",
-            454381  => "offers",
-            454377  => "specDoc",
-            1581797  => "date",
-//            1571885 => "declareVisit",
-            1572983 => "responsibleFIO",
+            "direction"  => 454373,
+            "filial" => 454375,
+            "fioDoc"  => 454379,
+            "offers"  => 454381,
+            "specDoc"  => 454377,
+            "date"  => 1581797,
+            "responsibleFIO" => 1572983,
         ],
     ];
 
@@ -32,18 +30,18 @@ class LeadPrepareController extends PrepareEntityController
     public static function prepare(array $leadDB, int $contactId) : array{
         $prepared = ['_embedded' =>  ['contacts'  => [['id'    => $contactId]]]];
         foreach (self::$amoFields as $fieldValue){
-            if ('responsible_user_id' === $fieldValue){
+            if ($fieldValue === 'responsible_user_id'){
                 continue;
             }
             if (is_string($fieldValue)){
                 $prepared[$fieldValue] = self::matchFields($fieldValue, $leadDB);
             }else{
-                foreach ($fieldValue as $subFieldKey => $subFieldValue){
-                    $val = self::matchFields($subFieldValue, $leadDB);
+                foreach ($fieldValue as $subFieldName => $subFieldID){
+                    $val = self::matchFields($subFieldName, $leadDB);
                     if ($val && $val !== 'null'){
                         $prepared['custom_fields_values'][] = [
-                            "field_id"  =>  $subFieldKey,
-                            "values"    =>  [["value" =>  self::matchFields($subFieldValue, $leadDB)]]
+                            "field_id"  =>  $subFieldID,
+                            "values"    =>  [["value" =>  self::matchFields($subFieldName, $leadDB)]]
                         ];
                     }
                 }

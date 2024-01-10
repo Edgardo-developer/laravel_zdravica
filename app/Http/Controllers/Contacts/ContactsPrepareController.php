@@ -8,25 +8,24 @@ use App\Http\Controllers\PrepareEntityController;
 
 class ContactsPrepareController extends PrepareEntityController
 {
-    // fields of Contact in the AmoCRM
     private static array $amoFields = [
         'name',
         'first_name',
         'last_name',
         'custom_fields_values'  => [
-            170783 => 'mobile',
-            170785 => 'email',
-            391181 => 'FIO',
-            391183 => 'Birthday',
-            391185 => 'POL',
-            1573507 => 'GOROD',
-            1573509 => 'RAYON_VYBORKA',
-            1573511 => 'ULICA',
-            1573513 => 'DOM',
-            1573515 => 'KVARTIRA',
-            1573517 => 'NUMBER',
-            1573519 => 'Doverenni',
-            170781 => 'Doljnost',
+            'mobile' => 170783,
+            'email' => 170785,
+            'FIO' => 391181,
+            'Birthday' => 391183,
+            'POL' => 391185,
+            'GOROD' => 1573507,
+            'RAYON_VYBORKA' => 1573509,
+            'ULICA' => 1573511,
+            'DOM' => 1573513,
+            'KVARTIRA' => 1573515,
+            'NUMBER' => 1573517,
+            'Doverenni' => 1573519,
+            'Doljnost' => 170781,
         ]
     ];
 
@@ -54,17 +53,17 @@ class ContactsPrepareController extends PrepareEntityController
                     $prepared[$mergedContactField] = self::matchFields($mergedContactField, $contactDB);
                 }
             }else{
-                foreach ($mergedContactField as $customFieldsKey => $customFieldsValue){
-                    if ((!$contactID && !in_array($customFieldsValue, self::$secondRound))
+                foreach ($mergedContactField as $customFieldsName => $customFieldsID){
+                    if ((!$contactID && !in_array($customFieldsName, self::$secondRound))
                         ||
-                        ($contactID && in_array($customFieldsValue, self::$secondRound))){
-                        $val = self::matchFields($customFieldsValue, $contactDB);
+                        ($contactID && in_array($customFieldsName, self::$secondRound))){
+                        $val = self::matchFields($customFieldsName, $contactDB);
                         if ($val && $val !== 'null'){
                             if ($contactID === 0 && $mergedContactField === 'mobile'){
                                 $val = '8'.$val;
                             }
                             $prepared['custom_fields_values'][] = [
-                                'field_id'  =>  $customFieldsKey,
+                                'field_id'  =>  $customFieldsID,
                                 'values'    =>  [['value'=> $val]],
                             ];
                         }
