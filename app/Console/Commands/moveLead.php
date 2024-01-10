@@ -6,7 +6,7 @@ use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmTable;
 use Illuminate\Console\Command;
 
-class create extends Command
+class moveLead extends Command
 {
     /**
      * The name and signature of the console command.

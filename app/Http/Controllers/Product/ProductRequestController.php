@@ -11,7 +11,7 @@ class ProductRequestController extends RequestController
 {
     private static $URI = 'https://zdravitsa.amocrm.ru/api/v4/catalogs/12352/elements';
 
-    public static function create($client, $preparedData) : string{
+    public static function create($client, $preparedData) : array{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new \GuzzleHttp\Psr7\Request('POST', self::$URI, $headers, json_encode([$preparedData]));
@@ -21,8 +21,8 @@ class ProductRequestController extends RequestController
     public static function update($client, $preparedData) : void{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $amoBillID = $preparedData['amoBillID'];
-        unset($preparedData['amoBillID']);
+        $amoBillID = $preparedData['amoID'];
+        unset($preparedData['amoID']);
         $request = new \GuzzleHttp\Psr7\Request('POST', self::$URI.'/'.$amoBillID, $headers,
             json_encode([$preparedData]));
         self::handleErrors($client, $request, true);

@@ -9,14 +9,14 @@ use App\Models\OffersDB;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
-class bulkMoveProducts extends Command
+class BulkProducts extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:bulk-move-products';
+    protected $signature = 'laradeal:bulkProducts';
 
     /**
      * The console command description.

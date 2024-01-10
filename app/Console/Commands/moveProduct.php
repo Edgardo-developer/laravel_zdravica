@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Product\ProductPrepareController;
+use App\Http\Controllers\Product\ProductRequestController;
+use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
 class moveProduct extends Command
@@ -11,10 +14,10 @@ class moveProduct extends Command
      *
      * @var string
      */
-    protected $signature = 'laradeal:move-product
-    {--update=false}
+    protected $signature = 'laradeal:moveProduct
+    {--update=true}
     {--name=null}
-    {--amocrmID=null}
+    {--amoID=null}
     ';
 
     /**
@@ -29,6 +32,21 @@ class moveProduct extends Command
      */
     public function handle()
     {
-        //
+        if ($this->option('name') !== 'null'){
+            $client = new Client();
+            $prepared = ProductPrepareController::prepare([
+                'name'=> $this->option('name')
+            ], 1);
+
+            if ($this->option('update')){
+                $prepared['amoID'] = $this->option('amoID');
+                ProductRequestController::update($client, $prepared);
+            }else{
+                $amoID = ProductRequestController::create($client, $prepared);
+                if ($amoID){
+                    echo $amoID[0];
+                }
+            }
+        }
     }
 }

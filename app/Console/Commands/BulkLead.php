@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Bill\BillBuilderController;
-use App\Http\Controllers\Bill\ProductRequestController;
+use App\Http\Controllers\Bill\BillRequestController;
 use App\Http\Controllers\Leads\LeadBuilderController;
 use App\Http\Controllers\Leads\LeadRequestController;
 use App\Http\Controllers\SendToAmoCRM;
@@ -59,7 +59,7 @@ class BulkLead extends Command
             if (count($leadArray[0]) > 0){
                 $client = new Client(['verify' => false]);
                 if (count($billArray[0]) > 0){
-                    ProductRequestController::update($client, $billArray);
+                    BillRequestController::update($client, $billArray);
                 }
                 LeadRequestController::update($client, $leadArray);
             }
