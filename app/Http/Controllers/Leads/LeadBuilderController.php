@@ -21,10 +21,10 @@ class LeadBuilderController extends BuilderEntityController
     {
         return [
             'id' => (int)$amoLeadID,
-            "name" => "1",
-            "closed_at" => time() + 5,
-            "status_id" => 143,
-            "updated_by" => 0
+            'name' => '1',
+            'closed_at' => time() + 5,
+            'status_id' => 143,
+            'updated_by' => 0
         ];
     }
 
@@ -32,7 +32,7 @@ class LeadBuilderController extends BuilderEntityController
     {
         return [
             'id' => (int)$amoLeadID,
-            "status_id" => 142,
+            'status_id' => 142,
         ];
     }
 }

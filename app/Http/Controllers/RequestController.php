@@ -12,10 +12,10 @@ use JsonException;
 class RequestController extends Controller
 {
     private static string $URI;
-    private static string $client_id = "11f19f5a-df91-4ce9-86d8-0852a9eafd90";
-    private static string $client_secret = "IiTg2zPLLSfQfVlBc9edoN8Qn0WMJTQ0oT11S67Vx7gKFrhFCC2dvoVXvGcIgXch";
-    private static string $grant_type = "authorization_code";
-    private static string $redirect = "https://good-offer.ru/";
+    private static string $client_id = '11f19f5a-df91-4ce9-86d8-0852a9eafd90';
+    private static string $client_secret = 'IiTg2zPLLSfQfVlBc9edoN8Qn0WMJTQ0oT11S67Vx7gKFrhFCC2dvoVXvGcIgXch';
+    private static string $grant_type = 'authorization_code';
+    private static string $redirect = 'https://good-offer.ru/';
 
     public static function update($client, $preparedData)
     {
@@ -100,11 +100,11 @@ class RequestController extends Controller
         }
 
         $body = [
-            "client_id" => self::$client_id,
-            "client_secret" => self::$client_secret,
-            "grant_type" => self::$grant_type,
-            "code" => $token,
-            "redirect_uri" => self::$redirect,
+            'client_id' => self::$client_id,
+            'client_secret' => self::$client_secret,
+            'grant_type' => self::$grant_type,
+            'code' => $token,
+            'redirect_uri' => self::$redirect,
         ];
 
         return [

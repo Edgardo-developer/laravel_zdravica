@@ -8,38 +8,38 @@ class BillPrepareController extends PrepareEntityController
 {
     private static array $amoFields = [
         'custom_fields_values' => [
-            "status" => 1550048,
-            "account" => 1550052,
-            "offers" => 1550058,
-            "price" => 1550062,
+            'status' => 1550048,
+            'account' => 1550052,
+            'offers' => 1550058,
+            'price' => 1550062,
         ],
     ];
 
     public static function prepare(array $billDB, int $billStatus): array
     {
         $arr = [
-            'custom_fields_values' => array(),
+            'custom_fields_values' => [],
         ];
         foreach (self::$amoFields['custom_fields_values'] as $amoFieldName => $amoFieldID) {
             if (isset($billDB[$amoFieldName])) {
-                $locArr = array(
+                $locArr = [
                     'field_id' => $amoFieldID,
                     'values' => $amoFieldName !== 'offers' ?
                         [['value' => $billDB[$amoFieldName]]] :
                         self::modifyOffers($billDB[$amoFieldName])
-                );
+                ];
 
                 $arr['custom_fields_values'][] = $locArr;
             }
         }
 
         if ($billStatus === 1) {
-            $arr['custom_fields_values'][] = array(
+            $arr['custom_fields_values'][] = [
                 'field_id' => 1550056,
                 'values' => [
                     'value' => time(),
                 ]
-            );
+            ];
         }
         return $arr;
     }

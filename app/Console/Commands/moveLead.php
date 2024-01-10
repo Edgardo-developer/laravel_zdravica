@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\SendToAmoCRM;
-use App\Models\AmoCrmTable;
 use Illuminate\Console\Command;
 
 class moveLead extends Command
@@ -74,7 +73,7 @@ class moveLead extends Command
             'declareCall' => $this->option('declareCall'),
             'declareVisit' => $this->option('declareVisit'),
         ];
-        if ($options){
+        if ($options) {
             $SendToAmoCRM->sendDealToAmoCRM($options);
         }
     }

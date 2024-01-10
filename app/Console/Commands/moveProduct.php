@@ -32,18 +32,18 @@ class moveProduct extends Command
      */
     public function handle()
     {
-        if ($this->option('name') !== 'null'){
+        if ($this->option('name') !== 'null') {
             $client = new Client();
             $prepared = ProductPrepareController::prepare([
-                'name'=> $this->option('name')
+                'name' => $this->option('name')
             ], 1);
 
-            if ($this->option('update')){
+            if ($this->option('update')) {
                 $prepared['amoID'] = $this->option('amoID');
                 ProductRequestController::update($client, $prepared);
-            }else{
+            } else {
                 $amoID = ProductRequestController::create($client, $prepared);
-                if ($amoID){
+                if ($amoID) {
                     echo $amoID[0];
                 }
             }

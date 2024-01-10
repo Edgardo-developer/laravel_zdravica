@@ -7,7 +7,6 @@ use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class updateContact extends Command
 {
@@ -47,14 +46,14 @@ class updateContact extends Command
             'KVARTIRA' => $this->option('KVARTIRA') ?? '',
             'Doverenni' => $this->option('DOVERENNI') ?? '',
         ];
-        if ($options['id']){
+        if ($options['id']) {
             $amoID = $options['id'];
-            $arr = ['Д','Ш','КМ','ДК','ГР','Т','О'];
-            if ($options['NUMBER'] && (int)$options['NUMBER'] < 7){
+            $arr = ['Д', 'Ш', 'КМ', 'ДК', 'ГР', 'Т', 'О'];
+            if ($options['NUMBER'] && (int)$options['NUMBER'] < 7) {
                 $options['NUMBER'] = $arr[(int)$options['NUMBER']];
             }
             $prepared = ContactsPrepareController::prepare($options, 1);
-            if ($prepared){
+            if ($prepared) {
                 $prepared['amoID'] = $amoID;
                 $client = new Client(['verify' => false]);
                 ContactsRequestController::update($client, $prepared);

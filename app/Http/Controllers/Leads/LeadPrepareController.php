@@ -11,13 +11,13 @@ class LeadPrepareController extends PrepareEntityController
         'price',
         'responsible_user_id',
         'custom_fields_values' => [
-            "direction" => 454373,
-            "filial" => 454375,
-            "fioDoc" => 454379,
-            "offers" => 454381,
-            "specDoc" => 454377,
-            "date" => 1581797,
-            "responsibleFIO" => 1572983,
+            'direction' => 454373,
+            'filial' => 454375,
+            'fioDoc' => 454379,
+            'offers' => 454381,
+            'specDoc' => 454377,
+            'date' => 1581797,
+            'responsibleFIO' => 1572983,
         ],
     ];
 
@@ -41,8 +41,8 @@ class LeadPrepareController extends PrepareEntityController
                     $val = self::matchFields($subFieldName, $leadDB);
                     if ($val && $val !== 'null') {
                         $prepared['custom_fields_values'][] = [
-                            "field_id" => $subFieldID,
-                            "values" => [["value" => self::matchFields($subFieldName, $leadDB)]]
+                            'field_id' => $subFieldID,
+                            'values' => [['value' => self::matchFields($subFieldName, $leadDB)]]
                         ];
                     }
                 }
@@ -62,15 +62,15 @@ class LeadPrepareController extends PrepareEntityController
         return match ($mergedLeadFields) {
             'name' => $leadDB['leadDBId'],
             'price' => (int)$leadDB['billSum'],
-            "direction" => $leadDB['direction'],
-            "filial" => $leadDB['filial'],
-            "fioDoc" => $leadDB['fioDoc'],
-            "offers" => $leadDB['offers'],
-            "specDoc" => $leadDB['specDoc'],
-            "responsible_user_id" => $leadDB['responsible_user_id'] === "NULL" ? 10182090 : $leadDB['responsible_user_id'],
-            "date" => strtotime($leadDB['date']),
-            "responsibleFIO" => $leadDB['responsibleFIO'],
-            "declareVisit" => (int)$leadDB['declareVisit'] === 1,
+            'direction' => $leadDB['direction'],
+            'filial' => $leadDB['filial'],
+            'fioDoc' => $leadDB['fioDoc'],
+            'offers' => $leadDB['offers'],
+            'specDoc' => $leadDB['specDoc'],
+            'responsible_user_id' => $leadDB['responsible_user_id'] === 'NULL' ? 10182090 : $leadDB['responsible_user_id'],
+            'date' => strtotime($leadDB['date']),
+            'responsibleFIO' => $leadDB['responsibleFIO'],
+            'declareVisit' => (int)$leadDB['declareVisit'] === 1,
         };
     }
 }

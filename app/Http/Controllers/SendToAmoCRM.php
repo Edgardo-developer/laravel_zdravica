@@ -64,6 +64,10 @@ class SendToAmoCRM extends Controller
         }
     }
 
+    /**
+     * @param array $dbLead
+     * @return array
+     */
     private function checkAmo(array &$dbLead): array
     {
         $raw = AmocrmIDs::all()->where('leadDBId', '=', $dbLead['leadDBId'])?->first();
@@ -101,6 +105,10 @@ class SendToAmoCRM extends Controller
         return $buildLead['amoLeadID'];
     }
 
+    /**
+     * @param string $offers
+     * @return array|array[]
+     */
     private static function explodeOffers(string $offers): array
     {
         $arr = [
@@ -127,16 +135,16 @@ class SendToAmoCRM extends Controller
      */
     private function getBillAmoID($client, $buildLead): int
     {
-        $billDB = array(
+        $billDB = [
             'offers' => $buildLead['offersData'],
             'price' => $buildLead['billSum'],
             'billStatus' => 0,
             'status' => 'Создан',
-            'account' => array(
-                "entity_type" => "contacts",
-                "entity_id" => $buildLead['amoContactID'],
-            )
-        );
+            'account' => [
+                'entity_type' => 'contacts',
+                'entity_id' => $buildLead['amoContactID'],
+            ]
+        ];
         if ($buildLead['amoBillID'] === null && count($buildLead['offersData']['offerNames']) > 0) {
             $PresendBill = new BillPresendController();
             $AmoBillID = $PresendBill->getAmoID($client, $billDB);
@@ -155,6 +163,11 @@ class SendToAmoCRM extends Controller
         return $buildLead['amoBillID'] ?? 0;
     }
 
+    /**
+     * @param $client
+     * @param $buildLead
+     * @return void
+     */
     private function setProducts($client, $buildLead)
     {
         $ProductPresend = new ProductPresendController();

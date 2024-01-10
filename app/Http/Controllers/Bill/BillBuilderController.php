@@ -8,18 +8,18 @@ class BillBuilderController extends BuilderEntityController
 {
     public static function finishBill($billID): array
     {
-        return array(
+        return [
             'id' => $billID,
             'custom_fields_values' => [
                 [
-                    "field_id" => 1550048,
-                    "values" => [
+                    'field_id' => 1550048,
+                    'values' => [
                         [
-                            "value" => 'Оплачен',
+                            'value' => 'Оплачен',
                         ]
                     ]
                 ]
             ],
-        );
+        ];
     }
 }

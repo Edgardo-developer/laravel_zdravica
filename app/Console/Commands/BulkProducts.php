@@ -30,19 +30,19 @@ class BulkProducts extends Command
      */
     public function handle()
     {
-        $offers = OffersDB::all(['name','id'])->toArray();
+        $offers = OffersDB::all(['name', 'id'])->toArray();
         $offersChunks = array_chunk($offers, 40);
-        $client = new Client(['verify'=>false]);
+        $client = new Client(['verify' => false]);
 
-        foreach ($offersChunks as $offersChunk){
+        foreach ($offersChunks as $offersChunk) {
             $products = ProductPrepareController::prepare($offersChunk, 1);
             $proids = ProductRequestController::create($client, $products);
             $amoProduct = [];
-            foreach ($offersChunk as $k => $product){
+            foreach ($offersChunk as $k => $product) {
                 $amoProduct[] = [
-                    'name'  => $product['name'],
-                    'DBId'  => $product['id'],
-                    'amoID'  => $proids[$k]['id'],
+                    'name' => $product['name'],
+                    'DBId' => $product['id'],
+                    'amoID' => $proids[$k]['id'],
                 ];
             }
             AmoProducts::create($amoProduct);

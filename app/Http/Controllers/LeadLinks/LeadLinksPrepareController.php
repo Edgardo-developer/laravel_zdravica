@@ -16,16 +16,16 @@ class LeadLinksPrepareController extends PrepareEntityController
     {
         return [
             [
-                "to_entity_id" => $AmoBillID,
-                "to_entity_type" => "catalog_elements",
-                "metadata" => [
-                    "quantity" => 1.0,
-                    "catalog_id" => 12352
+                'to_entity_id' => $AmoBillID,
+                'to_entity_type' => 'catalog_elements',
+                'metadata' => [
+                    'quantity' => 1.0,
+                    'catalog_id' => 12352
                 ]
             ],
             [
-                "to_entity_id" => $leadDB['amoContactID'],
-                "to_entity_type" => "contacts",
+                'to_entity_id' => $leadDB['amoContactID'],
+                'to_entity_type' => 'contacts',
             ]
         ];
     }
@@ -35,10 +35,10 @@ class LeadLinksPrepareController extends PrepareEntityController
         $arr = [];
         foreach ($ids as $id) {
             $arr[] = [
-                "to_entity_id" => $id,
-                "to_entity_type" => "catalog_elements",
-                "metadata" => [
-                    "catalog_id" => 12348
+                'to_entity_id' => $id,
+                'to_entity_type' => 'catalog_elements',
+                'metadata' => [
+                    'catalog_id' => 12348
                 ]
             ];
         }

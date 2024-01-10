@@ -47,7 +47,7 @@ class ContactsPrepareController extends PrepareEntityController
      */
     public static function prepare(array $contactDB, $contactID = 0): array
     {
-        $prepared = array();
+        $prepared = [];
         foreach (self::$amoFields as $mergedContactField) {
             if (is_string($mergedContactField)) {
                 if (!$contactID) {
