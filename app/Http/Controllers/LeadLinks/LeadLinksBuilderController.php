@@ -12,7 +12,8 @@ class LeadLinksBuilderController extends BuilderEntityController
      * @return array
      * Description: get Lead row from the DB
      */
-    public static function getRow(int $amoLeadID) : array{
+    public static function getRow(int $amoLeadID): array
+    {
         return AmocrmIDs::all()->where('amoLeadID', '=', $amoLeadID)->first()?->amoBillID ?? [];
     }
 }

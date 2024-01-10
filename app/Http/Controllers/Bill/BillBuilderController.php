@@ -6,15 +6,16 @@ use App\Http\Controllers\BuilderEntityController;
 
 class BillBuilderController extends BuilderEntityController
 {
-    public static function finishBill($billID){
+    public static function finishBill($billID): array
+    {
         return array(
             'id' => $billID,
-            'custom_fields_values'  => [
+            'custom_fields_values' => [
                 [
-                    "field_id"  =>  1550048,
-                    "values"    =>  [
+                    "field_id" => 1550048,
+                    "values" => [
                         [
-                            "value" =>  'Оплачен',
+                            "value" => 'Оплачен',
                         ]
                     ]
                 ]

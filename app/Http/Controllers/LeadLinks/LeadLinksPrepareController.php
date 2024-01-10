@@ -12,31 +12,33 @@ class LeadLinksPrepareController extends PrepareEntityController
      * @return array
      * Description: prepares the array of the lead
      */
-    public static function prepare(array $leadDB, int $AmoBillID) : array{
+    public static function prepare(array $leadDB, int $AmoBillID): array
+    {
         return [
             [
-                "to_entity_id"=> $AmoBillID,
-                "to_entity_type"=> "catalog_elements",
-                "metadata"=> [
-                    "quantity"=> 1.0,
-                    "catalog_id"=> 12352
+                "to_entity_id" => $AmoBillID,
+                "to_entity_type" => "catalog_elements",
+                "metadata" => [
+                    "quantity" => 1.0,
+                    "catalog_id" => 12352
                 ]
             ],
             [
                 "to_entity_id" => $leadDB['amoContactID'],
-                "to_entity_type"=> "contacts",
+                "to_entity_type" => "contacts",
             ]
         ];
     }
 
-    public static function prepareAll(array $ids) : array{
+    public static function prepareAll(array $ids): array
+    {
         $arr = [];
-        foreach ($ids as $id){
-            $arr[] =  [
-                "to_entity_id"=> $id,
-                "to_entity_type"=> "catalog_elements",
-                "metadata"=> [
-                    "catalog_id"=> 12348
+        foreach ($ids as $id) {
+            $arr[] = [
+                "to_entity_id" => $id,
+                "to_entity_type" => "catalog_elements",
+                "metadata" => [
+                    "catalog_id" => 12348
                 ]
             ];
         }

@@ -7,11 +7,12 @@ use App\Models\PATIENTS;
 
 class ContactsBuilderController extends BuilderEntityController
 {
-    public static function getRow(int $id, bool $declareCall = false) : array{
-        $patient =  PATIENTS::all(self::getColumns($declareCall ? 1 : 0))
+    public static function getRow(int $id, bool $declareCall = false): array
+    {
+        $patient = PATIENTS::all(self::getColumns($declareCall ? 1 : 0))
             ->where('id', '=', $id)
             ?->first()?->toArray();
-        if (!is_null($patient)){
+        if (!is_null($patient)) {
             return $patient;
         }
         return [];
@@ -22,10 +23,13 @@ class ContactsBuilderController extends BuilderEntityController
      * @return array
      * Description: returns columns regarding the declare visit
      */
-    protected static function getColumns(int $declareVisit) : array{
+    protected static function getColumns(int $declareVisit): array
+    {
         $columns = [
             'id',
-            'NOM', 'PRENOM', 'PATRONYME',
+            'NOM',
+            'PRENOM',
+            'PATRONYME',
             'MOBIL_NYY',
             'EMAIL',
             'POL',
@@ -34,7 +38,7 @@ class ContactsBuilderController extends BuilderEntityController
             'created_at',
             'updated_at',
         ];
-        if ($declareVisit){
+        if ($declareVisit) {
             $columns = array_merge($columns, [
                 'RAYON_VYBORKA',
                 'ULICA',

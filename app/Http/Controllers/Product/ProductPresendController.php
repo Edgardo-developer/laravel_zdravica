@@ -6,16 +6,17 @@ use App\Http\Controllers\Controller;
 
 class ProductPresendController extends Controller
 {
-    public function getAmoIDs($client, $amoProductNames){
+    public function getAmoIDs($client, $amoProductNames): array
+    {
         $ids = [];
         $undefinedAmo = [];
-        foreach ($amoProductNames as $amoProductName){
+        foreach ($amoProductNames as $amoProductName) {
             $amoID = ProductBuilderController::getRow($amoProductName);
-            if ($amoID['amoID'] === 0){
+            if ($amoID['amoID'] === 0) {
                 $undefinedAmo[] = [
-                    'name'  => $amoProductName
+                    'name' => $amoProductName
                 ];
-            }else{
+            } else {
                 $ids[] = $amoID['amoID'];
             }
         }
