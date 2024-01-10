@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Product\ProductPrepareController;
 use App\Http\Controllers\Product\ProductRequestController;
+use App\Models\AmoProducts;
 use App\Models\OffersDB;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -29,10 +30,22 @@ class bulkMoveProducts extends Command
      */
     public function handle()
     {
-        $offers = OffersDB::all()->toArray();
-        $products = ProductPrepareController::prepare($offers, 1);
-
+        $offers = OffersDB::all(['name','id'])->toArray();
+        $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify'=>false]);
-        $proids = ProductRequestController::create($client, $products);
+
+        foreach ($offersChunks as $offersChunk){
+            $products = ProductPrepareController::prepare($offersChunk, 1);
+            $proids = ProductRequestController::create($client, $products);
+            $amoProduct = [];
+            foreach ($offersChunk as $k => $product){
+                $amoProduct[] = [
+                    'name'  => $product['name'],
+                    'DBId'  => $product['id'],
+                    'amoID'  => $proids[$k]['id'],
+                ];
+            }
+            AmoProducts::create($amoProduct);
+        }
     }
 }

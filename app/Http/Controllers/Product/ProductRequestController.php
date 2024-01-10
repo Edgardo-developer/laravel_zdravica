@@ -28,17 +28,21 @@ class ProductRequestController extends RequestController
         self::handleErrors($client, $request, true);
     }
 
-    private static function validateCreateResponse($res) : int{
+    private static function validateCreateResponse($res) : array{
         if ($res){
             try {
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 if ($result && $result['_embedded']){
-                    return $result['_embedded']['elements'][0]['id'];
+                    $ids = [];
+                    foreach ($result['_embedded']['elements'] as $element){
+                        $ids[] = $element['id'];
+                    }
+                    return $ids;
                 }
             }catch(\JsonException $ex){
                 dd($ex);
             }
         }
-        return 0;
+        return [];
     }
 }
