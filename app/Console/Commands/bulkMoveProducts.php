@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Product\ProductPrepareController;
+use App\Http\Controllers\Product\ProductRequestController;
 use App\Models\OffersDB;
+use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
 class bulkMoveProducts extends Command
@@ -27,5 +30,9 @@ class bulkMoveProducts extends Command
     public function handle()
     {
         $offers = OffersDB::all()->toArray();
+        $products = ProductPrepareController::prepare($offers, 1);
+
+        $client = new Client(['verify'=>false]);
+        $proids = ProductRequestController::create($client, $products);
     }
 }
