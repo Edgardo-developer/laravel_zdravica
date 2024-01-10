@@ -49,7 +49,14 @@ class SendToAmoCRM extends Controller
             $leadPrepared['status_id'] = 61034286;
             LeadRequestController::update($client, [$leadPrepared]);
 
-            $amoData = ['amoContactID' => '', 'amoLeadID' => '', 'amoBillID' => '', 'offers' => '', 'leadDBId' => ''];
+            $amoData = [
+                'amoContactID' => '',
+                'amoLeadID' => '',
+                'amoBillID' => '',
+                'offers' => '',
+                'leadDBId' => ''
+            ];
+
             foreach ($amoData as $k => &$IdsName) {
                 if ($buildLead[$k] && $buildLead[$k] !== 'null') {
                     $amoData[$k] = $buildLead[$k];
@@ -170,9 +177,12 @@ class SendToAmoCRM extends Controller
      */
     private function setProducts($client, $buildLead)
     {
-        $ProductPresend = new ProductPresendController();
-        $productIDs = $ProductPresend->getAmoIDs($client, $buildLead['offersData']['offerNames']);
-        $linksPrepared = LeadLinksPrepareController::prepareAll($productIDs, $buildLead);
-        LeadLinksRequestController::update($client, $linksPrepared);
+        if (count($buildLead['offersData']['offerNames']) > 0){
+            $ProductPresend = new ProductPresendController();
+            $productIDs = $ProductPresend->getAmoIDs($client, $buildLead['offersData']['offerNames']);
+            $linksPrepared = LeadLinksPrepareController::prepareAll($productIDs);
+            $linksPrepared['amoLeadID'] = $buildLead['amoLeadID'];
+            LeadLinksRequestController::update($client, $linksPrepared);
+        }
     }
 }

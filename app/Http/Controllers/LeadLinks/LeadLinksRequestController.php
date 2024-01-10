@@ -34,9 +34,9 @@ class LeadLinksRequestController extends RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request(
-            'PATCH', $uri . 's', $headers,
+            'POST', $uri, $headers,
             json_encode($preparedData)
         );
-        return self::handleErrors($client, $request, true);
+        return self::handleErrors($client, $request);
     }
 }

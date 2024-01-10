@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\BuilderEntityController;
-use App\Models\OffersDB;
+use App\Models\AmoProducts;
 
 class ProductBuilderController extends BuilderEntityController
 {
     public static function getRow(string|int $offerName): array
     {
         if (is_string($offerName)) {
-            $offerRaw = OffersDB::all('amoID')->where('name', '=', $offerName)->first();
+            $offerRaw = amoProducts::all()->where('name', '=', $offerName);
             if ($offerRaw) {
-                return $offerRaw->toArray();
+                return ['amoID' => $offerRaw->first()->amoID];
             }
         }
         return ['amoID' => 0];

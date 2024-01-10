@@ -10,21 +10,15 @@ class ProductPrepareController extends PrepareEntityController
     {
         $products = [];
         foreach ($offers as $offer) {
-            if (isset($offer['name'])) {
-                $products[] = [
-                    'name' => $offer['name'],
-                    'custom_fields_values' => [
-                        [
-                            'field_id' => 1550012,
-                            'values' => [
-                                [
-                                    'value' => 'Все товары'
-                                ]
-                            ]
-                        ]
+            $products[] = [
+                'name' => $offer,
+                'custom_fields_values' => [
+                    [
+                        'field_id' => 1550012,
+                        'values' => [['value' => 'Все товары']]
                     ]
-                ];
-            }
+                ]
+            ];
         }
         return $products;
     }

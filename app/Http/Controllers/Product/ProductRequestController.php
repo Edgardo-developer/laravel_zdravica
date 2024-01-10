@@ -9,14 +9,14 @@ use JsonException;
 
 class ProductRequestController extends RequestController
 {
-    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/catalogs/12352/elements';
+    private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/catalogs/12348/elements';
 
     public static function create($client, $preparedData): array
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
-        return self::validateCreateResponse(self::handleErrors($client, $request, true));
+        $request = new Request('POST', self::$URI, $headers, json_encode($preparedData));
+        return self::validateCreateResponse(self::handleErrors($client, $request));
     }
 
     private static function validateCreateResponse($res): array
@@ -48,6 +48,6 @@ class ProductRequestController extends RequestController
             'POST', self::$URI . '/' . $amoBillID, $headers,
             json_encode([$preparedData])
         );
-        self::handleErrors($client, $request, true);
+        self::handleErrors($client, $request);
     }
 }

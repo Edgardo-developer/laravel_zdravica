@@ -15,7 +15,7 @@ return new class extends Migration
             $blueprint->id();
             $blueprint->string('name')->nullable();
             $blueprint->integer('amoID')->nullable();
-            $blueprint->integer('BDId')->nullable();
+            $blueprint->integer('DBId')->nullable();
         });
     }
 

@@ -8,5 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class AmoProducts extends Model
 {
     use HasFactory;
-    protected $table = 'amocrm_product';
+    protected $connection = 'sqlsrv1';
+    public $timestamps = false;
+    protected $table = 'amocrm_products';
+    protected $fillable = ['amoID','DBId','name'];
 }

@@ -35,7 +35,7 @@ class LeadLinksPrepareController extends PrepareEntityController
         $arr = [];
         foreach ($ids as $id) {
             $arr[] = [
-                'to_entity_id' => $id,
+                'to_entity_id' => (int)$id,
                 'to_entity_type' => 'catalog_elements',
                 'metadata' => [
                     'catalog_id' => 12348

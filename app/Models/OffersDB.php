@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class OffersDB extends Model
 {
     use HasFactory;
-    protected $table = 'offers';
+    protected $connection = 'sqlsrv2';
+    protected $table = 'amocrm_products';
 }
