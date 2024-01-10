@@ -61,7 +61,7 @@ class LeadPrepareController extends PrepareEntityController
     private static function matchFields(string $mergedLeadFields, array $leadDB){
         return match($mergedLeadFields){
             'name'  => $leadDB['leadDBId'],
-            'price'  => (integer)$leadDB['billSum'],
+            'price'  => (int) $leadDB['billSum'],
             "direction"  => $leadDB['direction'],
             "filial"    => $leadDB['filial'],
             "fioDoc"  => $leadDB['fioDoc'],

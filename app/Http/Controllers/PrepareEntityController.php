@@ -9,7 +9,5 @@ class PrepareEntityController extends Controller
     public static function prepare(array $rawDB, int $Id) : array{
         return [];
     }
-    private static function matchFields(string $mergedFields, array $rawDB){
-        return;
-    }
+    private static function matchFields(string $mergedFields, array $rawDB){}
 }

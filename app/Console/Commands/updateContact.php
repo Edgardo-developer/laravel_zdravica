@@ -16,7 +16,7 @@ class updateContact extends Command
      *
      * @var string
      */
-    protected $signature = 'laradeal:update_contact
+    protected $signature = 'laradeal:updateContact
     {--id=null}
     {--ULICA=null}
     {--RAYON_VYBORKA=null}

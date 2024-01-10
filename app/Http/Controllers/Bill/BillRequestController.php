@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Bill;
 
-use App\Http\Controllers\Controller;
+
 use App\Http\Controllers\RequestController;
-use Illuminate\Http\Request;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 
 class BillRequestController extends RequestController
@@ -14,7 +14,7 @@ class BillRequestController extends RequestController
     public static function create($client, $preparedData) : string{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new \GuzzleHttp\Psr7\Request('POST', self::$URI, $headers, json_encode([$preparedData]));
+        $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
         return self::validateCreateResponse(self::handleErrors($client, $request, true));
     }
 
@@ -23,7 +23,7 @@ class BillRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $amoBillID = $preparedData['amoBillID'];
         unset($preparedData['amoBillID']);
-        $request = new \GuzzleHttp\Psr7\Request('POST', self::$URI.'/'.$amoBillID, $headers,
+        $request = new Request('POST', self::$URI.'/'.$amoBillID, $headers,
             json_encode([$preparedData]));
         self::handleErrors($client, $request, true);
     }
@@ -36,7 +36,7 @@ class BillRequestController extends RequestController
                     return $result['_embedded']['elements'][0]['id'];
                 }
             }catch(\JsonException $ex){
-                dd($ex);
+                Log::warning($ex);
             }
         }
         return 0;

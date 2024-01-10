@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Contacts;
 
 
+use App\Http\Controllers\RequestController;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 
-class ContactsRequestController extends \App\Http\Controllers\RequestController
+class ContactsRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/contacts';
 
@@ -35,7 +37,7 @@ class ContactsRequestController extends \App\Http\Controllers\RequestController
             try {
                 $result = json_decode($res->getBody(), 'true');
                 return $result ?? [];
-            }catch (\JsonException $exception){
+            }catch (JsonException $exception){
                 Log::debug($exception);
             }
         }

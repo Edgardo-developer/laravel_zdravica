@@ -46,7 +46,8 @@ class ContactsPresendController extends Controller
     private function createAmo($client, $preparedContact) : string|int{
         $res = ContactsRequestController::create($client, $preparedContact);
         if ($res){
-            $result = $res->getBody() !== '' ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';;
+            $result = $res->getBody() !== '' ?
+                json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
             if (isset($result) && $result['_embedded']){
                 return $result['_embedded']['contacts'][0]['id'];
             }

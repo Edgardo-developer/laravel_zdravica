@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\RequestController;
-use Illuminate\Http\Request;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 
 class ProductRequestController extends RequestController
 {
@@ -14,7 +14,7 @@ class ProductRequestController extends RequestController
     public static function create($client, $preparedData) : array{
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new \GuzzleHttp\Psr7\Request('POST', self::$URI, $headers, json_encode([$preparedData]));
+        $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
         return self::validateCreateResponse(self::handleErrors($client, $request, true));
     }
 
@@ -23,7 +23,7 @@ class ProductRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $amoBillID = $preparedData['amoID'];
         unset($preparedData['amoID']);
-        $request = new \GuzzleHttp\Psr7\Request('POST', self::$URI.'/'.$amoBillID, $headers,
+        $request = new Request('POST', self::$URI.'/'.$amoBillID, $headers,
             json_encode([$preparedData]));
         self::handleErrors($client, $request, true);
     }
@@ -39,8 +39,8 @@ class ProductRequestController extends RequestController
                     }
                     return $ids;
                 }
-            }catch(\JsonException $ex){
-                dd($ex);
+            }catch(JsonException $ex){
+                Log::warning($ex);
             }
         }
         return [];

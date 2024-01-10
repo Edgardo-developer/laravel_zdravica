@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\BuilderEntityController;
 use App\Models\AmoCrmLead;
-use App\Models\PLANNING;
-use Illuminate\Support\Facades\DB;
 
 class LeadBuilderController extends BuilderEntityController
 {
@@ -19,7 +17,7 @@ class LeadBuilderController extends BuilderEntityController
     }
     public static function closeLead($amoLeadID){
         return [
-            'id' => (integer)$amoLeadID,
+            'id' => (int) $amoLeadID,
             "name" => "1",
             "closed_at"=> time() + 5,
             "status_id"=> 143,
@@ -29,7 +27,7 @@ class LeadBuilderController extends BuilderEntityController
 
     public static function finishLead($amoLeadID){
         return [
-            'id' => (integer)$amoLeadID,
+            'id' => (int) $amoLeadID,
             "status_id"=> 142,
         ];
     }

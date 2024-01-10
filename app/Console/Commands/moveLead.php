@@ -13,7 +13,7 @@ class moveLead extends Command
      *
      * @var string
      */
-    protected $signature = 'laradeal:sendLead
+    protected $signature = 'laradeal:moveLead
     {--id=null}
     {--direction=null}
     {--updated_at=null}

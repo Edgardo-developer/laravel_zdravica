@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 
 class RequestController extends Controller
 {
@@ -66,7 +66,7 @@ class RequestController extends Controller
     /**
      * @return void
      * Description: update access token to the AmoCRM
-     * @throws \JsonException
+     * @throws JsonException
      */
     protected static function updateAccess($client){
         $getRequestExt = self::getRequestExt(true);
@@ -80,9 +80,8 @@ class RequestController extends Controller
 
         try {
             $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        }catch (\JsonException $e){
+        }catch (JsonException $e){
             Log::log(1, $e);
-            die();
         }
 
         AmoCrmTable::query()->truncate();
@@ -95,7 +94,7 @@ class RequestController extends Controller
         }
     }
 
-    protected static function handleErrors(Client $client, $request, bool $wait){
+    protected static function handleErrors(Client $client, $request){
         try {
             return $client->sendAsync($request)->wait();
         }catch(RequestException $e){
@@ -103,11 +102,10 @@ class RequestController extends Controller
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
             }
-            dd($e->getMessage());
         }
     }
 
-    private static function changeAndTryRequest(Client $client, \GuzzleHttp\Psr7\Request $request){
+    private static function changeAndTryRequest(Client $client, Request $request){
         $getRequestExt = self::getRequestExt();
         $request->withHeader('Authorization', $getRequestExt['headers']['Authorization']);
         return $client->sendAsync($request)->wait();

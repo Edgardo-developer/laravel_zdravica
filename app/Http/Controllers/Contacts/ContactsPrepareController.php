@@ -55,9 +55,9 @@ class ContactsPrepareController extends PrepareEntityController
                 }
             }else{
                 foreach ($mergedContactField as $customFieldsKey => $customFieldsValue){
-                    if ((!$contactID && !in_array($customFieldsValue, self::$secondRound, false))
+                    if ((!$contactID && !in_array($customFieldsValue, self::$secondRound))
                         ||
-                        ($contactID && in_array($customFieldsValue, self::$secondRound, false))){
+                        ($contactID && in_array($customFieldsValue, self::$secondRound))){
                         $val = self::matchFields($customFieldsValue, $contactDB);
                         if ($val && $val !== 'null'){
                             if ($contactID === 0 && $mergedContactField === 'mobile'){

@@ -11,8 +11,10 @@ use App\Http\Controllers\LeadLinks\LeadLinksRequestController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
+use App\Http\Controllers\Product\ProductPresendController;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
+use JsonException;
 
 class SendToAmoCRM extends Controller
 {
@@ -20,7 +22,7 @@ class SendToAmoCRM extends Controller
     /**
      * @param $DBlead
      * @return void
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function sendDealToAmoCRM($DBlead) : void{
         $buildLead = $this->checkAmo($DBlead);
@@ -35,10 +37,11 @@ class SendToAmoCRM extends Controller
             if ($buildLead['offerLists'] !== 'null' && $buildLead['offerLists'] !== ''){
                 $buildLead['offersData'] = self::explodeOffers($buildLead['offerLists']);
                 $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead);
+                $this->setProducts($client, $buildLead);
             }
 
             $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
-            $leadPrepared['id'] = (integer)$buildLead['amoLeadID'];
+            $leadPrepared['id'] = $buildLead['amoLeadID'];
             $leadPrepared['pipeline_id'] = 7332486;
             $leadPrepared['status_id'] = 61034286;
             LeadRequestController::update($client, [$leadPrepared]);
@@ -74,7 +77,6 @@ class SendToAmoCRM extends Controller
      * @param $client
      * @param $buildLead
      * @return int
-     * @throws \JsonException
      */
     private function getBillAmoID($client, $buildLead) : int{
         $billDB = array(
@@ -143,5 +145,12 @@ class SendToAmoCRM extends Controller
             }
         }
         return $arr;
+    }
+
+    private function setProducts($client, $buildLead){
+        $ProductPresend = new ProductPresendController();
+        $productIDs = $ProductPresend->getAmoIDs($client, $buildLead['offersData']['offerNames']);
+        $linksPrepared = LeadLinksPrepareController::prepareAll($productIDs, $buildLead);
+        LeadLinksRequestController::update($client, $linksPrepared);
     }
 }

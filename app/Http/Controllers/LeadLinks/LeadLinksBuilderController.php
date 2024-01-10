@@ -4,9 +4,6 @@ namespace App\Http\Controllers\LeadLinks;
 
 use App\Http\Controllers\BuilderEntityController;
 use App\Models\AmocrmIDs;
-use App\Models\AmoCrmLead;
-use App\Models\PLANNING;
-use Illuminate\Support\Facades\DB;
 
 class LeadLinksBuilderController extends BuilderEntityController
 {
