@@ -4,6 +4,8 @@ namespace App\Http\Controllers\LeadLinks;
 
 use App\Http\Controllers\RequestController;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
+use JsonException;
 
 class LeadLinksRequestController extends RequestController
 {
@@ -16,8 +18,14 @@ class LeadLinksRequestController extends RequestController
             unset($preparedData['amoLeadID']);
             $RequestExt = self::getRequestExt();
             $headers = $RequestExt['headers'];
-            $request = new Request('POST', $uri, $headers, json_encode($preparedData));
-            self::handleErrors($client, $request, true);
+            try {
+                $request = new Request('POST', $uri, $headers, json_encode($preparedData, JSON_THROW_ON_ERROR));
+                self::handleErrors($client, $request, true);
+            }catch (JsonException $ex){
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
+                die();
+            }
         }
     }
 
@@ -33,10 +41,16 @@ class LeadLinksRequestController extends RequestController
         unset($preparedData['amoLeadID']);
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request(
-            'POST', $uri, $headers,
-            json_encode($preparedData)
-        );
-        return self::handleErrors($client, $request);
+        try {
+            $request = new Request(
+                'POST', $uri, $headers,
+                json_encode($preparedData, JSON_THROW_ON_ERROR)
+            );
+            return self::handleErrors($client, $request);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 }

@@ -35,8 +35,9 @@ class LeadPresendController extends Controller
                         }
                     }
                 }
-            } catch (JsonException $exception) {
-                Log::debug($exception);
+            } catch (JsonException $ex) {
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
             }
         }
         return 0;

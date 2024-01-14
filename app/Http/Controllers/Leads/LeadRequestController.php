@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\RequestController;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
+use JsonException;
 
 class LeadRequestController extends RequestController
 {
@@ -17,9 +19,14 @@ class LeadRequestController extends RequestController
         $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
         $res = self::handleErrors($client, $request, false);
         if ($res) {
-            $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
-            if ($result && $result['_embedded']) {
-                return $result['_embedded']['leads'][0]['id'];
+            try {
+                $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
+                if ($result && $result['_embedded']) {
+                    return $result['_embedded']['leads'][0]['id'];
+                }
+            }catch (\JsonException $ex){
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
             }
         }
         return 0;
@@ -35,11 +42,17 @@ class LeadRequestController extends RequestController
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request(
-            'PATCH', self::$URI, $headers,
-            json_encode($preparedData)
-        );
-        return self::handleErrors($client, $request, true);
+        try {
+            $request = new Request(
+                'PATCH', self::$URI, $headers,
+                json_encode($preparedData, JSON_THROW_ON_ERROR)
+            );
+            return self::handleErrors($client, $request, true);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 
     public static function get($client, $query)

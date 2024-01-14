@@ -15,8 +15,15 @@ class ProductRequestController extends RequestController
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('POST', self::$URI, $headers, json_encode($preparedData));
-        return self::validateCreateResponse(self::handleErrors($client, $request));
+        try {
+            $jsonData = json_encode($preparedData, JSON_THROW_ON_ERROR);
+            $request = new Request('POST', self::$URI, $headers, $jsonData);
+            return self::validateCreateResponse(self::handleErrors($client, $request));
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 
     private static function validateCreateResponse($res): array
@@ -32,7 +39,8 @@ class ProductRequestController extends RequestController
                     return $ids;
                 }
             } catch (JsonException $ex) {
-                Log::warning($ex);
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
             }
         }
         return [];
@@ -44,10 +52,14 @@ class ProductRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $amoBillID = $preparedData['amoID'];
         unset($preparedData['amoID']);
-        $request = new Request(
-            'POST', self::$URI . '/' . $amoBillID, $headers,
-            json_encode([$preparedData])
-        );
-        self::handleErrors($client, $request);
+        try {
+            $jsonData  = json_encode([$preparedData], JSON_THROW_ON_ERROR);
+            $request = new Request('POST', self::$URI . '/' . $amoBillID, $headers, $jsonData);
+            self::handleErrors($client, $request);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 }

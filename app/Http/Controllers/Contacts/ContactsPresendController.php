@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Contacts;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 
 class ContactsPresendController extends Controller
@@ -45,16 +46,20 @@ class ContactsPresendController extends Controller
      * @param $preparedContact
      * @return string|int
      * Description: returns the ID of AmoCRM contact
-     * @throws JsonException
      */
     private function createAmo($client, $preparedContact): string|int
     {
         $res = ContactsRequestController::create($client, $preparedContact);
         if ($res) {
-            $result = $res->getBody() !== '' ?
-                json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
-            if (isset($result) && $result['_embedded']) {
-                return $result['_embedded']['contacts'][0]['id'];
+            try {
+                $result = $res->getBody() !== '' ?
+                    json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
+                if (isset($result) && $result['_embedded']) {
+                    return $result['_embedded']['contacts'][0]['id'];
+                }
+            }catch (JsonException $ex){
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
             }
         }
         return '';

@@ -22,18 +22,21 @@ class SendToAmoCRM extends Controller
     /**
      * @param $DBlead
      * @return void
-     * @throws JsonException
      */
     public function sendDealToAmoCRM($DBlead): void
     {
         $buildLead = $this->checkAmo($DBlead);
+        $client = new Client(['verify' => false]);
+        if ($DBlead['delete'] && isset($buildLead['amoLeadID'])){
+            self::deleteLead($buildLead);
+            return;
+        }
+
         $buildContact = ContactsBuilderController::getRow(
             (int)$buildLead['patID'],
             (int)$buildLead['declareCall'] === 1
         );
         if ($buildLead && $buildContact) {
-            $client = new Client(['verify' => false]);
-
             $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
             $buildLead['amoLeadID'] = $this->getLeadAmoID($client, $buildLead);
 
@@ -184,5 +187,12 @@ class SendToAmoCRM extends Controller
             $linksPrepared['amoLeadID'] = $buildLead['amoLeadID'];
             LeadLinksRequestController::update($client, $linksPrepared);
         }
+    }
+    private static function deleteLead($leadArray){
+        $client = new Client(['verify'=>false]);
+        LeadRequestController::update($client, [[
+            "id"    => $leadArray['amoID'],
+            'is_deleted'    => true,
+        ]]);
     }
 }

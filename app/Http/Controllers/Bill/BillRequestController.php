@@ -16,8 +16,15 @@ class BillRequestController extends RequestController
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData]));
-        return self::validateCreateResponse(self::handleErrors($client, $request, true));
+        try {
+            $jsonData = json_encode([$preparedData], JSON_THROW_ON_ERROR);
+            $request = new Request('POST', self::$URI, $headers, $jsonData);
+            return self::validateCreateResponse(self::handleErrors($client, $request, true));
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 
     private static function validateCreateResponse($res): int
@@ -29,7 +36,8 @@ class BillRequestController extends RequestController
                     return $result['_embedded']['elements'][0]['id'];
                 }
             } catch (JsonException $ex) {
-                Log::warning($ex);
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
             }
         }
         return 0;
@@ -41,10 +49,17 @@ class BillRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $amoBillID = $preparedData['amoBillID'];
         unset($preparedData['amoBillID']);
-        $request = new Request(
-            'POST', self::$URI . '/' . $amoBillID, $headers,
-            json_encode([$preparedData])
-        );
-        self::handleErrors($client, $request, true);
+        try {
+            $jsonData = json_encode([$preparedData], JSON_THROW_ON_ERROR);
+            $request = new Request(
+                'POST', self::$URI . '/' . $amoBillID, $headers,
+                $jsonData
+            );
+            self::handleErrors($client, $request, true);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 }

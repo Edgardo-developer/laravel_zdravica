@@ -16,8 +16,15 @@ class ContactsRequestController extends RequestController
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $request = new Request('POST', self::$URI, $headers, json_encode($preparedData));
-        return self::handleErrors($client, $request, true);
+        try {
+            $jsonData = json_encode($preparedData, JSON_THROW_ON_ERROR);
+            $request = new Request('POST', self::$URI, $headers, $jsonData);
+            return self::handleErrors($client, $request, true);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 
     public static function update($client, $preparedData = null)
@@ -26,8 +33,16 @@ class ContactsRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $amoID = $preparedData['amoID'];
         unset($preparedData['amoID']);
-        $request = new Request('PATCH', self::$URI . '/' . $amoID, $headers, json_encode($preparedData[0]));
-        return self::handleErrors($client, $request, true);
+        try {
+            $request = new Request('PATCH', self::$URI . '/' . $amoID, $headers,
+                json_encode($preparedData[0], JSON_THROW_ON_ERROR)
+            );
+            return self::handleErrors($client, $request, true);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
     }
 
     public static function get($client, $query): array
@@ -38,10 +53,11 @@ class ContactsRequestController extends RequestController
         $res = self::handleErrors($client, $request, true);
         if ($res) {
             try {
-                $result = json_decode($res->getBody(), 'true');
+                $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 return $result ?? [];
-            } catch (JsonException $exception) {
-                Log::debug($exception);
+            } catch (JsonException $ex) {
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
             }
         }
         return [];

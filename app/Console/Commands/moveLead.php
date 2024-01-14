@@ -36,6 +36,7 @@ class moveLead extends Command
     {--amoContactID=null}
     {--responsibleFIO=null}
     {--responsible_user_id=null}
+    {--delete=false}
 ';
 
     /**
@@ -73,6 +74,7 @@ class moveLead extends Command
             'responsibleFIO' => $this->option('responsibleFIO'),
             'declareCall' => $this->option('declareCall'),
             'declareVisit' => $this->option('declareVisit'),
+            'delete' => $this->option('delete'),
         ];
         if ($options) {
             dispatch(new ProcessLead($options));

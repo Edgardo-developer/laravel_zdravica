@@ -33,37 +33,46 @@ class RequestController extends Controller
     {
         try {
             return $client->sendAsync($request)->wait();
-        } catch (RequestException $e) {
-            if ($e->getCode() === 401) {
+        } catch (RequestException $ex) {
+            if ($ex->getCode() === 401) {
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
             }
-            dd($e->getMessage());
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
         }
-        die();
     }
 
     /**
      * @return void
      * Description: update access token to the AmoCRM
-     * @throws JsonException
      */
     protected static function updateAccess($client)
     {
         $getRequestExt = self::getRequestExt(true);
         $headers = $getRequestExt['headers'];
         $body = $getRequestExt['body'];
-        $request = new Request(
-            'POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
-            json_encode($body, JSON_THROW_ON_ERROR)
-        );
-        $res = $client->sendAsync($request)->wait();
+        try {
+            $jsonData = json_encode($body, JSON_THROW_ON_ERROR);
+            $request = new Request(
+                'POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
+                $jsonData
+            );
+            $res = $client->sendAsync($request)->wait();
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
+        }
 
 
         try {
             $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            Log::log(1, $e);
+        } catch (JsonException $ex) {
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getLine());
+            die();
         }
 
         AmoCrmTable::query()->truncate();
@@ -129,10 +138,15 @@ class RequestController extends Controller
     protected static function handleSuccess($output, $leadRaw)
     {
         if ($output) {
-            $result = json_decode($output->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
-            if ($result && $result['_embedded']) {
-                $leadRaw->amoLeadID = $result['_embedded']['leads'][0]['id'];
-                $leadRaw->save();
+            try {
+                $result = json_decode($output->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
+                if ($result && $result['_embedded']) {
+                    $leadRaw->amoLeadID = $result['_embedded']['leads'][0]['id'];
+                    $leadRaw->save();
+                }
+            }catch (JsonException $ex){
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getLine());
             }
         }
     }
