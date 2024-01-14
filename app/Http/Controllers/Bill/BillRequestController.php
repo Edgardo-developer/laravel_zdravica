@@ -22,6 +22,7 @@ class BillRequestController extends RequestController
             return self::validateCreateResponse(self::handleErrors($client, $request, true));
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }
@@ -37,6 +38,7 @@ class BillRequestController extends RequestController
                 }
             } catch (JsonException $ex) {
                 Log::warning($ex->getMessage());
+                Log::warning($ex->getFile());
                 Log::warning($ex->getLine());
             }
         }
@@ -58,6 +60,7 @@ class BillRequestController extends RequestController
             self::handleErrors($client, $request, true);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }

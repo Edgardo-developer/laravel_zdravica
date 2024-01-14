@@ -21,6 +21,7 @@ class ProductRequestController extends RequestController
             return self::validateCreateResponse(self::handleErrors($client, $request));
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }
@@ -40,6 +41,7 @@ class ProductRequestController extends RequestController
                 }
             } catch (JsonException $ex) {
                 Log::warning($ex->getMessage());
+                Log::warning($ex->getFile());
                 Log::warning($ex->getLine());
             }
         }
@@ -58,6 +60,7 @@ class ProductRequestController extends RequestController
             self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }

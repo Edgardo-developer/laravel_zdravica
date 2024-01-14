@@ -23,6 +23,7 @@ class LeadLinksRequestController extends RequestController
                 self::handleErrors($client, $request, true);
             }catch (JsonException $ex){
                 Log::warning($ex->getMessage());
+                Log::warning($ex->getFile());
                 Log::warning($ex->getLine());
                 die();
             }
@@ -49,6 +50,7 @@ class LeadLinksRequestController extends RequestController
             return self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getCode());
             Log::warning($ex->getLine());
             die();
         }

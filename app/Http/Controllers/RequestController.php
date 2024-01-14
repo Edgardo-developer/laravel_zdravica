@@ -39,6 +39,7 @@ class RequestController extends Controller
                 return self::changeAndTryRequest($client, $request);
             }
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }
@@ -62,6 +63,7 @@ class RequestController extends Controller
             $res = $client->sendAsync($request)->wait();
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }
@@ -71,6 +73,7 @@ class RequestController extends Controller
             $result = json_decode($res->getBody(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $ex) {
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }
@@ -146,6 +149,7 @@ class RequestController extends Controller
                 }
             }catch (JsonException $ex){
                 Log::warning($ex->getMessage());
+                Log::warning($ex->getFile());
                 Log::warning($ex->getLine());
             }
         }

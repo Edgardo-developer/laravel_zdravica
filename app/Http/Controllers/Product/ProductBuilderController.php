@@ -11,7 +11,7 @@ class ProductBuilderController extends BuilderEntityController
     {
         if (is_string($offerName)) {
             $offerRaw = amoProducts::all()->where('name', '=', $offerName);
-            if ($offerRaw) {
+            if ($offerRaw->first()) {
                 return ['amoID' => $offerRaw->first()->amoID];
             }
         }

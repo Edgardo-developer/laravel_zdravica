@@ -22,6 +22,7 @@ class ContactsRequestController extends RequestController
             return self::handleErrors($client, $request, true);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }
@@ -40,6 +41,7 @@ class ContactsRequestController extends RequestController
             return self::handleErrors($client, $request, true);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
             die();
         }
@@ -57,6 +59,7 @@ class ContactsRequestController extends RequestController
                 return $result ?? [];
             } catch (JsonException $ex) {
                 Log::warning($ex->getMessage());
+                Log::warning($ex->getFile());
                 Log::warning($ex->getLine());
             }
         }

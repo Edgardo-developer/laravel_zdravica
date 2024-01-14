@@ -59,6 +59,7 @@ class ContactsPresendController extends Controller
                 }
             }catch (JsonException $ex){
                 Log::warning($ex->getMessage());
+                Log::warning($ex->getFile());
                 Log::warning($ex->getLine());
             }
         }

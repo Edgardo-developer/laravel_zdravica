@@ -27,7 +27,8 @@ class SendToAmoCRM extends Controller
     {
         $buildLead = $this->checkAmo($DBlead);
         $client = new Client(['verify' => false]);
-        if ($DBlead['delete'] && isset($buildLead['amoLeadID'])){
+
+        if ($DBlead['delete'] === 'true' && isset($buildLead['amoLeadID'])){
             self::deleteLead($buildLead);
             return;
         }
@@ -47,7 +48,7 @@ class SendToAmoCRM extends Controller
             }
 
             $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
-            $leadPrepared['id'] = $buildLead['amoLeadID'];
+            $leadPrepared['id'] = (int)$buildLead['amoLeadID'];
             $leadPrepared['pipeline_id'] = 7332486;
             $leadPrepared['status_id'] = 61034286;
             LeadRequestController::update($client, [$leadPrepared]);
@@ -188,11 +189,12 @@ class SendToAmoCRM extends Controller
             LeadLinksRequestController::update($client, $linksPrepared);
         }
     }
-    private static function deleteLead($leadArray){
+    private static function deleteLead($leadArray) : void{
         $client = new Client(['verify'=>false]);
         LeadRequestController::update($client, [[
-            "id"    => $leadArray['amoID'],
-            'is_deleted'    => true,
+            "id"    => $leadArray['amoLeadID'],
+            "status_id" => 143,
+            "pipeline_id" => 7332486
         ]]);
     }
 }

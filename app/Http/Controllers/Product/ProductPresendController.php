@@ -38,11 +38,10 @@ class ProductPresendController extends Controller
                 $rows[] = [
                     'name'  => $undefinedAmo[$k],
                     'amoID' => $newId,
-//                    'DBId'  => $first->FM_SERV_ID,
-                    'DBId'  => random_int(1,10),
+                    'DBId'  => $first->FM_SERV_ID,
                 ];
             }
         }
-        AmoProducts::insert($rows);
+        AmoProducts::create($rows);
     }
 }
