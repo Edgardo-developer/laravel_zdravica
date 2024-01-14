@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('fioDoc')->nullable();
             $table->string('filial')->nullable();
             $table->string('confident')->nullable();
-            $table->date('date')->nullable();
+            $table->dateTime('date')->nullable();
             $table->float('billSum')->nullable();
             $table->integer('declareCall')->default(0); // Check if the client called
         });

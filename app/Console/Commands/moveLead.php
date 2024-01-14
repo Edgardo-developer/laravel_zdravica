@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\SendToAmoCRM;
+use App\Jobs\ProcessLead;
 use Illuminate\Console\Command;
 
 class moveLead extends Command
@@ -74,7 +75,7 @@ class moveLead extends Command
             'declareVisit' => $this->option('declareVisit'),
         ];
         if ($options) {
-            $SendToAmoCRM->sendDealToAmoCRM($options);
+            dispatch(new ProcessLead($options));
         }
     }
 }

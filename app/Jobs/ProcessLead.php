@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\SendToAmoCRM;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,12 +14,13 @@ class ProcessLead implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $options;
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct($options)
     {
-        //
+       $this->options = $options;
     }
 
     /**
@@ -26,6 +28,6 @@ class ProcessLead implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        (new SendToAmoCRM())->sendDealToAmoCRM($this->options);
     }
 }
