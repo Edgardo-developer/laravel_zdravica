@@ -24,7 +24,7 @@ class LeadPresendController extends Controller
     {
         $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034282&query=' . $DBLead['amoContactID'];
         $res = LeadRequestController::get($client, $query);
-        if ($res && $res->getStatusCode() === 200) {
+        if ($res && $res->getStatus() === 200) {
             try {
                 $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
                 if (isset($result) && $result['_embedded']) {

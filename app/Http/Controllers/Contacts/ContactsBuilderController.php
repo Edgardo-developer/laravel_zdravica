@@ -9,10 +9,11 @@ class ContactsBuilderController extends BuilderEntityController
 {
     public static function getRow(int $id, bool $declareCall = false): array
     {
-        $patient = PATIENTS::all(self::getColumns($declareCall ? 1 : 0))
-            ->where('id', '=', $id)
-            ?->first()?->toArray();
-        if (!is_null($patient)) {
+        $patientObject = PATIENTS::find($id);
+        if($patientObject){
+            $patient = $patientObject->only(self::getColumns($declareCall ? 1 : 0));
+        }
+        if (!is_null($patientObject) && isset($patient)) {
             return $patient;
         }
         return [];

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 use JsonException;
@@ -32,16 +32,17 @@ class RequestController extends Controller
     protected static function handleErrors(Client $client, $request)
     {
         try {
-            return $client->sendAsync($request)->wait();
-        } catch (RequestException $ex) {
-            if ($ex->getCode() === 401) {
+            $send = $client->sendAsync($request)->wait();
+            if($send->getStatusCode() === 401){
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
             }
+            return $send;
+        } catch (BadResponseException $ex) {
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            die();
+            throw new \Exception('Job failed');
         }
     }
 
