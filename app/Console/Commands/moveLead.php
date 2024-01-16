@@ -77,7 +77,8 @@ class moveLead extends Command
             'delete' => $this->option('delete'),
         ];
         if ($options) {
-             ProcessLead::dispatch($options);
+            (new SendToAmoCRM())->sendDealToAmoCRM($options);
+//             ProcessLead::dispatch($options);
         }
     }
 }

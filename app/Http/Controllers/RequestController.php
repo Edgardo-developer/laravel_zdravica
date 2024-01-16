@@ -32,13 +32,12 @@ class RequestController extends Controller
     protected static function handleErrors(Client $client, $request)
     {
         try {
-            $send = $client->sendAsync($request)->wait();
-            if($send->getStatusCode() === 401){
+            return $client->sendAsync($request)->wait();
+        } catch (BadResponseException $ex) {
+            if($ex->getCode() === 401){
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
             }
-            return $send;
-        } catch (BadResponseException $ex) {
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
