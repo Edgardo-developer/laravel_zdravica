@@ -33,10 +33,28 @@ class ContactsPresendController extends Controller
      */
     private function checkExists($client, $contact): string|object
     {
-        $query = '?query=' . $contact['NOM'];
-        $result = ContactsRequestController::get($client, $query);
-        if ($result && $result['_embedded']) {
-            return $result['_embedded']['contacts'][0]['id'];
+        if (isset($contact['MOBIL_NYY'])){
+            $query = '?query=' . $contact['MOBIL_NYY'];
+            $result = ContactsRequestController::get($client, $query);
+            if ($result && $result['_embedded']) {
+                return $result['_embedded']['contacts'][0]['id'];
+            }
+        }
+
+        if (isset($contact['EMAIL'])){
+            $query = '?query=' . ($contact['NOM'] ?? $contact['EMAIL']);
+            $result = ContactsRequestController::get($client, $query);
+            if ($result && $result['_embedded']) {
+                return $result['_embedded']['contacts'][0]['id'];
+            }
+        }
+
+        if (isset($contact['FIO'])){
+            $query = '?query=' . $contact['FIO'];
+            $result = ContactsRequestController::get($client, $query);
+            if ($result && $result['_embedded']) {
+                return $result['_embedded']['contacts'][0]['id'];
+            }
         }
         return '';
     }

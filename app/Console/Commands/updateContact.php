@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 
+use App\Http\Controllers\Contacts\ContactsBuilderController;
 use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
 use GuzzleHttp\Client;
@@ -16,13 +17,8 @@ class updateContact extends Command
      * @var string
      */
     protected $signature = 'laradeal:updateContact
-    {--id=null}
-    {--ULICA=null}
-    {--RAYON_VYBORKA=null}
-    {--NUMBER=null}
-    {--DOM=null}
-    {--KVARTIRA=null}
-    {--DOVERENNI=null}
+    {--PAT_ID=null}
+    {--declareCall=null}
     ';
 
     /**
@@ -38,26 +34,19 @@ class updateContact extends Command
     public function handle()
     {
         $options = [
-            'id' => $this->option('id') ?? '',
-            'ULICA' => $this->option('ULICA') ?? '',
-            'RAYON_VYBORKA' => $this->option('RAYON_VYBORKA') ?? '',
-            'NUMBER' => $this->option('NUMBER') ?? '',
-            'DOM' => $this->option('DOM') ?? '',
-            'KVARTIRA' => $this->option('KVARTIRA') ?? '',
-            'Doverenni' => $this->option('DOVERENNI') ?? '',
+            'PAT_ID' => $this->option('id') ?? '',
+            'declareCall' => $this->option('declareCall') ?? '',
         ];
-        if ($options['id']) {
-            $amoID = $options['id'];
-            $arr = ['Д', 'Ш', 'КМ', 'ДК', 'ГР', 'Т', 'О'];
-            if ($options['NUMBER'] && (int)$options['NUMBER'] < 7) {
-                $options['NUMBER'] = $arr[(int)$options['NUMBER']];
-            }
-            $prepared = ContactsPrepareController::prepare($options, 1);
-            if ($prepared) {
-                $prepared['amoID'] = $amoID;
-                $client = new Client(['verify' => false]);
+        if ($options['PAT_ID'] !== '' && (int)$options['declareCall'] > 0) {
+            $row = ContactsBuilderController::getRow(
+                (int)$options['PAT_ID'],
+                (int)$options['declareCall'] === 1
+            );
+            $prepared = ContactsPrepareController::prepare($row);
+            $client = new Client(['verify' => false]);
+            if ($prepared){
                 ContactsRequestController::update($client, $prepared);
             }
         }
+        }
     }
-}

@@ -22,6 +22,9 @@ class BillPrepareController extends PrepareEntityController
         ];
         foreach (self::$amoFields['custom_fields_values'] as $amoFieldName => $amoFieldID) {
             if (isset($billDB[$amoFieldName])) {
+                if ($amoFieldName === 'account' && $billDB[$amoFieldName]['entity_id'] === 0){
+                    continue;
+                }
                 $locArr = [
                     'field_id' => $amoFieldID,
                     'values' => $amoFieldName !== 'offers' ?

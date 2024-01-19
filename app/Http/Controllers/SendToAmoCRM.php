@@ -13,6 +13,7 @@ use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
 use App\Http\Controllers\Product\ProductPresendController;
 use App\Models\AmocrmIDs;
+use App\Models\PLANNING;
 use GuzzleHttp\Client;
 use JsonException;
 
@@ -28,15 +29,18 @@ class SendToAmoCRM extends Controller
         $buildLead = $this->checkAmo($DBlead);
         $client = new Client(['verify' => false]);
 
-        if ($DBlead['delete'] === 'true' && isset($buildLead['id'])){
-            self::deleteLead($buildLead);
+        if ($DBlead['delete'] === 'true'){
+            if(isset($buildLead['id']) && $buildLead['id'] > 0){
+                self::deleteLead($buildLead);
+            }
             return;
         }
 
-        $buildContact = ContactsBuilderController::getRow(
+        $buildContact = (int)$buildLead['patID'] > 0 ? ContactsBuilderController::getRow(
             (int)$buildLead['patID'],
             (int)$buildLead['declareCall'] === 1
-        );
+        ) : ['FIO'=>$buildLead['FIO']];
+
         if ($buildLead && $buildContact) {
             $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
             $buildLead['amoLeadID'] = $this->getLeadAmoID($client, $buildLead);
@@ -88,6 +92,9 @@ class SendToAmoCRM extends Controller
         foreach ($keysToCopy as $key) {
             $dbLead[$key] = isset($raw[$key]) ? $rawArray[$key] : null;
         }
+
+        $PLANNING = PLANNING::find($dbLead['leadDBId']);
+        $dbLead['FIO'] = $PLANNING->NOM . ' ' . $PLANNING?->PRENOM . ' ' . $PLANNING?->PATRONYME;
         ksort($dbLead, SORT_NATURAL);
         return $dbLead;
     }

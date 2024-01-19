@@ -29,7 +29,9 @@ class LeadPrepareController extends PrepareEntityController
      */
     public static function prepare(array $leadDB, int $contactId): array
     {
-        $prepared = ['_embedded' => ['contacts' => [['id' => $contactId]]]];
+        $prepared =
+            $contactId > 0 ?
+            ['_embedded' => ['contacts' => [['id' => $contactId]]]] : [];
         foreach (self::$amoFields as $fieldValue) {
             if ($fieldValue === 'responsible_user_id') {
                 continue;
