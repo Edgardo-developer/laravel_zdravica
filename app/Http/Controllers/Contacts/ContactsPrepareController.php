@@ -92,7 +92,7 @@ class ContactsPrepareController extends PrepareEntityController
             'mobile', => $contactDB['MOBIL_NYY'] ?? '',
             'email', => $contactDB['EMAIL'] ?? '',
             'GOROD', => $contactDB['GOROD'] ?? '',
-            'FIO', => $contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME'],
+            'FIO', => $contactDB['FIO'] ?? ($contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME']),
             'Birthday', => $contactDB['NE_LE'] ?? '',
             'POL', => self::checkPol($contactDB['NOM'], $contactDB['PATRONYME']),
             'RAYON_VYBORKA' => $contactDB['RAYON_VYBORKA'],
@@ -101,6 +101,7 @@ class ContactsPrepareController extends PrepareEntityController
             'KVARTIRA' => $contactDB['KVARTIRA'] ?? '',
             'NUMBER' => $contactDB['NUMBER'] ?? '',
             'Doverenni' => $contactDB['Doverenni'] ?? '',
+            default => 'null'
         };
     }
 

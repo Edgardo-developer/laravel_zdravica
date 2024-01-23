@@ -93,8 +93,8 @@ class SendToAmoCRM extends Controller
             $dbLead[$key] = isset($raw[$key]) ? $rawArray[$key] : null;
         }
 
-        $PLANNING = PLANNING::find($dbLead['leadDBId']);
-        $dbLead['FIO'] = $PLANNING->NOM . ' ' . $PLANNING?->PRENOM . ' ' . $PLANNING?->PATRONYME;
+//        $PLANNING = PLANNING::find($dbLead['leadDBId']);
+//        $dbLead['FIO'] = $PLANNING->NOM . ' ' . $PLANNING?->PRENOM . ' ' . $PLANNING?->PATRONYME;
         ksort($dbLead, SORT_NATURAL);
         return $dbLead;
     }
