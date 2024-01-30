@@ -26,7 +26,7 @@
         "nunomaduro/collision": "^7.0",
         "nunomaduro/phpinsights": "^2.11",
         "pestphp/pest": "^2.26",
-        "phpunit/phpunit": "^10.1",
+        "phpunit/phpunit": "^10.4",
         "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {

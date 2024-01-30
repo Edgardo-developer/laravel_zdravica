@@ -15,7 +15,6 @@ use App\Http\Controllers\Product\ProductPresendController;
 use App\Models\AmocrmIDs;
 use App\Models\PLANNING;
 use GuzzleHttp\Client;
-use JsonException;
 
 class SendToAmoCRM extends Controller
 {
@@ -28,13 +27,6 @@ class SendToAmoCRM extends Controller
     {
         $buildLead = $this->checkAmo($DBlead);
         $client = new Client(['verify' => false]);
-
-        if ($DBlead['delete'] === 'true'){
-            if(isset($buildLead['id']) && $buildLead['id'] > 0){
-                self::deleteLead($buildLead);
-            }
-            return;
-        }
 
         $buildContact = (int)$buildLead['patID'] > 0 ? ContactsBuilderController::getRow(
             (int)$buildLead['patID'],
@@ -83,7 +75,7 @@ class SendToAmoCRM extends Controller
      * @param array $dbLead
      * @return array
      */
-    private function checkAmo(array &$dbLead): array
+    protected function checkAmo(array &$dbLead): array
     {
         $raw = AmocrmIDs::all()->where('leadDBId', '=', $dbLead['leadDBId'])?->first();
         $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'];
@@ -93,8 +85,8 @@ class SendToAmoCRM extends Controller
             $dbLead[$key] = isset($raw[$key]) ? $rawArray[$key] : null;
         }
 
-//        $PLANNING = PLANNING::find($dbLead['leadDBId']);
-//        $dbLead['FIO'] = $PLANNING->NOM . ' ' . $PLANNING?->PRENOM . ' ' . $PLANNING?->PATRONYME;
+        $PLANNING = PLANNING::find($dbLead['leadDBId']);
+        $dbLead['FIO'] = $PLANNING->NOM . ' ' . $PLANNING?->PRENOM . ' ' . $PLANNING?->PATRONYME;
         ksort($dbLead, SORT_NATURAL);
         return $dbLead;
     }
@@ -195,13 +187,5 @@ class SendToAmoCRM extends Controller
             $linksPrepared['amoLeadID'] = $buildLead['amoLeadID'];
             LeadLinksRequestController::update($client, $linksPrepared);
         }
-    }
-    private static function deleteLead($leadArray) : void{
-        $client = new Client(['verify'=>false]);
-        LeadRequestController::update($client, [[
-            "id"    => (int)$leadArray['id'],
-            "status_id" => 143,
-            "pipeline_id" => 7332486
-        ]]);
     }
 }

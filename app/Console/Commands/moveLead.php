@@ -36,7 +36,6 @@ class moveLead extends Command
     {--amoContactID=null}
     {--responsibleFIO=null}
     {--responsible_user_id=null}
-    {--delete=false}
 ';
 
     /**
