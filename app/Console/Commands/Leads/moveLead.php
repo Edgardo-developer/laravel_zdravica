@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Leads;
 
 use App\Http\Controllers\SendToAmoCRM;
-use App\Jobs\ProcessLead;
 use Illuminate\Console\Command;
 
 class moveLead extends Command

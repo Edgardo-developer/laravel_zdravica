@@ -1,15 +1,9 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Leads;
 
-use App\Http\Controllers\Bill\BillBuilderController;
-use App\Http\Controllers\Bill\BillRequestController;
-use App\Http\Controllers\Leads\LeadBuilderController;
-use App\Http\Controllers\Leads\LeadRequestController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Jobs\ProcessBulkLead;
-use App\Models\amocrmIDs;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
 class BulkLead extends Command

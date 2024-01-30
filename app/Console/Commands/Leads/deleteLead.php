@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Leads;
 
 use App\Http\Controllers\Sends\DeleteLeadController;
 use Illuminate\Console\Command;
@@ -21,7 +21,7 @@ class deleteLead extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'the command deletes leads from the AmoCRM';
 
     /**
      * Execute the console command.

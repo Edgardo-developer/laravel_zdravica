@@ -8,5 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class PLANNING extends Model
 {
     use HasFactory;
-    protected $table = 'master.guest.PLANNING';
+    protected $primaryKey = 'PLANNING_ID';
+    public $timestamps = false;
+    protected $table = 'master.dbo.PLANNING';
+    protected $fillable = [
+        'NOM',
+        'PRENOM',
+        'PATRONYME'
+    ];
 }

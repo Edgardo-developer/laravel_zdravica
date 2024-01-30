@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AmoCRMLeadFactory extends Factory
 {
+    protected $model = 'App\Models\AmoCrmLead';
     /**
      * Define the model's default state.
      *
@@ -20,9 +21,10 @@ class AmoCRMLeadFactory extends Factory
             'direction' => 'терапия',
             'specDoc'   => 'Врач-терапевт',
             'patID' => 1,
+            'leadDBId' => 1,
             'fioDoc'    => fake()->name(1),
             'billID'    => fake()->numberBetween(1000, 19990),
-            'billSum'   => fake()->numberBetween(3000, 10000),
+            'billSum'   => NULL,
             'offers'    => 'Общий анализ крови',
             'managerName'   => fake()->name,
             'amoManagerID'  => fake()->numberBetween(1000, 19990),

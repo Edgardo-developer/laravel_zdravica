@@ -9,6 +9,23 @@ class AmoCrmLead extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    public $fillable = [
+        'direction',
+        'specDoc'  ,
+        'patID',
+        'fioDoc'  ,
+        'billID'  ,
+        'billSum',
+        'offers'   ,
+        'managerName'   ,
+        'amoManagerID' ,
+        'declareCall' ,
+        'filial' ,
+        'date' ,
+        'created_at',
+        'updated_at',
+        'leadDBId'
+    ];
     protected $connection = 'sqlsrv1';
-    protected $table = 'master.guest.amocrm_lead';
+    protected $table = 'master.dbo.amocrm_lead';
 }

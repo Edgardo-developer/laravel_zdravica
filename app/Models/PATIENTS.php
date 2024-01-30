@@ -9,5 +9,5 @@ class PATIENTS extends Model
 {
     use HasFactory;
     protected $connection = 'sqlsrv2';
-    protected $table = 'master.guest.PATIENTS';
+    protected $table = 'master.dbo.PATIENTS';
 }

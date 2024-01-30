@@ -21,9 +21,9 @@ class SendToAmoCRM extends Controller
 
     /**
      * @param $DBlead
-     * @return void
+     * @return array
      */
-    public function sendDealToAmoCRM($DBlead): void
+    public function sendDealToAmoCRM($DBlead): array
     {
         $buildLead = $this->checkAmo($DBlead);
         $client = new Client(['verify' => false]);
@@ -37,7 +37,7 @@ class SendToAmoCRM extends Controller
             $buildLead['amoContactID'] = $this->getContactAmoID($client, $buildLead, $buildContact);
             $buildLead['amoLeadID'] = $this->getLeadAmoID($client, $buildLead);
 
-            if ($buildLead['offerLists'] !== 'null' && $buildLead['offerLists'] !== '') {
+            if ($buildLead['offerLists'] !== 'null' && $buildLead['offerLists'] !== '' && $buildLead['offerLists']) {
                 $buildLead['offersData'] = self::explodeOffers($buildLead['offerLists']);
                 $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead);
                 $this->setProducts($client, $buildLead);
@@ -49,16 +49,15 @@ class SendToAmoCRM extends Controller
             $leadPrepared['status_id'] = 61034286;
             LeadRequestController::update($client, [$leadPrepared]);
 
-            $amoData = [
+            $amoData = array_intersect_key($buildLead, [
                 'amoContactID' => '',
                 'amoLeadID' => '',
                 'amoBillID' => '',
                 'offers' => '',
                 'leadDBId' => ''
-            ];
-
+            ]);
             foreach ($amoData as $k => &$IdsName) {
-                if ($buildLead[$k] && $buildLead[$k] !== 'null') {
+                if ($buildLead[$k] !== 'null') {
                     $amoData[$k] = $buildLead[$k];
                 } else {
                     unset($amoData[$k]);
@@ -68,14 +67,16 @@ class SendToAmoCRM extends Controller
             AmocrmIDs::updateOrCreate([
                 'leadDBId' => $buildLead['leadDBId']
             ], $amoData);
+            return $amoData;
         }
+        return [];
     }
 
     /**
      * @param array $dbLead
      * @return array
      */
-    protected function checkAmo(array &$dbLead): array
+    public function checkAmo(array &$dbLead): array
     {
         $raw = AmocrmIDs::all()->where('leadDBId', '=', $dbLead['leadDBId'])?->first();
         $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'];
@@ -85,8 +86,11 @@ class SendToAmoCRM extends Controller
             $dbLead[$key] = isset($raw[$key]) ? $rawArray[$key] : null;
         }
 
-        $PLANNING = PLANNING::find($dbLead['leadDBId']);
-        $dbLead['FIO'] = $PLANNING->NOM . ' ' . $PLANNING?->PRENOM . ' ' . $PLANNING?->PATRONYME;
+        $PLANNING = PLANNING::find($dbLead['leadDBId'], 'PLANNING_ID');
+        if ($PLANNING && $PLANNING->count() > 0){
+            $planningFirst = $PLANNING->first();
+            $dbLead['FIO'] = $planningFirst->NOM . ' ' . $planningFirst?->PRENOM . ' ' . $planningFirst?->PATRONYME;
+        }
         ksort($dbLead, SORT_NATURAL);
         return $dbLead;
     }

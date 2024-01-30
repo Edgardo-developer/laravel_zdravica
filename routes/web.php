@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Models\AmoCrmLead;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
@@ -18,5 +19,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    AmoCRMLead::factory()->create();
     return view('welcome');
 });
