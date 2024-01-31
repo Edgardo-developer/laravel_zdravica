@@ -10,6 +10,7 @@ use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmocrmIDs;
 use App\Models\PLANNING;
+use DateTime;
 use GuzzleHttp\Client;
 
 class SendToAmoCRM extends Controller
@@ -25,7 +26,8 @@ class SendToAmoCRM extends Controller
      */
     public function sendDealToAmoCRM(): array
     {
-        $buildLead = $this->getPlanningFIO($this->DBlead);
+        $buildLead['FIO'] = $this->getPlanningFIO($this->DBlead);
+        ksort($buildLead, SORT_NATURAL);
         $client = new Client(['verify' => false]);
 
         $buildContact = $this->getPatData($buildLead);
@@ -46,17 +48,16 @@ class SendToAmoCRM extends Controller
 
     /**
      * @param array $dbLead
-     * @return array
+     * @return string
      */
-    protected function getPlanningFIO(array &$dbLead): array
+    protected function getPlanningFIO(array &$dbLead): string
     {
         $PLANNING = PLANNING::find($dbLead['leadDBId'], 'PLANNING_ID');
         if ($PLANNING && $PLANNING->count() > 0) {
             $planningFirst = $PLANNING->first();
-            $dbLead['FIO'] = $planningFirst->NOM . ' ' . $planningFirst?->PRENOM . ' ' . $planningFirst?->PATRONYME;
+            return $planningFirst->NOM . ' ' . $planningFirst?->PRENOM . ' ' . $planningFirst?->PATRONYME;
         }
-        ksort($dbLead, SORT_NATURAL);
-        return $dbLead;
+        return '';
     }
 
     protected function updateLead($buildLead, $client)
@@ -102,6 +103,17 @@ class SendToAmoCRM extends Controller
         } else {
             $buildContact = ['FIO' => $buildLead['FIO'] ?? ''];
         }
+        if (isset($buildContact['NE_LE'])){
+            $buildContact['is_child'] = $this->isContactChild($buildContact['NE_LE']);
+        }
         return $buildContact;
+    }
+
+    private function isContactChild($birthday) : bool{
+        $time = strtotime($birthday);
+        $timeDataTime = new \DateTime($time);
+        $timeDataNow = new \DateTime('now');
+        $diffTime = $timeDataNow->diff($timeDataTime);
+        return $diffTime->y > 18;
     }
 }

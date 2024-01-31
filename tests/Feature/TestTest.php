@@ -14,6 +14,10 @@ class TestTest extends TestCase
      */
 //    public function test_connection(): void
 //    {
-//        $this->assertDatabaseCount('master.guest.amocrm_lead', 2);
+//        $time = strtotime($birthday);
+//        $timeDataTime = new \DateTime($time);
+//        $timeDataNow = new \DateTime('now');
+//        $diffTime = $timeDataNow->diff($timeDataTime);
+//        return $diffTime->y > 18;
 //    }
 }
