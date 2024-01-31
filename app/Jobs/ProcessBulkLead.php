@@ -6,6 +6,7 @@ use App\Http\Controllers\Bill\BillBuilderController;
 use App\Http\Controllers\Bill\BillRequestController;
 use App\Http\Controllers\Leads\LeadBuilderController;
 use App\Http\Controllers\Leads\LeadRequestController;
+use App\Http\Controllers\Sends\DeleteLeadController;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
@@ -24,9 +25,9 @@ class ProcessBulkLead implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct($amoLeadIDs, $finish)
+    public function __construct($amoLeadIDs, $withreason)
     {
-        $this->finish = $finish;
+        $this->withreason = $withreason;
         $this->amoLeadIDs = $amoLeadIDs;
     }
 
@@ -35,29 +36,8 @@ class ProcessBulkLead implements ShouldQueue
      */
     public function handle(): void
     {
-        $leadArray = [];
-        $billArray = [];
-        foreach ($this->amoLeadIDs as $amoLeadID) {
-            if ($amoLeadID) {
-                $leadID = (int)$amoLeadID;
-                $billID = amocrmIDs::all()->where('amoLeadID', '=', $amoLeadID)->first()->amoBillID;
-
-                if ($leadID > 0) {
-                    $leadArray[] = $this->finish ?
-                        LeadBuilderController::closeLead($leadID) :
-                        LeadBuilderController::finishLead($leadID);
-                }
-                if ($billID > 0 && $this->finish) {
-                    $billArray[] = BillBuilderController::finishBill($billID);
-                }
-            }
-        }
-        if (count($leadArray[0]) > 0) {
-            $client = new Client(['verify' => false]);
-            if (count($billArray[0]) > 0) {
-                BillRequestController::update($client, $billArray);
-            }
-            LeadRequestController::update($client, $leadArray);
-        }
+        $withreason = filter_var($this->withreason, FILTER_VALIDATE_BOOLEAN);
+        $DeleteLeads = new DeleteLeadController($this->amoLeadIDs);
+        $DeleteLeads->deleteLeads($withreason);
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands\Leads;
 
+use App\Http\Controllers\Sends\DeleteLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Jobs\ProcessBulkLead;
+use App\Models\AmocrmIDs;
 use Illuminate\Console\Command;
 
 class BulkLead extends Command
@@ -15,7 +17,7 @@ class BulkLead extends Command
      */
     protected $signature = 'laradeal:bulkLead
     {--amoLeadIDs=null}
-    {--finish=false}
+    {--withreason=false}
     ';
 
     /**
@@ -30,10 +32,18 @@ class BulkLead extends Command
      */
     public function handle(SendToAmoCRM $sendDealToAmoCRM)
     {
-        $finish = $this->option('finish');
-        $amoLeadIDs = $this->option('amoLeadIDs') ? explode(',', $this->option('amoLeadIDs')) : array();
-        if ($amoLeadIDs) {
-            dispatch(new ProcessBulkLead($amoLeadIDs,$finish));
+        $options = [
+            'amoLeadIDs' => $this->option('id'),
+            'withreason'   => $this->option('withreason'),
+        ];
+        if ($options['amoLeadIDs'] !== 'null'){
+            $amoLeadIDsArr = explode(',',$options['amoLeadIDs']);
+            if ($amoLeadIDsArr){
+                $withreason = filter_var($options['withreason'], FILTER_VALIDATE_BOOLEAN);
+                $DeleteLeads = new DeleteLeadController($amoLeadIDsArr);
+                $DeleteLeads->deleteLeads($withreason);
+//                dispatch(new ProcessBulkLead($amoLeadIDsArr,$options['withreason']));
+            }
         }
     }
 }

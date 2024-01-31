@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Sends;
 
 use App\Http\Controllers\Bill\BillPresendController;
+use App\Http\Controllers\Contacts\ContactsBuilderController;
+use App\Http\Controllers\Contacts\ContactsPrepareController;
+use App\Http\Controllers\Contacts\ContactsPresendController;
+use App\Http\Controllers\Contacts\ContactsRequestController;
 use App\Http\Controllers\LeadLinks\LeadLinksPrepareController;
 use App\Http\Controllers\LeadLinks\LeadLinksRequestController;
 use App\Http\Controllers\Product\ProductPresendController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLeadController extends SendToAmoCRM
 {
@@ -21,7 +26,6 @@ class UpdateLeadController extends SendToAmoCRM
 
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
-        $buildLead = $this->getPlanningFIO($buildLead);
         $client = new Client(['verify' => false]);
         if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && $buildLead['offerLists']) {
             $offersData = self::explodeOffers($buildLead['offerLists']);
@@ -29,11 +33,16 @@ class UpdateLeadController extends SendToAmoCRM
                 $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead, $offersData);
                 if ($buildLead['amoBillID']){
                     $leadLinks = LeadLinksPrepareController::prepare($buildLead, $buildLead['amoBillID']);
-                    $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
                     LeadLinksRequestController::create($client, $leadLinks);
                     $this->setProducts($client, $buildLead, $offersData);
                 }
             }
+        }
+        if (isset($buildLead['patID_changed']) && $buildLead['patID_changed'] === true){
+            $buildContact = $this->getPatData($buildLead);
+            $preparedContact = ContactsPrepareController::prepare($buildContact);
+            $preparedContact['amoID'] = $buildLead['amoContactID'];
+            ContactsRequestController::update($client,$preparedContact);
         }
         $amoData = $this->prepareDataForAmoCRMIds($buildLead);
         $this->updateLead($buildLead, $client);
@@ -101,6 +110,7 @@ class UpdateLeadController extends SendToAmoCRM
     /**
      * @param $client
      * @param $buildLead
+     * @param $offersData
      * @return void
      */
     private function setProducts($client, $buildLead, $offersData)

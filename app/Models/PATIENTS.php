@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PATIENTS extends Model
 {
     use HasFactory;
-    protected $connection = 'sqlsrv2';
+    protected $connection = 'sqlsrv1';
     protected $primaryKey = 'PATIENTS_ID';
     protected $table = 'master.dbo.PATIENTS';
 }

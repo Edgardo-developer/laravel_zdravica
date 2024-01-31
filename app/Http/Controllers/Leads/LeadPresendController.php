@@ -17,7 +17,7 @@ class LeadPresendController extends Controller
                 LeadPrepareController::prepare($DBLead, $DBLead['amoContactID'])
             );
         }
-        return $leadID;
+        return (int)$leadID;
     }
 
     private function checkExists($client, $DBLead)

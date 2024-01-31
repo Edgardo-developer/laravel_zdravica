@@ -74,6 +74,13 @@ class updateLead extends Command
         ];
 
         if ($options){
+            foreach ($options as $optionKey => &$option){
+                if ($option !== 'null'){
+                    continue;
+                }
+                $options[$optionKey] = NULL;
+            }
+            unset($option);
             $UpdateLeadController = new UpdateLeadController($options);
             $UpdateLeadController->sendDealToAmoCRM();
         }

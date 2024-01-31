@@ -9,12 +9,9 @@ class ContactsBuilderController extends BuilderEntityController
 {
     public static function getRow(int $id, bool $declareCall = false): array
     {
-        $patientObject = PATIENTS::find($id,'PATIENTS_ID');
-        if($patientObject){
-            $patient = $patientObject->only(self::getColumns($declareCall ? 1 : 0));
-        }
-        if (!is_null($patientObject) && isset($patient)) {
-            return $patient;
+        $pat = PATIENTS::where("PATIENTS_ID",$id);
+        if($pat->count() > 0){
+            return $pat->first()->only(self::getColumns($declareCall ? 1 : 0));
         }
         return [];
     }

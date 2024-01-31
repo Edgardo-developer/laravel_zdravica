@@ -17,7 +17,7 @@ class updateContact extends Command
      * @var string
      */
     protected $signature = 'laradeal:updateContact
-    {--PAT_ID=null}
+    {--patID=null}
     {--declareCall=null}
     ';
 
@@ -34,12 +34,12 @@ class updateContact extends Command
     public function handle()
     {
         $options = [
-            'PAT_ID' => $this->option('id') ?? '',
+            'patID' => $this->option('id') ?? '',
             'declareCall' => $this->option('declareCall') ?? '',
         ];
-        if ($options['PAT_ID'] !== '' && (int)$options['declareCall'] > 0) {
+        if ($options['patID'] !== '' && (int)$options['declareCall'] > 0) {
             $row = ContactsBuilderController::getRow(
-                (int)$options['PAT_ID'],
+                (int)$options['patID'],
                 (int)$options['declareCall'] === 1
             );
             $prepared = ContactsPrepareController::prepare($row);

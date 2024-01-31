@@ -3,6 +3,8 @@
 namespace App\Console\Commands\Leads;
 
 use App\Http\Controllers\Sends\DeleteLeadController;
+use App\Jobs\ProcessBulkLead;
+use App\Models\AmocrmIDs;
 use Illuminate\Console\Command;
 
 class deleteLead extends Command
@@ -13,8 +15,9 @@ class deleteLead extends Command
      * @var string
      */
     protected $signature = 'laradeal:deleteLead
-    {--id=null}
-    {--ids=null}';
+    {--leadDbId=null}
+    {--withreason=false}
+    ';
 
     /**
      * The console command description.
@@ -29,18 +32,16 @@ class deleteLead extends Command
     public function handle()
     {
         $options = [
-            'id' => $this->option('id'),
-            'ids'   => $this->option('ids')
+            'leadDbId' => $this->option('id'),
+            'withreason'   => $this->option('withreason'),
         ];
-        if ($options){
-            if ($options['id']){
-                $ids = [$options['id']];
-            }else if ($options['ids']){
-                $ids = explode(',',$options['ids']);
-            }
-            if (isset($ids)){
-                $DeleteLeadController = new DeleteLeadController($ids);
-                $DeleteLeadController->deleteLeads();
+        if ($options['leadDbId'] !== 'null'){
+            $amoLeadID = AmocrmIDs::where('leadDbId', $options['leadDbId'])->first()->amoLeadID;
+            if ($amoLeadID){
+//                dispatch(new ProcessBulkLead([$amoLeadID],$options['withreason']));
+                $withreason = filter_var($options['withreason'], FILTER_VALIDATE_BOOLEAN);
+                $DeleteLeads = new DeleteLeadController([$amoLeadID]);
+                $DeleteLeads->deleteLeads($withreason);
             }
         }
     }

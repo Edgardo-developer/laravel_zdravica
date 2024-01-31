@@ -72,8 +72,15 @@ class createLead extends Command
             'delete' => $this->option('delete'),
         ];
         if ($options) {
-            (new SendToAmoCRM())->sendDealToAmoCRM($options);
-//             ProcessLead::dispatch($options);
+            foreach ($options as $optionKey => &$option){
+                if ($option !== 'null'){
+                    continue;
+                }
+                $options[$optionKey] = NULL;
+            }
+            unset($option);
+            $SendToAmoCRM = new SendToAmoCRM($options);
+            $SendToAmoCRM->sendDealToAmoCRM();
         }
     }
 }

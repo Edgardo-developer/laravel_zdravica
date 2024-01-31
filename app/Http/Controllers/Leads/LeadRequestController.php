@@ -43,12 +43,14 @@ class LeadRequestController extends RequestController
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
+        $leadID = $preparedData['amoLeadID'];
+        unset($preparedData['amoLeadID']);
         try {
             $request = new Request(
-                'PATCH', self::$URI, $headers,
+                'PATCH', self::$URI.'/'.$leadID, $headers,
                 json_encode($preparedData, JSON_THROW_ON_ERROR)
             );
-            return self::handleErrors($client, $request, true);
+            return self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getLine());

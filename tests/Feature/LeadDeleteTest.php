@@ -12,9 +12,7 @@ use Tests\TestCase;
 
 class LeadDeleteTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
+    use RefreshDatabase;
     public function testLeadDeleteWithSuccess(){
         $findedArray = AmoCRMLead::find(1);
         $array = $findedArray->toArray();

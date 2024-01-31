@@ -14,7 +14,8 @@ use GuzzleHttp\Client;
 
 class SendToAmoCRM extends Controller
 {
-    public function __construct($DBlead){
+    public function __construct($DBlead)
+    {
         $this->DBlead = $DBlead;
     }
 
@@ -27,16 +28,14 @@ class SendToAmoCRM extends Controller
         $buildLead = $this->getPlanningFIO($this->DBlead);
         $client = new Client(['verify' => false]);
 
-        $buildContact = (int)$buildLead['patID'] > 0 ? ContactsBuilderController::getRow(
-            (int)$buildLead['patID'],
-            (int)$buildLead['declareCall'] === 1
-        ) : ['FIO'=>$buildLead['FIO']];
+        $buildContact = $this->getPatData($buildLead);
 
         if ($buildLead && $buildContact) {
             $buildLead['amoContactID'] = (new ContactsPresendController())->getAmoID($client, $buildContact);
             $buildLead['amoLeadID'] = (new LeadPresendController())->getAmoID($client, $buildLead);
 
             $this->updateLead($buildLead, $client);
+            $buildLead['amoLeadID'] = (int)$buildLead['amoLeadID'];
             $amoData = $this->prepareDataForAmoCRMIds($buildLead);
 
             AmocrmIDs::create($amoData);
@@ -52,7 +51,7 @@ class SendToAmoCRM extends Controller
     protected function getPlanningFIO(array &$dbLead): array
     {
         $PLANNING = PLANNING::find($dbLead['leadDBId'], 'PLANNING_ID');
-        if ($PLANNING && $PLANNING->count() > 0){
+        if ($PLANNING && $PLANNING->count() > 0) {
             $planningFirst = $PLANNING->first();
             $dbLead['FIO'] = $planningFirst->NOM . ' ' . $planningFirst?->PRENOM . ' ' . $planningFirst?->PATRONYME;
         }
@@ -60,15 +59,17 @@ class SendToAmoCRM extends Controller
         return $dbLead;
     }
 
-    protected function updateLead($buildLead, $client){
+    protected function updateLead($buildLead, $client)
+    {
         $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
-        $leadPrepared['id'] = (int)$buildLead['amoLeadID'];
+        $leadPrepared['amoLeadID'] = (int)$buildLead['amoLeadID'];
         $leadPrepared['pipeline_id'] = 7332486;
         $leadPrepared['status_id'] = 61034286;
-        LeadRequestController::update($client, [$leadPrepared]);
+        LeadRequestController::update($client, $leadPrepared);
     }
 
-    protected function prepareDataForAmoCRMIds($buildLead){
+    protected function prepareDataForAmoCRMIds($buildLead)
+    {
         $amoData = array_intersect_key($buildLead, [
             'amoContactID' => '',
             'amoLeadID' => '',
@@ -78,12 +79,29 @@ class SendToAmoCRM extends Controller
         ]);
         foreach ($amoData as $k => &$IdsName) {
             if ($buildLead[$k] !== 'null') {
-                $amoData[$k] = $buildLead[$k];
+                if ($k === 'offers') {
+                    $amoData[$k] = (int)$buildLead[$k];
+                } else {
+                    $amoData[$k] = $buildLead[$k];
+                }
             } else {
                 unset($amoData[$k]);
             }
         }
         unset($IdsName);
         return $amoData;
+    }
+
+    protected function getPatData($buildLead)
+    {
+        if ((int)$buildLead['patID'] > 0) {
+            $buildContact = ContactsBuilderController::getRow(
+                (int)$buildLead['patID'],
+                (int)$buildLead['declareCall'] === 1
+            );
+        } else {
+            $buildContact = ['FIO' => $buildLead['FIO'] ?? ''];
+        }
+        return $buildContact;
     }
 }
