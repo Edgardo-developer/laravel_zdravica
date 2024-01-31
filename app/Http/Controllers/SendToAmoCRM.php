@@ -10,7 +10,6 @@ use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmocrmIDs;
 use App\Models\PLANNING;
-use DateTime;
 use GuzzleHttp\Client;
 
 class SendToAmoCRM extends Controller
@@ -26,11 +25,15 @@ class SendToAmoCRM extends Controller
      */
     public function sendDealToAmoCRM(): array
     {
+        $buildLead = $this->DBlead;
         $buildLead['FIO'] = $this->getPlanningFIO($this->DBlead);
         ksort($buildLead, SORT_NATURAL);
         $client = new Client(['verify' => false]);
 
         $buildContact = $this->getPatData($buildLead);
+        if (isset($buildContact['NE_LE'])){
+            $buildLead['agePat'] = $buildContact['agePat'] = $this->getAge($buildContact['NE_LE']);
+        }
 
         if ($buildLead && $buildContact) {
             $buildLead['amoContactID'] = (new ContactsPresendController())->getAmoID($client, $buildContact);
@@ -95,25 +98,23 @@ class SendToAmoCRM extends Controller
 
     protected function getPatData($buildLead)
     {
-        if ((int)$buildLead['patID'] > 0) {
+        if (isset($buildLead['patID']) && (int)$buildLead['patID'] > 0) {
             $buildContact = ContactsBuilderController::getRow(
                 (int)$buildLead['patID'],
                 (int)$buildLead['declareCall'] === 1
             );
+            $buildContact['FIO'] = $buildLead['fioPat'];
         } else {
             $buildContact = ['FIO' => $buildLead['FIO'] ?? ''];
         }
-        if (isset($buildContact['NE_LE'])){
-            $buildContact['is_child'] = $this->isContactChild($buildContact['NE_LE']);
-        }
+
         return $buildContact;
     }
 
-    private function isContactChild($birthday) : bool{
+    private function getAge($birthday) : int{
         $time = strtotime($birthday);
-        $timeDataTime = new \DateTime($time);
-        $timeDataNow = new \DateTime('now');
-        $diffTime = $timeDataNow->diff($timeDataTime);
-        return $diffTime->y > 18;
+        $timeDataTime = date('Y',$time);
+        $timeDataNow = date('Y');
+        return $timeDataNow - $timeDataTime;
     }
 }

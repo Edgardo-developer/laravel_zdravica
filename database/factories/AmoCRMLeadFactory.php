@@ -23,6 +23,7 @@ class AmoCRMLeadFactory extends Factory
             'patID' => 1,
             'leadDBId' => 1,
             'fioDoc'    => fake()->name(1),
+            'fioPat'    => 'Имя Фамилие',
             'billID'    => NULL,
             'billSum'   => NULL,
             'offers'    => 'Общий анализ крови',

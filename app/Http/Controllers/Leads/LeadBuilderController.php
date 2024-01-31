@@ -21,6 +21,7 @@ class LeadBuilderController extends BuilderEntityController
     {
         return [
             'id' => (int)$amoLeadID,
+            'amoLeadID' => (int)$amoLeadID,
             'name' => '1',
             'closed_at' => time() + 5,
             'status_id' => 143,
@@ -31,7 +32,7 @@ class LeadBuilderController extends BuilderEntityController
     public static function finishLead($amoLeadID): array
     {
         return [
-            'id' => (int)$amoLeadID,
+            'amoLeadID' => (int)$amoLeadID,
             'status_id' => 142,
         ];
     }

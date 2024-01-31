@@ -17,8 +17,10 @@ class LeadRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $preparedData['status_id'] = 61034286;
         try {
-            $request = new Request('POST', self::$URI, $headers, json_encode([$preparedData], JSON_THROW_ON_ERROR));
-            $res = self::handleErrors($client, $request, false);
+            $request = new Request('POST',
+                self::$URI, $headers,
+                json_encode([$preparedData], JSON_THROW_ON_ERROR));
+            $res = self::handleErrors($client, $request);
             if ($res) {
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 if ($result && $result['_embedded']) {
@@ -43,11 +45,17 @@ class LeadRequestController extends RequestController
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $leadID = $preparedData['amoLeadID'];
-        unset($preparedData['amoLeadID']);
+        if (!isset($preparedData['delete'])){
+            $leadID = $preparedData['amoLeadID'];
+            $uri = self::$URI.'/'.$leadID;
+            unset($preparedData['amoLeadID']);
+        }else{
+            $uri = self::$URI;
+            unset($preparedData['delete']);
+        }
         try {
             $request = new Request(
-                'PATCH', self::$URI.'/'.$leadID, $headers,
+                'PATCH', $uri, $headers,
                 json_encode($preparedData, JSON_THROW_ON_ERROR)
             );
             return self::handleErrors($client, $request);

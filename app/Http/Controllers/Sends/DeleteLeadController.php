@@ -42,6 +42,7 @@ class DeleteLeadController extends Controller
             if (count($billArray) > 0) {
                 BillRequestController::update($client, $billArray);
             }
+            $leadArray['delete'] = true;
             LeadRequestController::update($client, $leadArray);
         }
     }

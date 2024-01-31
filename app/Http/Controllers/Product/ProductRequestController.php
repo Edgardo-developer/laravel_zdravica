@@ -23,7 +23,7 @@ class ProductRequestController extends RequestController
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            die();
+            return false;
         }
     }
 
@@ -62,7 +62,7 @@ class ProductRequestController extends RequestController
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            die();
+            return;
         }
     }
 }

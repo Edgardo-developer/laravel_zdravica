@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('created_at')->default($this->getTimestamp());
             $table->string('offers')->nullable();
             $table->string('managerName')->nullable();
+            $table->string('fioPat')->nullable();
             $table->string('direction')->nullable();
             $table->string('specDoc')->nullable();
             $table->string('fioDoc')->nullable();

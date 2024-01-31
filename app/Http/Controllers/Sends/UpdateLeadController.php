@@ -27,23 +27,13 @@ class UpdateLeadController extends SendToAmoCRM
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
         $client = new Client(['verify' => false]);
-        if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && $buildLead['offerLists']) {
-            $offersData = self::explodeOffers($buildLead['offerLists']);
-            if ($offersData){
-                $buildLead['amoBillID'] = $this->getBillAmoID($client, $buildLead, $offersData);
-                if ($buildLead['amoBillID']){
-                    $leadLinks = LeadLinksPrepareController::prepare($buildLead, $buildLead['amoBillID']);
-                    LeadLinksRequestController::create($client, $leadLinks);
-                    $this->setProducts($client, $buildLead, $offersData);
-                }
-            }
+
+        $amoBillID = $this->processBill($client,$buildLead);
+        if ($amoBillID){
+            $buildLead['amoBillID']  = $amoBillID;
         }
-        if (isset($buildLead['patID_changed']) && $buildLead['patID_changed'] === true){
-            $buildContact = $this->getPatData($buildLead);
-            $preparedContact = ContactsPrepareController::prepare($buildContact);
-            $preparedContact['amoID'] = $buildLead['amoContactID'];
-            ContactsRequestController::update($client,$preparedContact);
-        }
+        $this->updatePatID($client, $buildLead);
+
         $amoData = $this->prepareDataForAmoCRMIds($buildLead);
         $this->updateLead($buildLead, $client);
         (new \App\Models\AmocrmIDs)->update([
@@ -122,6 +112,31 @@ class UpdateLeadController extends SendToAmoCRM
             $linksPrepared['amoLeadID'] = $buildLead['amoLeadID'];
             LeadLinksRequestController::update($client, $linksPrepared);
         }
+    }
+
+    private function updatePatID($client,$buildLead){
+        if (isset($buildLead['patID_changed']) && $buildLead['patID_changed'] === true){
+            $buildContact = $this->getPatData($buildLead);
+            $preparedContact = ContactsPrepareController::prepare($buildContact);
+            $preparedContact['amoID'] = $buildLead['amoContactID'];
+            ContactsRequestController::update($client,$preparedContact);
+        }
+    }
+
+    private function processBill($client, $buildLead){
+        if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && $buildLead['offerLists']) {
+            $offersData = self::explodeOffers($buildLead['offerLists']);
+            if ($offersData){
+                $amoBillID = $this->getBillAmoID($client, $buildLead, $offersData);
+                if ($amoBillID){
+                    $leadLinks = LeadLinksPrepareController::prepare($buildLead, $amoBillID);
+                    $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
+                    LeadLinksRequestController::create($client, $leadLinks);
+                    $this->setProducts($client, $buildLead, $offersData);
+                }
+            }
+        }
+        return $amoBillID ?? 0;
     }
 
     /**

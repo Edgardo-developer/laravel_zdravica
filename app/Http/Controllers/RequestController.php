@@ -67,7 +67,7 @@ class RequestController extends Controller
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            die();
+            return;
         }
 
 
@@ -77,7 +77,7 @@ class RequestController extends Controller
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            die();
+            return;
         }
 
         foreach ($result as $resultLineName => $resultLine) {

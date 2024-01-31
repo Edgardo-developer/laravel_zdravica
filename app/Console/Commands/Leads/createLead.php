@@ -20,6 +20,7 @@ class createLead extends Command
     {--specDoc=null}
     {--patID=null}
     {--fioDoc=null}
+    {--fioPat=null}
     {--declareVisit=null}
     {--declareCall=null}
     {--filial=null}
@@ -59,6 +60,7 @@ class createLead extends Command
             'direction' => $this->option('direction'),
             'specDoc' => $this->option('specDoc'),
             'fioDoc' => $this->option('fioDoc'),
+            'fioPat' => $this->option('fioPat'),
             'filial' => $this->option('filial'),
             'date' => $this->option('date'),
             'billSum' => $this->option('billSum'),

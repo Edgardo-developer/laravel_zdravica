@@ -43,6 +43,13 @@ class CasesLeadsTest extends TestCase
 
     public function testWhenPatientIsAChild(): void
     {
-
+        $array = AmoCRMLead::find(1);
+        $array = $array->toArray();
+        $array['patID'] = 1;
+        $array['leadDBId'] = 2;
+        $SendToAmoCRM = new SendToAmoCRM($array);
+        $SendToAmoCRMArr = $SendToAmoCRM->sendDealToAmoCRM();
+        $this->assertGreaterThan(0, $SendToAmoCRMArr['amoContactID']);
+        $this->assertGreaterThan(0, $SendToAmoCRMArr['amoLeadID']);
     }
 }

@@ -13,7 +13,7 @@ class LeadLinksRequestController extends RequestController
 
     public static function create($client, $preparedData): void
     {
-        if (!$preparedData['amoLeadID']) {
+        if (!isset($preparedData['amoLeadID'])){
             return;
         }
         $uri = sprintf(self::$URI, $preparedData['amoLeadID']);

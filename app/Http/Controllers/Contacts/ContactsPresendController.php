@@ -60,8 +60,11 @@ class ContactsPresendController extends Controller
 
         if ($contacts){
             if (count($contacts) > 1){
-                $byAge = $this->getByAge($contacts,$contact['is_child']);
-                if ($byAge){ return $byAge; }
+                if (isset($contact['agePat'])){
+                    $isChild = $contact['agePat'] <= 18;
+                    $byAge = $this->getByAge($contacts, $isChild);
+                    if ($byAge){ return $byAge; }
+                }
 
                 $byFIO = $this->getByFIO($contacts,$contact['FIO']);
                 if ($byFIO){ return $byFIO; }
@@ -99,14 +102,15 @@ class ContactsPresendController extends Controller
 
     private function getByAge(array $amoContacts, bool $is_child) : int{
         foreach ($amoContacts as $amoContact){
-            $customFields = $amoContact['custom_fields'];
+            $customFields = $amoContact['custom_fields_values'];
             foreach ($customFields as $customField){
                 if($customField['field_id'] === 391183){
-                    $birthDay = new \DateTime($customField['values'][0]['value']);
-                    $now = new \DateTime($customField['values'][0]['value']);
-                    $diff = $birthDay->diff($now);
-                    if (($diff->y > 18 && !$is_child) || ($diff->y < 18 && $is_child)){
-                        return $customField['id'];
+                    $birthString = str_replace('.','/',$customField['values'][0]['value']);
+                    $birthDay = date('Y',strtotime($birthString));
+                    $now = date('Y');
+                    $diff = $now - $birthDay;
+                    if (($diff > 18 && !$is_child) || ($diff < 18 && $is_child)){
+                        return $amoContact['id'];
                     }
                 }
             }
@@ -116,7 +120,7 @@ class ContactsPresendController extends Controller
 
     private function getByFIO(array $amoContacts, string $FIO){
         foreach ($amoContacts as $amoContact){
-            $customFields = $amoContact['custom_fields'];
+            $customFields = $amoContact['custom_fields_values'];
             foreach ($customFields as $customField){
                 if($customField['field_id'] === 391181){
                     if($customField['values'][0]['value'] === $FIO){

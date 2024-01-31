@@ -30,14 +30,14 @@ class LeadPresendController extends Controller
                 if (isset($result) && $result['_embedded']) {
                     foreach ($result['_embedded']['leads'] as $lead) {
                         if ((time() - $lead['created_at'] > 0 && time() - $lead['created_at'] < 180)
-                            && is_null($lead['custom_fields_values'])) {
+                            && !$lead['custom_fields_values']) {
                             return $lead['id'];
                         }
                     }
                 }
             } catch (JsonException $ex) {
                 Log::warning($ex->getMessage());
-                Log::warning($ex->getFile());
+                Log::warning($ex->getTraceAsString());
                 Log::warning($ex->getLine());
             }
         }
