@@ -16,7 +16,7 @@ class LeadLinksPrepareController extends PrepareEntityController
     {
         return [
             [
-                'to_entity_id' => $AmoBillID,
+                'to_entity_id' => (int)$AmoBillID,
                 'to_entity_type' => 'catalog_elements',
                 'metadata' => [
                     'quantity' => 1.0,
@@ -24,7 +24,7 @@ class LeadLinksPrepareController extends PrepareEntityController
                 ]
             ],
             [
-                'to_entity_id' => $leadDB['amoContactID'],
+                'to_entity_id' => (int)$leadDB['amoContactID'],
                 'to_entity_type' => 'contacts',
             ]
         ];

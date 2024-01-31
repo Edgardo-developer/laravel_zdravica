@@ -21,8 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('amocrm_lead', function(Blueprint $table){
-            $table->dropColumn('offerLists');
-        });
+        Schema::dropIfExists('amocrm_lead');
     }
 };

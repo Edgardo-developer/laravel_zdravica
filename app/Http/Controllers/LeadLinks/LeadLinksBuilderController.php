@@ -14,6 +14,6 @@ class LeadLinksBuilderController extends BuilderEntityController
      */
     public static function getRow(int $amoLeadID): array
     {
-        return AmocrmIDs::all()->where('amoLeadID', '=', $amoLeadID)->first()?->amoBillID ?? [];
+        return AmocrmIDs::where('amoLeadID', '=', $amoLeadID)->first()?->amoBillID ?? [];
     }
 }

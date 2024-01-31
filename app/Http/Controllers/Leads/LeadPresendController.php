@@ -30,7 +30,7 @@ class LeadPresendController extends Controller
                 if (isset($result) && $result['_embedded']) {
                     foreach ($result['_embedded']['leads'] as $lead) {
                         if ((time() - $lead['created_at'] > 0 && time() - $lead['created_at'] < 180)
-                            && count($lead['custom_fields_values']) === 0) {
+                            && is_null($lead['custom_fields_values'])) {
                             return $lead['id'];
                         }
                     }

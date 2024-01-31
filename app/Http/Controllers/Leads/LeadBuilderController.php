@@ -14,7 +14,7 @@ class LeadBuilderController extends BuilderEntityController
      */
     public static function getRow(int $id): array
     {
-        return AmoCrmLead::find($id)->toArray() ?? [];
+        return AmoCrmLead::find($id,'id')->toArray() ?? [];
     }
 
     public static function closeLead($amoLeadID): array

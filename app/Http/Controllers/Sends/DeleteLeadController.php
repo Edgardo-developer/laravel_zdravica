@@ -2,36 +2,47 @@
 
 namespace App\Http\Controllers\Sends;
 
+use App\Http\Controllers\Bill\BillBuilderController;
+use App\Http\Controllers\Bill\BillRequestController;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Leads\LeadBuilderController;
 use App\Http\Controllers\Leads\LeadRequestController;
-use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 
-class DeleteLeadController extends SendToAmoCRM
+class DeleteLeadController extends Controller
 {
-    public function __construct(array $ids){
-        $this->ids = $ids;
+    public function __construct($ids){
+        $this->dbIDs = $ids;
     }
 
-    public function deleteLeads(){
-        $ids = $this->ids;
-        $arr = $this->declareRequest($ids);
-        if ($arr){
-            $client = new Client(['verify'=>false]);
-            LeadRequestController::update($client, $arr);
+    public function deleteLeads(bool $withReason){
+        $leadArray = [];
+        $billArray = [];
+        foreach ($this->dbIDs as $dbID) {
+            $leadID = (int)$dbID;
+            $billID = amocrmIDs::where('amoLeadID', '=', $dbID)->first()->amoBillID;
+
+            if ($leadID > 0) {
+                $leadArray[] = $withReason ?
+                    LeadBuilderController::closeLead($leadID) :
+                    LeadBuilderController::finishLead($leadID);
+            }
+            if ($billID > 0 && $withReason) {
+                $billArray[] = BillBuilderController::finishBill($billID);
+            }
         }
-        AmocrmIDs::where('leadDBId', $ids)->delete();
+        $this->removeThem($leadArray,$billArray);
+        return true;
     }
 
-    private function declareRequest(array $ids){
-        $leadArr = [];
-        foreach ($ids as $id){
-            $leadArr[] = [
-                "id"    => $id,
-                "status_id" => 143,
-                "pipeline_id" => 7332486
-            ];
+    private function removeThem($leadArray, $billArray){
+        $client = new Client(['verify' => false]);
+        if (count($leadArray[0]) > 0) {
+            if (count($billArray) > 0) {
+                BillRequestController::update($client, $billArray);
+            }
+            LeadRequestController::update($client, $leadArray);
         }
-        return $leadArr;
     }
 }

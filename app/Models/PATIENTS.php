@@ -9,5 +9,6 @@ class PATIENTS extends Model
 {
     use HasFactory;
     protected $connection = 'sqlsrv2';
+    protected $primaryKey = 'PATIENTS_ID';
     protected $table = 'master.dbo.PATIENTS';
 }

@@ -10,7 +10,7 @@ class ProductBuilderController extends BuilderEntityController
     public static function getRow(string|int $offerName): array
     {
         if (is_string($offerName)) {
-            $offerRaw = amoProducts::all()->where('name', '=', $offerName);
+            $offerRaw = amoProducts::where('name', '=', $offerName);
             if ($offerRaw->first()) {
                 return ['amoID' => $offerRaw->first()->amoID];
             }

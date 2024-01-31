@@ -43,7 +43,7 @@ class RequestController extends Controller
             Log::warning($ex->getMessage());
             Log::warning($ex->getFile());
             Log::warning($ex->getLine());
-            die();
+            return false;
         }
     }
 

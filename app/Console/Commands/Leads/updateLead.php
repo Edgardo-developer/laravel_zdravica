@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands\Leads;
 
-use App\Http\Controllers\SendToAmoCRM;
+use App\Http\Controllers\Sends\UpdateLeadController;
 use Illuminate\Console\Command;
 
-class moveLead extends Command
+class updateLead extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'laradeal:moveLead
+    protected $signature = 'laradeal:updateLead
     {--id=null}
     {--direction=null}
     {--updated_at=null}
@@ -42,12 +42,12 @@ class moveLead extends Command
      *
      * @var string
      */
-    protected $description = 'Send the deal to the AmoCRM';
+    protected $description = 'Updates Lead';
 
     /**
      * Execute the console command.
      */
-    public function handle(SendToAmoCRM $SendToAmoCRM)
+    public function handle()
     {
         $options = [
             'id' => $this->option('id'),
@@ -65,18 +65,17 @@ class moveLead extends Command
             'offers' => $this->option('offers'),
             'offerLists' => $this->option('offerLists'),
             'managerName' => $this->option('managerName'),
-            //'amoLeadID' => $this->option('amoLeadID'),
             'updated_at' => $this->option('updated_at'),
             'created_at' => $this->option('created_at'),
-            //'amoContactID' => $this->option('amoContactID'),
             'responsibleFIO' => $this->option('responsibleFIO'),
             'declareCall' => $this->option('declareCall'),
             'declareVisit' => $this->option('declareVisit'),
             'delete' => $this->option('delete'),
         ];
-        if ($options) {
-            (new SendToAmoCRM())->sendDealToAmoCRM($options);
-//             ProcessLead::dispatch($options);
+
+        if ($options){
+            $UpdateLeadController = new UpdateLeadController($options);
+            $UpdateLeadController->sendDealToAmoCRM();
         }
     }
 }

@@ -17,9 +17,9 @@ class PLANNINGFactory extends Factory
     public function definition(): array
     {
         return [
-            'NOM'   => 'Test',
-            'PRENOM'    => 'Test',
-            'PATRONYME' => 'Test'
+            'NOM'   => 'Фамилие',
+            'PRENOM'    => 'Имя',
+            'PATRONYME' => 'Отчество'
         ];
     }
 }

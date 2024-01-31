@@ -17,18 +17,18 @@ class PatientsFactory extends Factory
     public function definition(): array
     {
         return [
-            'NOM' => fake()->name(),
-            'PRENOM' => fake()->name(),
-            'PATRONYME' => fake()->name(),
-            'EMAIL' => fake()->email(),
-            'MOBIL_NYY' => fake()->numberBetween(1111111, 9999999),
-            'POL' => fake()->numberBetween(0, 1),
-            'GOROD' => fake()->city(),
-            'NE_LE' => fake()->date('Y.m.d', 'now - 18 years'),
-            'RAYON_VYBORKA' => fake()->address,
-            'ULICA' => fake()->address(),
-            'DOM' => fake()->address(),
-            'KVARTIRA' => fake()->address(),
+            'NOM' => "Фамилие",
+            'PRENOM' => "Имя",
+            'PATRONYME' => "Отчество",
+            'EMAIL' => "email@email.com",
+            'MOBIL_NYY' => "1234567891",
+            'POL' => 1,
+            'GOROD' => 'Tbilisi',
+            'NE_LE' => '2000.01.01',
+            'RAYON_VYBORKA' => 'address',
+            'ULICA' => 'ulica',
+            'DOM' => 'dom',
+            'KVARTIRA' => 'kvartira',
         ];
     }
 }

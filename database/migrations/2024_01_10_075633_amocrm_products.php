@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('amocrm_products', function(Blueprint $blueprint){
-            $blueprint->id();
+            $blueprint->id('FM_SERV_ID');
             $blueprint->string('name')->nullable();
             $blueprint->integer('amoID')->nullable();
             $blueprint->integer('DBId')->nullable();

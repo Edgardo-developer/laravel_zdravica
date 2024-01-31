@@ -13,20 +13,21 @@ class LeadLinksRequestController extends RequestController
 
     public static function create($client, $preparedData): void
     {
-        if ($preparedData['amoLeadID']) {
-            $uri = sprintf(self::$URI, $preparedData['amoLeadID']);
-            unset($preparedData['amoLeadID']);
-            $RequestExt = self::getRequestExt();
-            $headers = $RequestExt['headers'];
-            try {
-                $request = new Request('POST', $uri, $headers, json_encode($preparedData, JSON_THROW_ON_ERROR));
-                self::handleErrors($client, $request, true);
-            }catch (JsonException $ex){
-                Log::warning($ex->getMessage());
-                Log::warning($ex->getFile());
-                Log::warning($ex->getLine());
-                die();
-            }
+        if (!$preparedData['amoLeadID']) {
+            return;
+        }
+        $uri = sprintf(self::$URI, $preparedData['amoLeadID']);
+        unset($preparedData['amoLeadID']);
+        $RequestExt = self::getRequestExt();
+        $headers = $RequestExt['headers'];
+        try {
+            $request = new Request('POST', $uri, $headers, json_encode($preparedData, JSON_THROW_ON_ERROR));
+            self::handleErrors($client, $request, true);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getFile());
+            Log::warning($ex->getLine());
+            return;
         }
     }
 
@@ -52,7 +53,7 @@ class LeadLinksRequestController extends RequestController
             Log::warning($ex->getMessage());
             Log::warning($ex->getCode());
             Log::warning($ex->getLine());
-            die();
+            return;
         }
     }
 }

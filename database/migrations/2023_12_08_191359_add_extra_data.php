@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::table('amocrm_lead', function(Blueprint $table){
             $table->integer('leadDBId')->nullable()->unique();
-//            $table->integer('amoLeadID')->nullable()->unique();
-//            $table->integer('amoContactID')->nullable();
             $table->string('responsibleFIO')->nullable();
             $table->integer('responsible_user_id')->nullable();
         });
@@ -25,12 +23,6 @@ return new class extends Migration
      */
     public function down() : void
     {
-        Schema::table('amocrm_lead', function(Blueprint $table){
-            $table->dropColumn('leadDBId');
-//            $table->dropColumn('leadDBId');
-//            $table->dropColumn('amoContactID');
-            $table->dropColumn('responsibleFIO');
-            $table->dropColumn('responsible_user_id');
-        });
+        Schema::dropIfExists('amocrm_lead');
     }
 };

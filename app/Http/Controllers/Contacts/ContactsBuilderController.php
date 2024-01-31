@@ -9,7 +9,7 @@ class ContactsBuilderController extends BuilderEntityController
 {
     public static function getRow(int $id, bool $declareCall = false): array
     {
-        $patientObject = PATIENTS::find($id);
+        $patientObject = PATIENTS::find($id,'PATIENTS_ID');
         if($patientObject){
             $patient = $patientObject->only(self::getColumns($declareCall ? 1 : 0));
         }
@@ -27,7 +27,7 @@ class ContactsBuilderController extends BuilderEntityController
     protected static function getColumns(int $declareVisit): array
     {
         $columns = [
-            'id',
+            'PATIENTS_ID',
             'NOM',
             'PRENOM',
             'PATRONYME',

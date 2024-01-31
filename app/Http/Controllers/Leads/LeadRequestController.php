@@ -52,7 +52,7 @@ class LeadRequestController extends RequestController
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getLine());
-            die();
+            return;
         }
     }
 
