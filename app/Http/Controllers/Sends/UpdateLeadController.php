@@ -6,8 +6,7 @@ use App\Http\Controllers\Bill\BillGeneralController;
 use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
 use App\Http\Controllers\LeadLinks\LeadLinksGeneralController;
-use App\Http\Controllers\LeadLinks\LeadLinksRequestController;
-use App\Http\Controllers\Product\ProductPresendController;
+use App\Http\Controllers\Product\ProductGeneralController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
@@ -21,6 +20,7 @@ class UpdateLeadController extends SendToAmoCRM
         $client = new Client(['verify'=>false]);
         $this->BillGeneralController = new BillGeneralController($client);
         $this->LeadLinksGeneralController = new LeadLinksGeneralController($client);
+        $this->ProductGeneralController = new ProductGeneralController($client);
         $this->buildlead = $buildlead;
     }
 
@@ -104,8 +104,7 @@ class UpdateLeadController extends SendToAmoCRM
     private function setProducts($client, $buildLead, $offersData)
     {
         if (count($offersData['offerNames']) > 0){
-            $ProductPresend = new ProductPresendController();
-            $productIDs = $ProductPresend->getAmoIDs($client, $offersData['offerNames']);
+            $productIDs = $this->ProductGeneralController->getAmoIDs($offersData['offerNames']);
             $linksPrepared = $this->LeadLinksGeneralController->prepareAll($productIDs);
             $linksPrepared['amoLeadID'] = $buildLead['amoLeadID'];
             $this->LeadLinksGeneralController->update($linksPrepared);

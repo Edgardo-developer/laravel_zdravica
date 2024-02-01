@@ -11,7 +11,7 @@ class ProductRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/catalogs/12348/elements';
 
-    public static function create($client, $preparedData): array
+    public function create($client, $preparedData): array
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -23,7 +23,25 @@ class ProductRequestController extends RequestController
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            return false;
+            return [];
+        }
+    }
+
+    public function update($client, $preparedData): void
+    {
+        $RequestExt = self::getRequestExt();
+        $headers = $RequestExt['headers'];
+        $amoBillID = $preparedData['amoID'];
+        unset($preparedData['amoID']);
+        try {
+            $jsonData  = json_encode([$preparedData], JSON_THROW_ON_ERROR);
+            $request = new Request('POST', self::$URI . '/' . $amoBillID, $headers, $jsonData);
+            self::handleErrors($client, $request);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getTraceAsString());
+            Log::warning($ex->getLine());
+            return;
         }
     }
 
@@ -46,23 +64,5 @@ class ProductRequestController extends RequestController
             }
         }
         return [];
-    }
-
-    public static function update($client, $preparedData): void
-    {
-        $RequestExt = self::getRequestExt();
-        $headers = $RequestExt['headers'];
-        $amoBillID = $preparedData['amoID'];
-        unset($preparedData['amoID']);
-        try {
-            $jsonData  = json_encode([$preparedData], JSON_THROW_ON_ERROR);
-            $request = new Request('POST', self::$URI . '/' . $amoBillID, $headers, $jsonData);
-            self::handleErrors($client, $request);
-        }catch (JsonException $ex){
-            Log::warning($ex->getMessage());
-            Log::warning($ex->getTraceAsString());
-            Log::warning($ex->getLine());
-            return;
-        }
     }
 }
