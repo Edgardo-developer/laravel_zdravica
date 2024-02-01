@@ -60,14 +60,16 @@ class ContactsPresendController extends Controller
 
         if ($contacts){
             if (count($contacts) > 1){
+                if (isset($contact['FIO'])){
+                    $byFIO = $this->getByFIO($contacts,$contact['FIO']);
+                    if ($byFIO){ return $byFIO; }
+                }
+
                 if (isset($contact['agePat'])){
                     $isChild = $contact['agePat'] <= 18;
                     $byAge = $this->getByAge($contacts, $isChild);
                     if ($byAge){ return $byAge; }
                 }
-
-                $byFIO = $this->getByFIO($contacts,$contact['FIO']);
-                if ($byFIO){ return $byFIO; }
             }
             return $contacts[0]['id'];
         }

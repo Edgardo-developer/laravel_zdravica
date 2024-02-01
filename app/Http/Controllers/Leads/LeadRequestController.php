@@ -71,6 +71,6 @@ class LeadRequestController extends RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request('GET', self::$URI . $query, $headers);
-        return self::handleErrors($client, $request, true);
+        return self::handleErrors($client, $request);
     }
 }

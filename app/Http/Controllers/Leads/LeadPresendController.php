@@ -12,10 +12,13 @@ class LeadPresendController extends Controller
     {
         $leadID = $this->checkExists($client, $DBLead);
         if (!$leadID) {
-            $leadID = LeadRequestController::create(
-                $client,
-                LeadPrepareController::prepare($DBLead, $DBLead['amoContactID'])
-            );
+            $leadID = $this->checkExistsNerazobrannoe($client,$DBLead);
+            if (!$leadID){
+                $leadID = LeadRequestController::create(
+                    $client,
+                    LeadPrepareController::prepare($DBLead, $DBLead['amoContactID'])
+                );
+            }
         }
         return (int)$leadID;
     }
@@ -23,6 +26,16 @@ class LeadPresendController extends Controller
     private function checkExists($client, $DBLead)
     {
         $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034282&query=' . $DBLead['amoContactID'];
+        return $this->checkExistsLogic($client, $query);
+    }
+
+    private function checkExistsNerazobrannoe($client, $DBLead)
+    {
+        $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034278&query=' . $DBLead['amoContactID'];
+        return $this->checkExistsLogic($client, $query);
+    }
+
+    private function checkExistsLogic($client, $query){
         $res = LeadRequestController::get($client, $query);
         if ($res && $res->getStatusCode() === 200) {
             try {

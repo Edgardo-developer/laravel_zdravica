@@ -11,7 +11,7 @@ use Tests\TestCase;
 class LeadDeleteTest extends TestCase
 {
     use RefreshDatabase;
-    public function testLeadDeleteWithSuccess(){
+    public function testLeadDeletedWithSuccess(){
         $findedArray = AmoCRMLead::find(1);
         $array = $findedArray->toArray();
         $this->assertIsArray($array);
@@ -22,7 +22,7 @@ class LeadDeleteTest extends TestCase
         self::assertTrue($delete->deleteLeads(false));
     }
 
-    public function testLeadDeleteWithReason(){
+    public function testLeadDeletedWithReason(){
         $findedArray = AmoCRMLead::find(1);
         $array = $findedArray->toArray();
         $this->assertIsArray($array);

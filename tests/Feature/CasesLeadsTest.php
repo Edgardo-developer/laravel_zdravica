@@ -8,8 +8,6 @@ use App\Http\Controllers\Contacts\ContactsRequestController;
 use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmLead;
-use App\Models\PATIENTS;
-use GuzzleHttp\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,7 +25,6 @@ class CasesLeadsTest extends TestCase
         $this->assertGreaterThan(0, $SendToAmoCRMArr['amoContactID']);
         $this->assertGreaterThan(0, $SendToAmoCRMArr['amoLeadID']);
 
-        sleep(3);
         $SendToAmoCRMArr['patID'] = 1;
         $SendToAmoCRMArr['patID_changed'] = true;
         $update = new UpdateLeadController($SendToAmoCRMArr);

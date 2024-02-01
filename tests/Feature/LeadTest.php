@@ -11,7 +11,7 @@ class LeadTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testLeadCreate(){
+    public function testLeadCreated(){
         $array = AmoCRMLead::find(1);
         $array = $array->toArray();
         $SendToAmoCRM = new SendToAmoCRM($array);
@@ -23,7 +23,7 @@ class LeadTest extends TestCase
         $this->assertGreaterThan(0, $SendToAmoCRMArr['leadDBId']);
     }
 
-    public function testLeadUpdate(){
+    public function testLeadUpdated(){
         $findedArray = AmoCRMLead::find(1);
         $array = $findedArray->toArray();
         $this->assertIsArray($array);

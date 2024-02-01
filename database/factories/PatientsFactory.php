@@ -24,7 +24,7 @@ class PatientsFactory extends Factory
             'MOBIL_NYY' => "1234567891",
             'POL' => 1,
             'GOROD' => 'Tbilisi',
-            'NE_LE' => '2007-01-01',
+            'NE_LE' => '1978-01-01',
             'RAYON_VYBORKA' => 'address',
             'ULICA' => 'ulica',
             'DOM' => 'dom',
