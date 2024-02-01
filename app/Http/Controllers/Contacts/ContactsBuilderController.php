@@ -7,9 +7,9 @@ use App\Models\PATIENTS;
 
 class ContactsBuilderController extends Controller
 {
-    public static function getRow(int $id, bool $declareCall = false): array
+    public function getRow(int $id, bool $declareCall = false): array
     {
-        $pat = PATIENTS::where("PATIENTS_ID",$id);
+        $pat = PATIENTS::find($id);
         if($pat->count() > 0){
             return $pat->first()->only(self::getColumns($declareCall ? 1 : 0));
         }

@@ -9,58 +9,70 @@ use JsonException;
 
 class ContactsPresendController extends Controller
 {
+    private ContactsRequestController $ContactsRequestController;
 
-    /**
-     * @param $client
-     * @param $contactDB
-     * @return int
-     * Description: return the AmoCRM contact ID
-     */
-    public function getAmoID($client, $contactDB): int
+    public function __construct($client)
     {
-        $contactID = $this->checkExists($client, $contactDB);
-        if (!$contactID) {
-            $contactID = $this->createAmo($client, ContactsPrepareController::prepare($contactDB));
-        }
-        return $contactID;
+        $this->client = $client;
+        $this->ContactsRequestController = new ContactsRequestController();
     }
 
     /**
-     * @param $client
      * @param $contact
-     * @return string|object
+     * @return array
+     */
+    public function checkExistsByNumber($contact) : array{
+        if (isset($contact['MOBIL_NYY'])){
+            $query = '?query=' . $contact['MOBIL_NYY'];
+            $result = $this->get($query);
+            if ($result && $result['_embedded']) {
+                return $result['_embedded']['contacts'];
+            }
+        }
+        return [];
+    }
+
+    /**
+     * @param $contact
+     * @return array
+     */
+    public function checkExistsByEMAIL($contact) : array{
+        if (isset($contact['MOBIL_NYY'])){
+            $query = '?query=' . $contact['MOBIL_NYY'];
+            $result = $this->get($query);
+            if ($result && $result['_embedded']) {
+                return $result['_embedded']['contacts'];
+            }
+        }
+        return [];
+    }
+
+    /**
+     * @param $contact
+     * @return array
+     */
+    public function checkExistsByFIO($contact) : array{
+        if (isset($contact['FIO'])){
+            $query = '?query=' . $contact['FIO'];
+            $result = $this->get($query);
+            if ($result && $result['_embedded']) {
+                return $result['_embedded']['contacts'];
+            }
+        }
+        return [];
+    }
+
+    /**
+     * @param $contactDB
+     * @param $contacts
+     * @return int
      * Description: Get the Contact ID using the request
      */
-    public function checkExists($client, $contact): string|object
+    public function checkExists($contactDB, $contacts): int
     {
-        $contacts = [];
-        if (isset($contact['MOBIL_NYY']) && !$contacts){
-            $query = '?query=' . $contact['MOBIL_NYY'];
-            $result = ContactsRequestController::get($client, $query);
-            if ($result && $result['_embedded']) {
-                $contacts = $result['_embedded']['contacts'];
-            }
-        }
-
-        if (isset($contact['EMAIL']) && !$contacts){
-            $query = '?query=' . ($contact['NOM'] ?? $contact['EMAIL']);
-            $result = ContactsRequestController::get($client, $query);
-            if ($result && $result['_embedded']) {
-                $contacts = $result['_embedded']['contacts'];
-            }
-        }
-
-        if (isset($contact['FIO']) && !$contacts){
-            $query = '?query=' . $contact['FIO'];
-            $result = ContactsRequestController::get($client, $query);
-            if ($result && $result['_embedded']) {
-                $contacts = $result['_embedded']['contacts'];
-            }
-        }
-
         if ($contacts){
             if (count($contacts) > 1){
-                $contactAmoID = $this->checkMultipleContacts($contacts,$contact);
+                $contactAmoID = $this->checkMultipleContacts($contacts,$contactDB);
                 if ($contactAmoID){
                     return $contactAmoID;
                 }
@@ -68,46 +80,26 @@ class ContactsPresendController extends Controller
             return $contacts[0]['id'];
         }
 
-        return '';
-    }
-
-    private function checkMultipleContacts($contacts, $contact){
-        if (isset($contact['FIO'])){
-            $byFIO = $this->getByFIO($contacts,$contact['FIO']);
-            if ($byFIO){ return $byFIO; }
-        }
-
-        if (isset($contact['agePat'])){
-            $isChild = $contact['agePat'] <= 18;
-            $byAge = $this->getByAge($contacts, $isChild);
-            if ($byAge){ return $byAge; }
-        }
         return 0;
     }
 
     /**
-     * @param $client
-     * @param $preparedContact
-     * @return string|int
-     * Description: returns the ID of AmoCRM contact
+     * @param $contacts
+     * @param $contactDB
+     * @return int|mixed
      */
-    private function createAmo($client, $preparedContact): string|int
-    {
-        $res = ContactsRequestController::create($client, $preparedContact);
-        if ($res) {
-            try {
-                $result = $res->getBody() !== '' ?
-                    json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
-                if (isset($result) && $result['_embedded']) {
-                    return $result['_embedded']['contacts'][0]['id'];
-                }
-            }catch (JsonException $ex){
-                Log::warning($ex->getMessage());
-                Log::warning($ex->getFile());
-                Log::warning($ex->getLine());
-            }
+    private function checkMultipleContacts($contacts, $contactDB){
+        if (isset($contactDB['FIO'])){
+            $byFIO = $this->getByFIO($contacts,$contactDB['FIO']);
+            if ($byFIO){ return $byFIO; }
         }
-        return '';
+
+        if (isset($contactDB['agePat'])){
+            $isChild = $contactDB['agePat'] <= 18;
+            $byAge = $this->getByAge($contacts, $isChild);
+            if ($byAge){ return $byAge; }
+        }
+        return 0;
     }
 
     /**
@@ -150,5 +142,10 @@ class ContactsPresendController extends Controller
             }
         }
         return 0;
+    }
+
+    public function get($query): array
+    {
+        return $this->ContactsRequestController->get($this->client,$query);
     }
 }

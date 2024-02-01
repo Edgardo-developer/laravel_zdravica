@@ -45,7 +45,7 @@ class ContactsPrepareController extends Controller
      * @return array
      * Description: prepares the array for the contact
      */
-    public static function prepare(array $contactDB, $contactID = 0): array
+    public function prepare(array $contactDB, $contactID = 0): array
     {
         $prepared = [];
         foreach (self::$amoFields as $mergedContactField) {
@@ -55,9 +55,9 @@ class ContactsPrepareController extends Controller
                 }
             } else {
                 foreach ($mergedContactField as $customFieldsName => $customFieldsID) {
-                    if ((!$contactID && !in_array($customFieldsName, self::$secondRound))
+                    if ((!$contactID && !in_array($customFieldsName, self::$secondRound, true))
                         ||
-                        ($contactID && in_array($customFieldsName, self::$secondRound))) {
+                        ($contactID && in_array($customFieldsName, self::$secondRound, true))) {
                         $val = self::matchFields($customFieldsName, $contactDB);
                         if ($val && $val !== 'null') {
                             if ($contactID === 0 && $mergedContactField === 'mobile') {

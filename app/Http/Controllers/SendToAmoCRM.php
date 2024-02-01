@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Controllers\Bill\BillGeneralController;
-use App\Http\Controllers\Contacts\ContactsBuilderController;
-use App\Http\Controllers\Contacts\ContactsPresendController;
+use App\Http\Controllers\Contacts\ContactsGeneralController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
@@ -15,10 +14,12 @@ use GuzzleHttp\Client;
 
 class SendToAmoCRM extends Controller
 {
+    private ContactsGeneralController $ContactsGeneralController;
+
     public function __construct($DBlead)
     {
         $client = new Client(['verify'=>false]);
-        $this->BillGeneralController = new BillGeneralController($client);
+        $this->ContactsGeneralController = new ContactsGeneralController($client);
         $this->DBlead = $DBlead;
     }
 
@@ -39,7 +40,7 @@ class SendToAmoCRM extends Controller
         }
 
         if ($buildLead && $buildContact) {
-            $buildLead['amoContactID'] = (new ContactsPresendController())->getAmoID($client, $buildContact);
+            $buildLead['amoContactID'] = $this->ContactsGeneralController->getAmoID($buildContact);
             $buildLead['amoLeadID'] = (new LeadPresendController())->getAmoID($client, $buildLead);
 
             $this->updateLead($buildLead, $client);
@@ -102,7 +103,7 @@ class SendToAmoCRM extends Controller
     protected function getPatData($buildLead)
     {
         if (isset($buildLead['patID']) && (int)$buildLead['patID'] > 0) {
-            $buildContact = ContactsBuilderController::getRow(
+            $buildContact = $this->ContactsGeneralController->getRow(
                 (int)$buildLead['patID'],
                 (int)$buildLead['declareCall'] === 1
             );

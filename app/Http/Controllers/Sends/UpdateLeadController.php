@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Sends;
 
 use App\Http\Controllers\Bill\BillGeneralController;
+use App\Http\Controllers\Contacts\ContactsGeneralController;
 use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
 use App\Http\Controllers\LeadLinks\LeadLinksGeneralController;
@@ -14,6 +15,10 @@ use GuzzleHttp\Client;
 class UpdateLeadController extends SendToAmoCRM
 {
     private $buildlead;
+    private BillGeneralController $BillGeneralController;
+    private LeadLinksGeneralController $LeadLinksGeneralController;
+    private ProductGeneralController $ProductGeneralController;
+    private ContactsGeneralController $ContactsGeneralController;
 
     public function __construct($buildlead){
         parent::__construct($buildlead);
@@ -21,6 +26,7 @@ class UpdateLeadController extends SendToAmoCRM
         $this->BillGeneralController = new BillGeneralController($client);
         $this->LeadLinksGeneralController = new LeadLinksGeneralController($client);
         $this->ProductGeneralController = new ProductGeneralController($client);
+        $this->ContactsGeneralController = new ContactsGeneralController($client);
         $this->buildlead = $buildlead;
     }
 
@@ -114,7 +120,7 @@ class UpdateLeadController extends SendToAmoCRM
     private function updatePatID($client,$buildLead){
         if (isset($buildLead['patID_changed']) && $buildLead['patID_changed'] === true){
             $buildContact = $this->getPatData($buildLead);
-            $preparedContact = ContactsPrepareController::prepare($buildContact);
+            $preparedContact = $this->ContactsGeneralController->prepare($buildContact);
             $preparedContact['amoID'] = $buildLead['amoContactID'];
             ContactsRequestController::update($client,$preparedContact);
         }

@@ -12,7 +12,7 @@ class ContactsRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/contacts';
 
-    public static function create($client, $preparedData, $contactlead = '')
+    public function create($client, $preparedData)
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -28,7 +28,7 @@ class ContactsRequestController extends RequestController
         }
     }
 
-    public static function update($client, $preparedData = null)
+    public function update($client, $preparedData = null)
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -47,7 +47,7 @@ class ContactsRequestController extends RequestController
         }
     }
 
-    public static function get($client, $query): array
+    public function get($client, $query): array
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
