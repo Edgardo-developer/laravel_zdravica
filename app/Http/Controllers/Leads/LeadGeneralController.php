@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 
 class LeadGeneralController extends Controller
 {
@@ -44,12 +45,13 @@ class LeadGeneralController extends Controller
         return $leadID;
     }
 
-    public function create(array $preparedData) : int{
-        return $this->LeadRequestController->create($this->client,$preparedData);
+    public function create(array $preparedData, int $status_id = 61034286) : int{
+        return $this->LeadRequestController->create($this->client,$preparedData,$status_id);
     }
 
-    public function update(array $preparedData){
-        $this->LeadRequestController->update($this->client,$preparedData);
+    public function update(array $preparedData): Response|array
+    {
+        return $this->LeadRequestController->update($this->client,$preparedData);
     }
 
     public function get(string $query){

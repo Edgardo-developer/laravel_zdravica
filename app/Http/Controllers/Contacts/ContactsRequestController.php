@@ -60,6 +60,7 @@ class ContactsRequestController extends RequestController
             } catch (JsonException $ex) {
                 Log::warning($ex->getMessage());
                 Log::warning($ex->getFile());
+                Log::warning($ex->getTraceAsString());
                 Log::warning($ex->getLine());
             }
         }

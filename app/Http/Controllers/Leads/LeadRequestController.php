@@ -14,14 +14,15 @@ class LeadRequestController extends RequestController
 
     /**
      * @param Client $client
-     * @param $preparedData
+     * @param array $preparedData
+     * @param int $status
      * @return int
      */
-    public function create(Client $client, $preparedData): int
+    public function create(Client $client, array $preparedData, int $status = 61034286): int
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $preparedData['status_id'] = 61034286;
+        $preparedData['status_id'] = $status;
         try {
             $request = new Request('POST',
                 self::$URI, $headers,
@@ -68,7 +69,7 @@ class LeadRequestController extends RequestController
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getLine());
-            return;
+            return [];
         }
     }
 
