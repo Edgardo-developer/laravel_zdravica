@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 
 class LeadLinksPrepareController extends Controller
 {
+
+    public function __construct(){
+
+    }
+
     /**
-     * @param array $leadDB
-     * @param int $AmoBillID
      * @return array
      * Description: prepares the array of the lead
      */
-    public static function prepare(array $leadDB, int $AmoBillID): array
+    public function prepare(array $leadDB, $AmoBillID): array
     {
         return [
             [
@@ -30,7 +33,7 @@ class LeadLinksPrepareController extends Controller
         ];
     }
 
-    public static function prepareAll(array $ids): array
+    public function prepareAll(array $ids): array
     {
         $arr = [];
         foreach ($ids as $id) {

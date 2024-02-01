@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Sends;
 use App\Http\Controllers\Bill\BillGeneralController;
 use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
-use App\Http\Controllers\LeadLinks\LeadLinksPrepareController;
+use App\Http\Controllers\LeadLinks\LeadLinksGeneralController;
 use App\Http\Controllers\LeadLinks\LeadLinksRequestController;
 use App\Http\Controllers\Product\ProductPresendController;
 use App\Http\Controllers\SendToAmoCRM;
@@ -20,6 +20,7 @@ class UpdateLeadController extends SendToAmoCRM
         parent::__construct($buildlead);
         $client = new Client(['verify'=>false]);
         $this->BillGeneralController = new BillGeneralController($client);
+        $this->LeadLinksGeneralController = new LeadLinksGeneralController($client);
         $this->buildlead = $buildlead;
     }
 
@@ -105,9 +106,9 @@ class UpdateLeadController extends SendToAmoCRM
         if (count($offersData['offerNames']) > 0){
             $ProductPresend = new ProductPresendController();
             $productIDs = $ProductPresend->getAmoIDs($client, $offersData['offerNames']);
-            $linksPrepared = LeadLinksPrepareController::prepareAll($productIDs);
+            $linksPrepared = $this->LeadLinksGeneralController->prepareAll($productIDs);
             $linksPrepared['amoLeadID'] = $buildLead['amoLeadID'];
-            LeadLinksRequestController::update($client, $linksPrepared);
+            $this->LeadLinksGeneralController->update($linksPrepared);
         }
     }
 
@@ -126,9 +127,9 @@ class UpdateLeadController extends SendToAmoCRM
             if ($offersData){
                 $amoBillID = $this->getBillAmoID($client, $buildLead, $offersData);
                 if ($amoBillID){
-                    $leadLinks = LeadLinksPrepareController::prepare($buildLead, $amoBillID);
+                    $leadLinks = $this->LeadLinksGeneralController->prepare($buildLead, $amoBillID);
                     $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
-                    LeadLinksRequestController::create($client, $leadLinks);
+                    $this->LeadLinksGeneralController->create($leadLinks);
                     $this->setProducts($client, $buildLead, $offersData);
                 }
             }

@@ -11,7 +11,7 @@ class LeadLinksRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads/%d/link';
 
-    public static function create($client, $preparedData): void
+    public function create($client, $preparedData): void
     {
         if (!isset($preparedData['amoLeadID'])){
             return;
@@ -22,7 +22,7 @@ class LeadLinksRequestController extends RequestController
         $headers = $RequestExt['headers'];
         try {
             $request = new Request('POST', $uri, $headers, json_encode($preparedData, JSON_THROW_ON_ERROR));
-            self::handleErrors($client, $request, true);
+            self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getFile());
@@ -37,7 +37,7 @@ class LeadLinksRequestController extends RequestController
      * @return array|void
      * Description: works on updating
      */
-    public static function update($client, $preparedData)
+    public function update($client, $preparedData)
     {
         $uri = sprintf(self::$URI, $preparedData['amoLeadID']);
         unset($preparedData['amoLeadID']);
