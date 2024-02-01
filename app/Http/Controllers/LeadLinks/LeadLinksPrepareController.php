@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\LeadLinks;
 
-use App\Http\Controllers\PrepareEntityController;
+use App\Http\Controllers\Controller;
 
-class LeadLinksPrepareController extends PrepareEntityController
+class LeadLinksPrepareController extends Controller
 {
     /**
      * @param array $leadDB

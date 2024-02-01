@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Leads;
 
-use App\Http\Controllers\BuilderEntityController;
+use App\Http\Controllers\Controller;
 use App\Models\AmoCrmLead;
 
-class LeadBuilderController extends BuilderEntityController
+class LeadBuilderController extends Controller
 {
     /**
      * @param int $id
@@ -14,7 +14,7 @@ class LeadBuilderController extends BuilderEntityController
      */
     public static function getRow(int $id): array
     {
-        return AmoCrmLead::find($id,'id')->toArray() ?? [];
+        return AmoCrmLead::find($id)->toArray() ?? [];
     }
 
     public static function closeLead($amoLeadID): array

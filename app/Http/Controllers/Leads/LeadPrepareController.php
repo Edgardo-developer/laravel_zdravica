@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Leads;
 
-use App\Http\Controllers\PrepareEntityController;
+use App\Http\Controllers\Controller;
 
-class LeadPrepareController extends PrepareEntityController
+class LeadPrepareController extends Controller
 {
     private static array $amoFields = [
         'name',

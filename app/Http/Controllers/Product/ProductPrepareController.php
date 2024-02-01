@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\PrepareEntityController;
+use App\Http\Controllers\Controller;
 
-class ProductPrepareController extends PrepareEntityController
+class ProductPrepareController extends Controller
 {
     public static function prepare(array $offers, int $offerSum): array
     {

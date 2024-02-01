@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Sends;
 
-use App\Http\Controllers\Bill\BillPresendController;
-use App\Http\Controllers\Contacts\ContactsBuilderController;
+use App\Http\Controllers\Bill\BillGeneralController;
 use App\Http\Controllers\Contacts\ContactsPrepareController;
-use App\Http\Controllers\Contacts\ContactsPresendController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
 use App\Http\Controllers\LeadLinks\LeadLinksPrepareController;
 use App\Http\Controllers\LeadLinks\LeadLinksRequestController;
@@ -13,7 +11,6 @@ use App\Http\Controllers\Product\ProductPresendController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
 
 class UpdateLeadController extends SendToAmoCRM
 {
@@ -21,6 +18,8 @@ class UpdateLeadController extends SendToAmoCRM
 
     public function __construct($buildlead){
         parent::__construct($buildlead);
+        $client = new Client(['verify'=>false]);
+        $this->BillGeneralController = new BillGeneralController($client);
         $this->buildlead = $buildlead;
     }
 
@@ -84,15 +83,13 @@ class UpdateLeadController extends SendToAmoCRM
             ]
         ];
         if ($buildLead['amoBillID'] === null && count($offersData['offerNames']) > 0) {
-            $PresendBill = new BillPresendController();
-            return $PresendBill->getAmoID($client, $billDB);
+            return $this->BillGeneralController->getAmoID($billDB);
         }
 
 
         if ($offersData && $offersData['offerNames'] &&
             $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null) {
-            $PresendBill = new BillPresendController();
-            $PresendBill->updateBill($client, $billDB);
+            $this->BillGeneralController->updateBill($billDB);
         }
         return $buildLead['amoBillID'] ?? 0;
     }

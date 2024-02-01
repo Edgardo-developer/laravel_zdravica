@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Bill;
 
-use App\Http\Controllers\PrepareEntityController;
+use App\Http\Controllers\Controller;
 
-class BillPrepareController extends PrepareEntityController
+class BillPrepareController extends Controller
 {
     private static array $amoFields = [
         'custom_fields_values' => [
@@ -15,11 +15,38 @@ class BillPrepareController extends PrepareEntityController
         ],
     ];
 
-    public static function prepare(array $billDB, int $billStatus): array
+    public function __construct($billDB, $billStatus){
+        $this->billDB = $billDB;
+        $this->billStatus = $billStatus;
+    }
+
+    public function prepare(): array
     {
+        $billDB = $this->billDB;
         $arr = [
             'custom_fields_values' => [],
         ];
+
+        $arr = $this->accross_fields($arr,$billDB);
+
+        if ($this->billStatus === 1) {
+            $arr['custom_fields_values'][] = [
+                'field_id' => 1550056,
+                'values' => [
+                    'value' => time(),
+                ]
+            ];
+        }
+        return $arr;
+    }
+
+    /**
+     * @param $arr
+     * @param $billDB
+     * @return array
+     * Description: Walk across all fields
+     */
+    private function accross_fields($arr,$billDB){
         foreach (self::$amoFields['custom_fields_values'] as $amoFieldName => $amoFieldID) {
             if (isset($billDB[$amoFieldName])) {
                 if ($amoFieldName === 'account' && $billDB[$amoFieldName]['entity_id'] === 0){
@@ -35,18 +62,14 @@ class BillPrepareController extends PrepareEntityController
                 $arr['custom_fields_values'][] = $locArr;
             }
         }
-
-        if ($billStatus === 1) {
-            $arr['custom_fields_values'][] = [
-                'field_id' => 1550056,
-                'values' => [
-                    'value' => time(),
-                ]
-            ];
-        }
         return $arr;
     }
 
+    /**
+     * @param $offers
+     * @return array
+     * Description: offers adds to the bill
+     */
     private static function modifyOffers($offers): array
     {
         $offersArr = [];

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Contacts;
 
-use App\Http\Controllers\BuilderEntityController;
+use App\Http\Controllers\Controller;
 use App\Models\PATIENTS;
 
-class ContactsBuilderController extends BuilderEntityController
+class ContactsBuilderController extends Controller
 {
     public static function getRow(int $id, bool $declareCall = false): array
     {

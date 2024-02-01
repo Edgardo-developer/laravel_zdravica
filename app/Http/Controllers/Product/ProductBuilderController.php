@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\BuilderEntityController;
+use App\Http\Controllers\Controller;
 use App\Models\AmoProducts;
 
-class ProductBuilderController extends BuilderEntityController
+class ProductBuilderController extends Controller
 {
     public static function getRow(string|int $offerName): array
     {

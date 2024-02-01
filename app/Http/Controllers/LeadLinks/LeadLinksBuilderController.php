@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\LeadLinks;
 
-use App\Http\Controllers\BuilderEntityController;
+use App\Http\Controllers\Controller;
 use App\Models\AmocrmIDs;
 
-class LeadLinksBuilderController extends BuilderEntityController
+class LeadLinksBuilderController extends Controller
 {
     /**
      * @param int $amoLeadID

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Contacts;
 
 
-use App\Http\Controllers\PrepareEntityController;
+use App\Http\Controllers\Controller;
 
 
-class ContactsPrepareController extends PrepareEntityController
+class ContactsPrepareController extends Controller
 {
     private static array $amoFields = [
         'name',
@@ -84,7 +84,8 @@ class ContactsPrepareController extends PrepareEntityController
     private static function matchFields(string $mergedContactField, array $contactDB): string
     {
         return match ($mergedContactField) {
-            'name' => $contactDB['NOM'] . ' ' . $contactDB['PRENOM'],
+            'name' => (isset($contactDB['NOM']) && isset($contactDB['PRENOM']))
+                ? ($contactDB['NOM'] . ' ' . $contactDB['PRENOM']) : '',
             'first_name' => $contactDB['NOM'] ?? '',
             'last_name' => $contactDB['PRENOM'] ?? '',
             'created_by' => $contactDB['created_at'] ?? '',
@@ -94,7 +95,7 @@ class ContactsPrepareController extends PrepareEntityController
             'GOROD', => $contactDB['GOROD'] ?? '',
             'FIO', => $contactDB['FIO'] ?? ($contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME']),
             'Birthday', => $contactDB['NE_LE'] ?? '',
-            'POL', => self::checkPol($contactDB['NOM'], $contactDB['PATRONYME']),
+            'POL', => isset($contactDB['NOM']) ? self::checkPol($contactDB['NOM'], $contactDB['PATRONYME']) : '',
             'RAYON_VYBORKA' => $contactDB['RAYON_VYBORKA'],
             'ULICA' => $contactDB['ULICA'] ?? '',
             'DOM' => $contactDB['DOM'] ?? '',

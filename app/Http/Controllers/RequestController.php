@@ -12,23 +12,10 @@ use JsonException;
 
 class RequestController extends Controller
 {
-    private static string $URI;
     private static string $client_id = '67eec975-12cb-46f7-ba04-edb4596d689b';
     private static string $client_secret = 'rUjL84GVG4ky0PUoJ9cWLMm1QbiQ9Mp5G0P24ArrUxG98ILEDFoHCKX8zsVfZtb4';
     private static string $grant_type = 'refresh_token';
     private static string $redirect = 'https://good-offer.ru';
-
-    public static function update($client, $preparedData)
-    {
-    }
-
-    public static function get($client, $query)
-    {
-    }
-
-    public static function delete($client, $amoID)
-    {
-    }
 
     protected static function handleErrors(Client $client, $request)
     {
@@ -126,17 +113,6 @@ class RequestController extends Controller
         ];
     }
 
-    public static function create($client, $preparedData)
-    {
-    }
-
-    private static function changeAndTryRequest(Client $client, Request $request)
-    {
-        $getRequestExt = self::getRequestExt();
-        $request->withHeader('Authorization', $getRequestExt['headers']['Authorization']);
-        return $client->sendAsync($request)->wait();
-    }
-
     protected static function handleSuccess($output, $leadRaw)
     {
         if ($output) {
@@ -152,5 +128,12 @@ class RequestController extends Controller
                 Log::warning($ex->getLine());
             }
         }
+    }
+
+    private static function changeAndTryRequest(Client $client, Request $request)
+    {
+        $getRequestExt = self::getRequestExt();
+        $request->withHeader('Authorization', $getRequestExt['headers']['Authorization']);
+        return $client->sendAsync($request)->wait();
     }
 }

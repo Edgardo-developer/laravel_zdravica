@@ -20,5 +20,24 @@ class DatabaseSeeder extends Seeder
         PLANNING::factory()->create();
         PATIENTS::factory()->create();
         AmoCrmTable::factory()->create();
+        PLANNING::create([
+            'NOM'   => 'Фамилие1',
+            'PRENOM'    => 'Имя1',
+            'PATRONYME' => 'Отчество1'
+        ]);
+        PATIENTS::create([
+            'NOM' => "Фамилие1",
+            'PRENOM' => "Имя1",
+            'PATRONYME' => "Отчество1",
+            'EMAIL' => "email@email.com",
+            'MOBIL_NYY' => "1234567891",
+            'POL' => 1,
+            'GOROD' => 'Tbilisi',
+            'NE_LE' => '2010-01-01',
+            'RAYON_VYBORKA' => 'address',
+            'ULICA' => 'ulica',
+            'DOM' => 'dom',
+            'KVARTIRA' => 'kvartira',
+        ]);
     }
 }

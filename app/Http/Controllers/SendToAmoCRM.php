@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Controllers\Bill\BillGeneralController;
 use App\Http\Controllers\Contacts\ContactsBuilderController;
 use App\Http\Controllers\Contacts\ContactsPresendController;
 use App\Http\Controllers\Leads\LeadPrepareController;
@@ -16,6 +17,8 @@ class SendToAmoCRM extends Controller
 {
     public function __construct($DBlead)
     {
+        $client = new Client(['verify'=>false]);
+        $this->BillGeneralController = new BillGeneralController($client);
         $this->DBlead = $DBlead;
     }
 
@@ -55,7 +58,7 @@ class SendToAmoCRM extends Controller
      */
     protected function getPlanningFIO(array &$dbLead): string
     {
-        $PLANNING = PLANNING::find($dbLead['leadDBId'], 'PLANNING_ID');
+        $PLANNING = PLANNING::find($dbLead['leadDBId']);
         if ($PLANNING && $PLANNING->count() > 0) {
             $planningFirst = $PLANNING->first();
             return $planningFirst->NOM . ' ' . $planningFirst?->PRENOM . ' ' . $planningFirst?->PATRONYME;

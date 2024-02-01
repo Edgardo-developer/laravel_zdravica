@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Sends;
 
 use App\Http\Controllers\Bill\BillBuilderController;
+use App\Http\Controllers\Bill\BillGeneralController;
 use App\Http\Controllers\Bill\BillRequestController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Leads\LeadBuilderController;
@@ -13,6 +14,8 @@ use GuzzleHttp\Client;
 class DeleteLeadController extends Controller
 {
     public function __construct($ids){
+        $client = new Client(['verify'=>false]);
+        $this->BillGeneralController = new BillGeneralController($client);
         $this->dbIDs = $ids;
     }
 
@@ -29,7 +32,7 @@ class DeleteLeadController extends Controller
                     LeadBuilderController::finishLead($leadID);
             }
             if ($billID > 0 && $withReason) {
-                $billArray[] = BillBuilderController::finishBill($billID);
+                $billArray[] = $this->BillGeneralController->prepare($billID);
             }
         }
         $this->removeThem($leadArray,$billArray);

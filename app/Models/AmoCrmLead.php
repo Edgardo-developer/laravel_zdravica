@@ -9,6 +9,7 @@ class AmoCrmLead extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    public $primaryKey = 'id';
     public $fillable = [
         'direction',
         'specDoc'  ,

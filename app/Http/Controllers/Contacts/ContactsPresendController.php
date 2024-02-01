@@ -31,7 +31,7 @@ class ContactsPresendController extends Controller
      * @return string|object
      * Description: Get the Contact ID using the request
      */
-    private function checkExists($client, $contact): string|object
+    public function checkExists($client, $contact): string|object
     {
         $contacts = [];
         if (isset($contact['MOBIL_NYY']) && !$contacts){
@@ -60,21 +60,29 @@ class ContactsPresendController extends Controller
 
         if ($contacts){
             if (count($contacts) > 1){
-                if (isset($contact['FIO'])){
-                    $byFIO = $this->getByFIO($contacts,$contact['FIO']);
-                    if ($byFIO){ return $byFIO; }
-                }
-
-                if (isset($contact['agePat'])){
-                    $isChild = $contact['agePat'] <= 18;
-                    $byAge = $this->getByAge($contacts, $isChild);
-                    if ($byAge){ return $byAge; }
+                $contactAmoID = $this->checkMultipleContacts($contacts,$contact);
+                if ($contactAmoID){
+                    return $contactAmoID;
                 }
             }
             return $contacts[0]['id'];
         }
 
         return '';
+    }
+
+    private function checkMultipleContacts($contacts, $contact){
+        if (isset($contact['FIO'])){
+            $byFIO = $this->getByFIO($contacts,$contact['FIO']);
+            if ($byFIO){ return $byFIO; }
+        }
+
+        if (isset($contact['agePat'])){
+            $isChild = $contact['agePat'] <= 18;
+            $byAge = $this->getByAge($contacts, $isChild);
+            if ($byAge){ return $byAge; }
+        }
+        return 0;
     }
 
     /**
@@ -102,6 +110,11 @@ class ContactsPresendController extends Controller
         return '';
     }
 
+    /**
+     * @param array $amoContacts
+     * @param bool $is_child
+     * @return int
+     */
     private function getByAge(array $amoContacts, bool $is_child) : int{
         foreach ($amoContacts as $amoContact){
             $customFields = $amoContact['custom_fields_values'];
@@ -120,6 +133,11 @@ class ContactsPresendController extends Controller
         return 0;
     }
 
+    /**
+     * @param array $amoContacts
+     * @param string $FIO
+     * @return int|mixed
+     */
     private function getByFIO(array $amoContacts, string $FIO){
         foreach ($amoContacts as $amoContact){
             $customFields = $amoContact['custom_fields_values'];
