@@ -45,7 +45,7 @@ class ContactsPrepareController extends Controller
      * @return array
      * Description: prepares the array for the contact
      */
-    public function prepare(array $contactDB, $contactID = 0): array
+    public function prepare(array $contactDB, int $contactID = 0): array
     {
         $prepared = [];
         foreach (self::$amoFields as $mergedContactField) {
@@ -106,7 +106,7 @@ class ContactsPrepareController extends Controller
         };
     }
 
-    private static function checkPol($lastName, $fatherName): string
+    private static function checkPol(string $lastName, string $fatherName): string
     {
         $lastLetters = ['а', 'я'];
         if (

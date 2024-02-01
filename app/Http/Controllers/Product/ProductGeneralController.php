@@ -22,7 +22,7 @@ class ProductGeneralController extends Controller
         return ['amoID' => 0];
     }
 
-    protected function prepare($offers) : array{
+    public function prepare(array $offers) : array{
         $products = [];
         foreach ($offers as $offer) {
             $products[] = [
@@ -38,7 +38,7 @@ class ProductGeneralController extends Controller
         return $products;
     }
 
-    public function getAmoIDs($amoProductNames) : array{
+    public function getAmoIDs(array $amoProductNames) : array{
         $checkThem = $this->checkUndefined($amoProductNames);
         $undefinedAmo = $checkThem['undefinedAmo'];
         $ids = $checkThem['ids'];
@@ -51,16 +51,16 @@ class ProductGeneralController extends Controller
         return $ids;
     }
 
-    public function create($preparedData) : array{
+    public function create(array $preparedData) : array{
         return $this->ProductRequestController->create($this->client, $preparedData);
     }
 
-    public function update($preparedData): void
+    public function update(array $preparedData): void
     {
         $this->ProductRequestController->update($this->client, $preparedData);
     }
 
-    private function checkUndefined($amoProductNames): array
+    private function checkUndefined(array $amoProductNames): array
     {
         $undefinedAmo = [];
         $ids = [];

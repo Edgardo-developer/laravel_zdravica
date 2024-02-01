@@ -122,7 +122,7 @@ class UpdateLeadController extends SendToAmoCRM
             $buildContact = $this->getPatData($buildLead);
             $preparedContact = $this->ContactsGeneralController->prepare($buildContact);
             $preparedContact['amoID'] = $buildLead['amoContactID'];
-            ContactsRequestController::update($client,$preparedContact);
+            $this->ContactsGeneralController->update($preparedContact);
         }
     }
 

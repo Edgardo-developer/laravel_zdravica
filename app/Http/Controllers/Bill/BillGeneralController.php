@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 class BillGeneralController extends Controller
 {
     public function __construct($client){
+        $this->BillPrepareController = new BillPrepareController();
         $this->client = $client;
     }
 
@@ -26,16 +27,16 @@ class BillGeneralController extends Controller
         ];
     }
 
-    public function prepare($billDB, $billStatus){
-        return (new BillPrepareController($billDB, $billStatus))->prepare();
+    public function prepare(array $billDB, int $billStatus){
+        return $this->BillPrepareController->prepare($billDB, $billStatus);
     }
 
-    public function getAmoID($billDB){
+    public function getAmoID(array $billDB){
         $prepared = $this->prepare($billDB,$billDB['billStatus']);
         return BillRequestController::create($this->client, $prepared);
     }
 
-    public function updateBill($billDB) : void{
+    public function updateBill(array $billDB) : void{
         $prepared = $this->prepare($billDB,$billDB['billStatus']);
         BillRequestController::update($this->client, $prepared);
     }

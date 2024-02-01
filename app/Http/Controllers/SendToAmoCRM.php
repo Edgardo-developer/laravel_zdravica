@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Bill\BillGeneralController;
 use App\Http\Controllers\Contacts\ContactsGeneralController;
+use App\Http\Controllers\Leads\LeadGeneralController;
 use App\Http\Controllers\Leads\LeadPrepareController;
 use App\Http\Controllers\Leads\LeadPresendController;
 use App\Http\Controllers\Leads\LeadRequestController;
@@ -20,6 +21,7 @@ class SendToAmoCRM extends Controller
     {
         $client = new Client(['verify'=>false]);
         $this->ContactsGeneralController = new ContactsGeneralController($client);
+        $this->LeadGeneralController = new LeadGeneralController($client);
         $this->DBlead = $DBlead;
     }
 
@@ -32,7 +34,6 @@ class SendToAmoCRM extends Controller
         $buildLead = $this->DBlead;
         $buildLead['FIO'] = $this->getPlanningFIO($this->DBlead);
         ksort($buildLead, SORT_NATURAL);
-        $client = new Client(['verify' => false]);
 
         $buildContact = $this->getPatData($buildLead);
         if (isset($buildContact['NE_LE'])){
@@ -41,9 +42,9 @@ class SendToAmoCRM extends Controller
 
         if ($buildLead && $buildContact) {
             $buildLead['amoContactID'] = $this->ContactsGeneralController->getAmoID($buildContact);
-            $buildLead['amoLeadID'] = (new LeadPresendController())->getAmoID($client, $buildLead);
+            $buildLead['amoLeadID'] = $this->LeadGeneralController->getAmoID($buildLead);
 
-            $this->updateLead($buildLead, $client);
+            $this->updateLead($buildLead);
             $buildLead['amoLeadID'] = (int)$buildLead['amoLeadID'];
             $amoData = $this->prepareDataForAmoCRMIds($buildLead);
 
@@ -67,16 +68,16 @@ class SendToAmoCRM extends Controller
         return '';
     }
 
-    protected function updateLead($buildLead, $client)
+    protected function updateLead(array $buildLead)
     {
-        $leadPrepared = LeadPrepareController::prepare($buildLead, $buildLead['amoContactID']);
+        $leadPrepared = $this->LeadGeneralController->prepare($buildLead, $buildLead['amoContactID']);
         $leadPrepared['amoLeadID'] = (int)$buildLead['amoLeadID'];
         $leadPrepared['pipeline_id'] = 7332486;
         $leadPrepared['status_id'] = 61034286;
-        LeadRequestController::update($client, $leadPrepared);
+        $this->LeadGeneralController->update($leadPrepared);
     }
 
-    protected function prepareDataForAmoCRMIds($buildLead)
+    protected function prepareDataForAmoCRMIds(array $buildLead)
     {
         $amoData = array_intersect_key($buildLead, [
             'amoContactID' => '',
@@ -100,7 +101,7 @@ class SendToAmoCRM extends Controller
         return $amoData;
     }
 
-    protected function getPatData($buildLead)
+    protected function getPatData(array $buildLead)
     {
         if (isset($buildLead['patID']) && (int)$buildLead['patID'] > 0) {
             $buildContact = $this->ContactsGeneralController->getRow(
@@ -115,7 +116,7 @@ class SendToAmoCRM extends Controller
         return $buildContact;
     }
 
-    private function getAge($birthday) : int{
+    private function getAge(string $birthday) : int{
         $time = strtotime($birthday);
         $timeDataTime = date('Y',$time);
         $timeDataNow = date('Y');

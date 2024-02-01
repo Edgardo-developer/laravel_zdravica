@@ -23,11 +23,11 @@ class ContactsGeneralController extends Controller
         return $this->ContactsBuilderController->getRow($id,$declareCall);
     }
 
-    public function prepare(array $contactDB, $contactID = 0) : array{
+    public function prepare(array $contactDB, int $contactID = 0) : array{
         return $this->ContactsPrepareController->prepare($contactDB,$contactID);
     }
 
-    public function getAmoID($contactDB) : int{
+    public function getAmoID(array $contactDB) : int{
         $contactID = $this->AccrossGetRequests($contactDB);
         if ($contactID) {
             return $contactID;
@@ -48,12 +48,14 @@ class ContactsGeneralController extends Controller
         return 0;
     }
 
-    public function AccrossGetRequests($contactDB){
+    public function AccrossGetRequests(array $contactDB){
         $contacts = $this->ContactsPresendController->checkExistsByNumber($contactDB);
         if (!$contacts){
-            $contacts = $this->ContactsPresendController->checkExistsByEMAIL($contactDB);
-            if (!$contacts){
-                $contacts = $this->ContactsPresendController->checkExistsByFIO($contactDB);
+            if (isset($contactDB['EMAIL'])) {
+                $contacts = $this->ContactsPresendController->checkExistsByEMAIL($contactDB['EMAIL']);
+            }
+            if (!$contacts && isset($contactDB['FIO'])) {
+                $contacts = $this->ContactsPresendController->checkExistsByFIO($contactDB['FIO']);
             }
         }
         if ($contacts){
@@ -61,16 +63,16 @@ class ContactsGeneralController extends Controller
         }
         return [];
     }
-    public function create($prepared){
+    public function create(array $prepared){
         return $this->ContactsRequestController->create($this->client, $prepared);
     }
 
-    public function update($preparedData = null)
+    public function update(array $preparedData = null)
     {
         return $this->ContactsRequestController->update($this->client,$preparedData);
     }
 
-    public function get($query): array
+    public function get(string $query): array
     {
         return $this->ContactsRequestController->get($this->client,$query);
     }

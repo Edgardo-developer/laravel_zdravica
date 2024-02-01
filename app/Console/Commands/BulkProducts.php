@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Product\ProductGeneralController;
 use App\Http\Controllers\Product\ProductPrepareController;
 use App\Http\Controllers\Product\ProductRequestController;
 use App\Models\AmoProducts;
@@ -34,9 +35,10 @@ class BulkProducts extends Command
         $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify' => false]);
 
+        $ProductGeneralController = new ProductGeneralController($client);
         foreach ($offersChunks as $offersChunk) {
-            $products = ProductPrepareController::prepare($offersChunk, 1);
-            $proids = ProductRequestController::create($client, $products);
+            $products = $ProductGeneralController->prepare($offersChunk, 1);
+            $proids = $ProductGeneralController->create($client, $products);
             $amoProduct = [];
             foreach ($offersChunk as $k => $product) {
                 $amoProduct[] = [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\RequestController;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 use JsonException;
@@ -11,7 +12,7 @@ class ProductRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/catalogs/12348/elements';
 
-    public function create($client, $preparedData): array
+    public function create(Client $client, array $preparedData): array
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -27,7 +28,7 @@ class ProductRequestController extends RequestController
         }
     }
 
-    public function update($client, $preparedData): void
+    public function update(Client $client, array $preparedData): void
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];

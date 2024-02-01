@@ -3,25 +3,14 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\Controller;
-use App\Models\AmoCrmLead;
 
 class LeadBuilderController extends Controller
 {
-    /**
-     * @param int $id
-     * @return array
-     * Description: get Lead row from the DB
-     */
-    public static function getRow(int $id): array
-    {
-        return AmoCrmLead::find($id)->toArray() ?? [];
-    }
-
-    public static function closeLead($amoLeadID): array
+    public function closeLead(int $amoLeadID): array
     {
         return [
-            'id' => (int)$amoLeadID,
-            'amoLeadID' => (int)$amoLeadID,
+            'id' => $amoLeadID,
+            'amoLeadID' => $amoLeadID,
             'name' => '1',
             'closed_at' => time() + 5,
             'status_id' => 143,
@@ -29,10 +18,10 @@ class LeadBuilderController extends Controller
         ];
     }
 
-    public static function finishLead($amoLeadID): array
+    public function finishLead(int $amoLeadID): array
     {
         return [
-            'amoLeadID' => (int)$amoLeadID,
+            'amoLeadID' => $amoLeadID,
             'status_id' => 142,
         ];
     }

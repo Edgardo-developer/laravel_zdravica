@@ -10,6 +10,7 @@ class LeadPrepareController extends Controller
         'name',
         'price',
         'responsible_user_id',
+
         'custom_fields_values' => [
             'direction' => 454373,
             'filial' => 454375,
@@ -29,7 +30,7 @@ class LeadPrepareController extends Controller
      * @return array
      * Description: prepares the array of the lead
      */
-    public static function prepare(array $leadDB, int $contactId): array
+    public function prepare(array $leadDB, int $contactId): array
     {
         $prepared =
             $contactId > 0 ?

@@ -3,39 +3,34 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
 class LeadPresendController extends Controller
 {
-    public function getAmoID($client, $DBLead): string
+    public function getAmoID(Client $client, array $DBLead): string
     {
         $leadID = $this->checkExists($client, $DBLead);
         if (!$leadID) {
             $leadID = $this->checkExistsNerazobrannoe($client,$DBLead);
-            if (!$leadID){
-                $leadID = LeadRequestController::create(
-                    $client,
-                    LeadPrepareController::prepare($DBLead, $DBLead['amoContactID'])
-                );
-            }
         }
-        return (int)$leadID;
+        return $leadID ?: 0;
     }
 
-    private function checkExists($client, $DBLead)
+    private function checkExists(Client $client, array $DBLead)
     {
         $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034282&query=' . $DBLead['amoContactID'];
         return $this->checkExistsLogic($client, $query);
     }
 
-    private function checkExistsNerazobrannoe($client, $DBLead)
+    private function checkExistsNerazobrannoe(Client $client, array $DBLead)
     {
         $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034278&query=' . $DBLead['amoContactID'];
         return $this->checkExistsLogic($client, $query);
     }
 
-    private function checkExistsLogic($client, $query){
+    private function checkExistsLogic(Client $client, string $query){
         $res = LeadRequestController::get($client, $query);
         if ($res && $res->getStatusCode() === 200) {
             try {

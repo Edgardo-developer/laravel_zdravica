@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\RequestController;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 use JsonException;
@@ -11,7 +12,12 @@ class LeadRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads';
 
-    public static function create($client, $preparedData): string
+    /**
+     * @param Client $client
+     * @param $preparedData
+     * @return int
+     */
+    public function create(Client $client, $preparedData): int
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -24,7 +30,7 @@ class LeadRequestController extends RequestController
             if ($res) {
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 if ($result && $result['_embedded']) {
-                    return $result['_embedded']['leads'][0]['id'];
+                    return (int)$result['_embedded']['leads'][0]['id'];
                 }
             }
         }catch (\JsonException $ex){
@@ -36,12 +42,12 @@ class LeadRequestController extends RequestController
     }
 
     /**
-     * @param $client
+     * @param Client $client
      * @param $preparedData
      * @return array|void
      * Description: works on updating
      */
-    public static function update($client, $preparedData)
+    public function update(Client $client, $preparedData)
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -66,7 +72,12 @@ class LeadRequestController extends RequestController
         }
     }
 
-    public static function get($client, $query)
+    /**
+     * @param Client $client
+     * @param $query
+     * @return false|mixed
+     */
+    public static function get(Client $client, $query)
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];

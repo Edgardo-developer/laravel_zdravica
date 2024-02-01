@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Bill;
 
 
 use App\Http\Controllers\RequestController;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 use JsonException;
@@ -12,7 +13,7 @@ class BillRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/catalogs/12352/elements';
 
-    public static function create($client, $preparedData): string
+    public static function create(Client $client, array $preparedData): string
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -45,7 +46,7 @@ class BillRequestController extends RequestController
         return 0;
     }
 
-    public static function update($client, $preparedData): void
+    public static function update(Client $client, array $preparedData): void
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];

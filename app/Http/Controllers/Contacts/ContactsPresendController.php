@@ -18,10 +18,10 @@ class ContactsPresendController extends Controller
     }
 
     /**
-     * @param $contact
+     * @param array $contact
      * @return array
      */
-    public function checkExistsByNumber($contact) : array{
+    public function checkExistsByNumber(array $contact) : array{
         if (isset($contact['MOBIL_NYY'])){
             $query = '?query=' . $contact['MOBIL_NYY'];
             $result = $this->get($query);
@@ -33,42 +33,38 @@ class ContactsPresendController extends Controller
     }
 
     /**
-     * @param $contact
+     * @param string $contactEMAIL
      * @return array
      */
-    public function checkExistsByEMAIL($contact) : array{
-        if (isset($contact['MOBIL_NYY'])){
-            $query = '?query=' . $contact['MOBIL_NYY'];
-            $result = $this->get($query);
-            if ($result && $result['_embedded']) {
-                return $result['_embedded']['contacts'];
-            }
+    public function checkExistsByEMAIL(string $contactEMAIL) : array{
+        $query = '?query=' . $contactEMAIL;
+        $result = $this->get($query);
+        if ($result && $result['_embedded']) {
+            return $result['_embedded']['contacts'];
         }
         return [];
     }
 
     /**
-     * @param $contact
+     * @param string $contactFIO
      * @return array
      */
-    public function checkExistsByFIO($contact) : array{
-        if (isset($contact['FIO'])){
-            $query = '?query=' . $contact['FIO'];
-            $result = $this->get($query);
-            if ($result && $result['_embedded']) {
-                return $result['_embedded']['contacts'];
-            }
+    public function checkExistsByFIO(string $contactFIO) : array{
+        $query = '?query=' . $contactFIO;
+        $result = $this->get($query);
+        if ($result && $result['_embedded']) {
+            return $result['_embedded']['contacts'];
         }
         return [];
     }
 
     /**
-     * @param $contactDB
-     * @param $contacts
+     * @param array $contactDB
+     * @param array $contacts
      * @return int
      * Description: Get the Contact ID using the request
      */
-    public function checkExists($contactDB, $contacts): int
+    public function checkExists(array $contactDB,array $contacts): int
     {
         if ($contacts){
             if (count($contacts) > 1){
