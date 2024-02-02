@@ -32,16 +32,15 @@ class UpdateLeadController extends SendToAmoCRM
 
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
-        $client = new Client(['verify' => false]);
 
-        $amoBillID = $this->processBill($client,$buildLead);
+        $amoBillID = $this->processBill($buildLead);
         if ($amoBillID){
             $buildLead['amoBillID']  = $amoBillID;
         }
-        $this->updatePatID($client, $buildLead);
+        $this->updatePatID($buildLead);
 
         $amoData = $this->prepareDataForAmoCRMIds($buildLead);
-        $this->updateLead($buildLead, $client);
+        $this->updateLead($buildLead);
         (new \App\Models\AmocrmIDs)->update([
             'leadDBId' => $buildLead['leadDBId']
         ], $amoData);
@@ -72,12 +71,11 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     /**
-     * @param $client
      * @param $buildLead
      * @param $offersData
      * @return int
      */
-    private function getBillAmoID($client, $buildLead, $offersData): int
+    private function getBillAmoID($buildLead, $offersData): int
     {
         $billDB = [
             'offers' => $offersData,
@@ -102,12 +100,11 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     /**
-     * @param $client
      * @param $buildLead
      * @param $offersData
      * @return void
      */
-    private function setProducts($client, $buildLead, $offersData)
+    private function setProducts($buildLead, $offersData): void
     {
         if (count($offersData['offerNames']) > 0){
             $productIDs = $this->ProductGeneralController->getAmoIDs($offersData['offerNames']);
@@ -117,7 +114,8 @@ class UpdateLeadController extends SendToAmoCRM
         }
     }
 
-    private function updatePatID($client,$buildLead){
+    private function updatePatID($buildLead): void
+    {
         if (isset($buildLead['patID_changed']) && $buildLead['patID_changed'] === true){
             $buildContact = $this->getPatData($buildLead);
             $preparedContact = $this->ContactsGeneralController->prepare($buildContact);
@@ -126,16 +124,16 @@ class UpdateLeadController extends SendToAmoCRM
         }
     }
 
-    private function processBill($client, $buildLead){
+    private function processBill($buildLead){
         if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && $buildLead['offerLists']) {
             $offersData = self::explodeOffers($buildLead['offerLists']);
             if ($offersData){
-                $amoBillID = $this->getBillAmoID($client, $buildLead, $offersData);
+                $amoBillID = $this->getBillAmoID($buildLead, $offersData);
                 if ($amoBillID){
                     $leadLinks = $this->LeadLinksGeneralController->prepare($buildLead, $amoBillID);
                     $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
                     $this->LeadLinksGeneralController->create($leadLinks);
-                    $this->setProducts($client, $buildLead, $offersData);
+                    $this->setProducts($buildLead, $offersData);
                 }
             }
         }

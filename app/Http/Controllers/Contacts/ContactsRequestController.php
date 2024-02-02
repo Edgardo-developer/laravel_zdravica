@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Contacts;
 
 use App\Http\Controllers\RequestController;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
@@ -12,7 +13,7 @@ class ContactsRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/contacts';
 
-    public function create($client, $preparedData)
+    public function create($client, $preparedData) : Response|array
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -24,7 +25,7 @@ class ContactsRequestController extends RequestController
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            return false;
+            return [];
         }
     }
 

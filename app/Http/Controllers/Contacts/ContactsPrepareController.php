@@ -41,26 +41,20 @@ class ContactsPrepareController extends Controller
 
     /**
      * @param array $contactDB
-     * @param int $contactID
      * @return array
      * Description: prepares the array for the contact
      */
-    public function prepare(array $contactDB, int $contactID = 0): array
+    public function prepare(array $contactDB): array
     {
         $prepared = [];
         foreach (self::$amoFields as $mergedContactField) {
             if (is_string($mergedContactField)) {
-                if (!$contactID) {
                     $prepared[$mergedContactField] = self::matchFields($mergedContactField, $contactDB);
-                }
             } else {
                 foreach ($mergedContactField as $customFieldsName => $customFieldsID) {
-                    if ((!$contactID && !in_array($customFieldsName, self::$secondRound, true))
-                        ||
-                        ($contactID && in_array($customFieldsName, self::$secondRound, true))) {
                         $val = self::matchFields($customFieldsName, $contactDB);
                         if ($val && $val !== 'null') {
-                            if ($contactID === 0 && $mergedContactField === 'mobile') {
+                            if ($mergedContactField === 'mobile') {
                                 $val = '8' . $val;
                             }
                             $prepared['custom_fields_values'][] = [
@@ -68,7 +62,6 @@ class ContactsPrepareController extends Controller
                                 'values' => [['value' => $val]],
                             ];
                         }
-                    }
                 }
             }
         }
@@ -96,7 +89,7 @@ class ContactsPrepareController extends Controller
             'FIO', => $contactDB['FIO'] ?? ($contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME']),
             'Birthday', => $contactDB['NE_LE'] ?? '',
             'POL', => isset($contactDB['NOM']) ? self::checkPol($contactDB['NOM'], $contactDB['PATRONYME']) : '',
-            'RAYON_VYBORKA' => $contactDB['RAYON_VYBORKA'],
+            'RAYON_VYBORKA' => $contactDB['RAYON_VYBORKA'] ?? '',
             'ULICA' => $contactDB['ULICA'] ?? '',
             'DOM' => $contactDB['DOM'] ?? '',
             'KVARTIRA' => $contactDB['KVARTIRA'] ?? '',

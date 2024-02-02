@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Contacts;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Log;
 
 class ContactsGeneralController extends Controller
@@ -23,8 +24,8 @@ class ContactsGeneralController extends Controller
         return $this->ContactsBuilderController->getRow($id,$declareCall);
     }
 
-    public function prepare(array $contactDB, int $contactID = 0) : array{
-        return $this->ContactsPrepareController->prepare($contactDB,$contactID);
+    public function prepare(array $contactDB) : array{
+        return $this->ContactsPrepareController->prepare($contactDB);
     }
 
     public function getAmoID(array $contactDB) : int{
@@ -64,7 +65,7 @@ class ContactsGeneralController extends Controller
         return 0;
     }
 
-    public function create(array $prepared){
+    public function create(array $prepared): Response|array{
         return $this->ContactsRequestController->create($this->client, $prepared);
     }
 
