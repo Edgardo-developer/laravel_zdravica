@@ -46,6 +46,7 @@ class LeadMovingBetweenFunnelsTest extends TestCase
 
         $preparedLead['amoContactID'] = 20264511;
         $preparedLead['amoLeadID'] = $leadID;
+        $preparedLead['status_id'] = 61034286;
         $response = $LeadGeneralController->update($preparedLead);
         $this->assertEquals(200,$response->getStatusCode());
     }
