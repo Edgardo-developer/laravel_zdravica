@@ -100,7 +100,7 @@ class UpdateLeadController extends SendToAmoCRM
 
     private function updatePatID($buildLead): void
     {
-        if (isset($buildLead['patID_changed']) && $buildLead['patID_changed'] === true){
+        if (isset($buildLead['patID_changed']) && (bool)$buildLead['patID_changed'] === true){
             $buildContact = $this->getPatData($buildLead);
             $preparedContact = $this->ContactsController->prepare($buildContact);
             $preparedContact['amoID'] = $buildLead['amoContactID'];

@@ -54,6 +54,7 @@ class updateLead extends Command
         $options = [
             'id' => $this->option('id'),
             'patID' => $this->option('patID'),
+            'patID_changed' => $this->option('patID_changed'),
             'billID' => $this->option('billID'),
             'amoManagerID' => $this->option('amoManagerID'),
             'leadDBId' => $this->option('leadDBId'),
