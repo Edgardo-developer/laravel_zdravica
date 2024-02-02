@@ -37,7 +37,7 @@ class LeadPresendController extends Controller
                 $result = $res->getBody() ? json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR) : '';
                 if (isset($result) && $result['_embedded']) {
                     foreach ($result['_embedded']['leads'] as $lead) {
-                        if ((time() - $lead['created_at'] > 0 && time() - $lead['created_at'] < 180)
+                        if ((time() - $lead['created_at'] > 0 && time() - $lead['created_at'] < env('ZDR_LEAD_TIMEOUT'))
                             && !$lead['custom_fields_values']) {
                             return $lead['id'];
                         }

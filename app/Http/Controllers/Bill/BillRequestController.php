@@ -13,14 +13,14 @@ class BillRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/catalogs/12352/elements';
 
-    public static function create(Client $client, array $preparedData): string
+    public static function create(Client $client, array $preparedData): int
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         try {
             $jsonData = json_encode([$preparedData], JSON_THROW_ON_ERROR);
             $request = new Request('POST', self::$URI, $headers, $jsonData);
-            return self::validateCreateResponse(self::handleErrors($client, $request, true));
+            return self::validateCreateResponse(self::handleErrors($client, $request));
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getFile());
@@ -52,13 +52,13 @@ class BillRequestController extends RequestController
         $headers = $RequestExt['headers'];
         $amoBillID = $preparedData['amoBillID'];
         unset($preparedData['amoBillID']);
-        try {
+        try{
             $jsonData = json_encode([$preparedData], JSON_THROW_ON_ERROR);
             $request = new Request(
                 'POST', self::$URI . '/' . $amoBillID, $headers,
                 $jsonData
             );
-            self::handleErrors($client, $request, true);
+            self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());

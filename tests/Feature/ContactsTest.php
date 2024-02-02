@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Contacts\ContactsGeneralController;
+use App\Http\Controllers\Contacts\ContactsController;
 use GuzzleHttp\Client;
 use Tests\TestCase;
 
@@ -14,7 +14,7 @@ class ContactsTest extends TestCase
     public function testCreateContactWithCalled(): void
     {
         $client = new Client(['verify'=>false]);
-        $ContactController = new ContactsGeneralController($client);
+        $ContactController = new ContactsController($client);
         $patient = $ContactController->getRow(1, true);
         $preparedContact = $ContactController->prepare($patient);
         $response = $ContactController->create($preparedContact);
@@ -24,7 +24,7 @@ class ContactsTest extends TestCase
     public function testCreateContactWithUnCalled(): void
     {
         $client = new Client(['verify'=>false]);
-        $ContactController = new ContactsGeneralController($client);
+        $ContactController = new ContactsController($client);
         $patient = $ContactController->getRow(1);
         $preparedContact = $ContactController->prepare($patient);
         $response = $ContactController->create($preparedContact);

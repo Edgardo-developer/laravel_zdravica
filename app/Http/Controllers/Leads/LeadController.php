@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 
-class LeadGeneralController extends Controller
+class LeadController extends Controller
 {
     protected LeadPrepareController $LeadPrepareController;
     protected LeadPresendController $LeadPresendController;
@@ -57,4 +57,5 @@ class LeadGeneralController extends Controller
     public function get(string $query){
         return $this->LeadRequestController::get($this->client,$query);
     }
+
 }

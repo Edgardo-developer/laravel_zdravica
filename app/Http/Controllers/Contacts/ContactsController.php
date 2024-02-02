@@ -1,16 +1,18 @@
 <?php
 namespace App\Http\Controllers\Contacts;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 
-class ContactsGeneralController extends Controller
+class ContactsController extends Controller
 {
     private ContactsBuilderController $ContactsBuilderController;
     private ContactsPrepareController $ContactsPrepareController;
     private ContactsPresendController $ContactsPresendController;
     private ContactsRequestController $ContactsRequestController;
-    private $client;
+    private Client $client;
 
     public function __construct($client){
         $this->ContactsBuilderController = new ContactsBuilderController();
@@ -41,7 +43,7 @@ class ContactsGeneralController extends Controller
             if ($result['_embedded'] && $result['_embedded']['contacts']){
                 return $result['_embedded']['contacts'][0]['id'];
             }
-        }catch (\JsonException $ex){
+        }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getFile());
             Log::warning($ex->getLine());

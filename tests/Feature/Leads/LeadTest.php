@@ -1,5 +1,7 @@
 <?php
 
+namespace Leads;
+
 use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmLead;
@@ -10,7 +12,8 @@ class LeadTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testLeadCreated(){
+    public function testLeadCreated()
+    {
         $array = AmoCRMLead::find(1);
         $array = $array->toArray();
         $SendToAmoCRM = new SendToAmoCRM($array);
@@ -22,7 +25,8 @@ class LeadTest extends TestCase
         $this->assertGreaterThan(0, $SendToAmoCRMArr['leadDBId']);
     }
 
-    public function testLeadUpdated(){
+    public function testLeadUpdated()
+    {
         $findedArray = AmoCRMLead::find(1);
         $array = $findedArray->toArray();
         $this->assertIsArray($array);

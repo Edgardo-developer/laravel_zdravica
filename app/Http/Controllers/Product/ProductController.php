@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Models\AmoProducts;
+use GuzzleHttp\Psr7\Response;
 
-class ProductGeneralController extends Controller
+class ProductController extends Controller
 {
+    private LeadLinksController $LeadLinksController;
+    protected ProductRequestController $ProductRequestController;
+    private ProductPresendController $ProductPresendController;
+
     public function __construct($client){
         $this->client = $client;
-        $this->ProductPresendController = new ProductPresendController($client);
+        $this->ProductPresendController = new ProductPresendController();
         $this->ProductRequestController = new ProductRequestController();
+        $this->LeadLinksController = new LeadLinksController($this->client);
     }
 
     protected function builder(string $offerName): array
@@ -76,5 +83,20 @@ class ProductGeneralController extends Controller
             'ids'   => $ids,
             'undefinedAmo' => $undefinedAmo
         ];
+    }
+
+    /**
+     * @param $amoLeadID
+     * @param array $offersData
+     * @return Response|array
+     */
+    public function setProducts($amoLeadID, array $offersData): Response|array
+    {
+        if (count($offersData['offerNames']) > 0){
+            $productIDs = $this->getAmoIDs($offersData['offerNames']);
+            $linksPrepared = $this->LeadLinksController->prepareAll($productIDs);
+            return $this->LeadLinksController->update($linksPrepared,$amoLeadID);
+        }
+        return [];
     }
 }

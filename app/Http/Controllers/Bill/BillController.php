@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Bill;
 
 use App\Http\Controllers\Controller;
 
-class BillGeneralController extends Controller
+class BillController extends Controller
 {
     public function __construct($client){
         $this->BillPrepareController = new BillPrepareController();
@@ -31,13 +31,13 @@ class BillGeneralController extends Controller
         return $this->BillPrepareController->prepare($billDB, $billStatus);
     }
 
-    public function getAmoID(array $billDB){
-        $prepared = $this->prepare($billDB,$billDB['billStatus']);
+    public function createBill(array $billDB, int $billStatus) : int{
+        $prepared = $this->prepare($billDB, $billStatus);
         return BillRequestController::create($this->client, $prepared);
     }
 
-    public function updateBill(array $billDB) : void{
-        $prepared = $this->prepare($billDB,$billDB['billStatus']);
+    public function updateBill(array $billDB,$billStatus) : void{
+        $prepared = $this->prepare($billDB,$billStatus);
         BillRequestController::update($this->client, $prepared);
     }
 }

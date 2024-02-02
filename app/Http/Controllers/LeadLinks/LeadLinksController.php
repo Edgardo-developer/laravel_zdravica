@@ -4,8 +4,9 @@ namespace App\Http\Controllers\LeadLinks;
 
 use App\Http\Controllers\Controller;
 use App\Models\AmocrmIDs;
+use GuzzleHttp\Psr7\Response;
 
-class LeadLinksGeneralController extends Controller
+class LeadLinksController extends Controller
 {
     private LeadLinksPrepareController $LeadLinksPrepareController;
     private LeadLinksRequestController $LeadLinksRequestController;
@@ -20,7 +21,7 @@ class LeadLinksGeneralController extends Controller
         return AmocrmIDs::where('amoLeadID', '=', $amoLeadID)->first()?->amoBillID ?? [];
     }
 
-    public function prepare(array $leadDB, int $AmoBillID){
+    public function prepare(array $leadDB, int $AmoBillID = 0){
         return $this->LeadLinksPrepareController->prepare($leadDB,$AmoBillID);
     }
 
@@ -28,11 +29,11 @@ class LeadLinksGeneralController extends Controller
         return $this->LeadLinksPrepareController->prepareAll($ids);
     }
 
-    public function create($preparedData) : void{
-        $this->LeadLinksRequestController->create($this->client, $preparedData);
+    public function create($preparedData) : Response|array{
+        return $this->LeadLinksRequestController->create($this->client, $preparedData);
     }
 
-    public function update($preparedData){
-        return $this->LeadLinksRequestController->update($this->client, $preparedData);
+    public function update($preparedData, $amoLeadID) : Response|array{
+        return $this->LeadLinksRequestController->update($this->client, $preparedData, $amoLeadID);
     }
 }

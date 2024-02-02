@@ -1,12 +1,11 @@
 <?php
 
-namespace Tests\Feature;
+namespace Leads;
 
-use App\Http\Controllers\Contacts\ContactsGeneralController;
+use App\Http\Controllers\Contacts\ContactsController;
 use App\Models\PATIENTS;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class LeadChildTest extends TestCase
@@ -31,7 +30,7 @@ class LeadChildTest extends TestCase
         $patData = PATIENTS::find($pat_id)->toArray();
         $patData['FIO'] = 'Чацкий Петр Иванович';
         $client = new Client(['verify'=>false]);
-        $contactClass = new ContactsGeneralController($client);
+        $contactClass = new ContactsController($client);
         $contactAmoID = $contactClass->AccrossGetRequests($patData);
         $this->assertEquals(self::$amoChildID_f,$contactAmoID);
     }
@@ -50,7 +49,7 @@ class LeadChildTest extends TestCase
         $patData = PATIENTS::find($pat_id)->toArray();
         $patData['agePat'] = '15';
         $client = new Client(['verify'=>false]);
-        $contactClass = new ContactsGeneralController($client);
+        $contactClass = new ContactsController($client);
         $contactAmoID = $contactClass->AccrossGetRequests($patData);
         $this->assertEquals(self::$amoChildID_b,$contactAmoID);
     }
@@ -70,7 +69,7 @@ class LeadChildTest extends TestCase
         $patData['agePat'] = '9';
         $patData['FIO'] = 'Чацкая Вера Ивановна';
         $client = new Client(['verify'=>false]);
-        $contactClass = new ContactsGeneralController($client);
+        $contactClass = new ContactsController($client);
         $contactAmoID = $contactClass->AccrossGetRequests($patData);
         $this->assertEquals(self::$amoChildID_bf,$contactAmoID);
     }

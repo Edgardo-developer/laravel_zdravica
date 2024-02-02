@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers\Sends;
 
-use App\Http\Controllers\Bill\BillGeneralController;
-use App\Http\Controllers\Contacts\ContactsGeneralController;
+use App\Http\Controllers\Bill\BillController;
+use App\Http\Controllers\Contacts\ContactsController;
 use App\Http\Controllers\Contacts\ContactsPrepareController;
 use App\Http\Controllers\Contacts\ContactsRequestController;
-use App\Http\Controllers\LeadLinks\LeadLinksGeneralController;
-use App\Http\Controllers\Product\ProductGeneralController;
+use App\Http\Controllers\LeadLinks\LeadLinksController;
+use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 
 class UpdateLeadController extends SendToAmoCRM
 {
-    private $buildlead;
-    private BillGeneralController $BillGeneralController;
-    private LeadLinksGeneralController $LeadLinksGeneralController;
-    private ProductGeneralController $ProductGeneralController;
-    private ContactsGeneralController $ContactsGeneralController;
+    private array $buildlead;
+    private BillController $BillController;
+    private LeadLinksController $LeadLinksController;
+    private ProductController $ProductController;
+    private ContactsController $ContactsController;
 
     public function __construct($buildlead){
         parent::__construct($buildlead);
         $client = new Client(['verify'=>false]);
-        $this->BillGeneralController = new BillGeneralController($client);
-        $this->LeadLinksGeneralController = new LeadLinksGeneralController($client);
-        $this->ProductGeneralController = new ProductGeneralController($client);
-        $this->ContactsGeneralController = new ContactsGeneralController($client);
+        $this->BillController = new BillController($client);
+        $this->LeadLinksController = new LeadLinksController($client);
+        $this->ProductController = new ProductController($client);
+        $this->ContactsController = new ContactsController($client);
         $this->buildlead = $buildlead;
     }
 
@@ -80,47 +80,30 @@ class UpdateLeadController extends SendToAmoCRM
         $billDB = [
             'offers' => $offersData,
             'price' => $buildLead['billSum'],
-            'billStatus' => 0,
-            'status' => 'Создан',
             'account' => [
                 'entity_type' => 'contacts',
                 'entity_id' => (int) $buildLead['amoContactID'],
             ]
         ];
         if ($buildLead['amoBillID'] === null && count($offersData['offerNames']) > 0) {
-            return $this->BillGeneralController->getAmoID($billDB);
+            return $this->BillController->createBill($billDB,0);
         }
 
 
         if ($offersData && $offersData['offerNames'] &&
             $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null) {
-            $this->BillGeneralController->updateBill($billDB);
+            $this->BillController->updateBill($billDB,'Создан');
         }
         return $buildLead['amoBillID'] ?? 0;
-    }
-
-    /**
-     * @param $buildLead
-     * @param $offersData
-     * @return void
-     */
-    private function setProducts($buildLead, $offersData): void
-    {
-        if (count($offersData['offerNames']) > 0){
-            $productIDs = $this->ProductGeneralController->getAmoIDs($offersData['offerNames']);
-            $linksPrepared = $this->LeadLinksGeneralController->prepareAll($productIDs);
-            $linksPrepared['amoLeadID'] = $buildLead['amoLeadID'];
-            $this->LeadLinksGeneralController->update($linksPrepared);
-        }
     }
 
     private function updatePatID($buildLead): void
     {
         if (isset($buildLead['patID_changed']) && $buildLead['patID_changed'] === true){
             $buildContact = $this->getPatData($buildLead);
-            $preparedContact = $this->ContactsGeneralController->prepare($buildContact);
+            $preparedContact = $this->ContactsController->prepare($buildContact);
             $preparedContact['amoID'] = $buildLead['amoContactID'];
-            $this->ContactsGeneralController->update($preparedContact);
+            $this->ContactsController->update($preparedContact);
         }
     }
 
@@ -130,10 +113,9 @@ class UpdateLeadController extends SendToAmoCRM
             if ($offersData){
                 $amoBillID = $this->getBillAmoID($buildLead, $offersData);
                 if ($amoBillID){
-                    $leadLinks = $this->LeadLinksGeneralController->prepare($buildLead, $amoBillID);
-                    $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
-                    $this->LeadLinksGeneralController->create($leadLinks);
-                    $this->setProducts($buildLead, $offersData);
+                    $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
+                    $this->LeadLinksController->create($leadLinks);
+                    $this->ProductController->setProducts($buildLead['amoLeadID'], $offersData);
                 }
             }
         }
