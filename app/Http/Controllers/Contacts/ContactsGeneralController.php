@@ -48,7 +48,7 @@ class ContactsGeneralController extends Controller
         return 0;
     }
 
-    public function AccrossGetRequests(array $contactDB){
+    public function AccrossGetRequests(array $contactDB) : int{
         $contacts = $this->ContactsPresendController->checkExistsByNumber($contactDB);
         if (!$contacts){
             if (isset($contactDB['EMAIL'])) {
@@ -61,8 +61,9 @@ class ContactsGeneralController extends Controller
         if ($contacts){
             return $this->ContactsPresendController->checkExists($contactDB, $contacts);
         }
-        return [];
+        return 0;
     }
+
     public function create(array $prepared){
         return $this->ContactsRequestController->create($this->client, $prepared);
     }

@@ -130,7 +130,7 @@ class ContactsPresendController extends Controller
         foreach ($amoContacts as $amoContact){
             $customFields = $amoContact['custom_fields_values'];
             foreach ($customFields as $customField){
-                if($customField['field_id'] === 391181){
+                if($customField['field_id'] === 391181){ //
                     if($customField['values'][0]['value'] === $FIO){
                         return $amoContact['id'];
                     }

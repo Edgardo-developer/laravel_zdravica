@@ -21,7 +21,7 @@ class LeadBuilderController extends Controller
     public function finishLead(int $amoLeadID): array
     {
         return [
-            'amoLeadID' => $amoLeadID,
+            'id' => $amoLeadID,
             'status_id' => 142,
         ];
     }

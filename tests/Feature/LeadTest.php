@@ -1,5 +1,4 @@
 <?php
-namespace Tests\Feature;
 
 use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Http\Controllers\SendToAmoCRM;

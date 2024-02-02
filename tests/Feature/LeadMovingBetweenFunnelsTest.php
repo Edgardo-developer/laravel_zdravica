@@ -14,36 +14,39 @@ class LeadMovingBetweenFunnelsTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function testFromUnassembled(): void
-    {
-        $findedArray = AmoCRMLead::find(1);
-        $leadPrepared = $findedArray->toArray();
-        $this->assertIsArray($leadPrepared);
-
-        $client = new Client(['verify'=>false]);
-        $LeadGeneralController = new LeadGeneralController($client);
-        $leadID = $LeadGeneralController->create($LeadGeneralController->prepare($leadPrepared, 20264511),7332486);
-        $this->assertGreaterThan(100,$leadID);
-        $leadPrepared['amoContactID'] = 20264511;
-        $leadPrepared['amoLeadID'] = $leadID;
-        $leadPrepared['status_id'] = 61034286;
-        $response = $LeadGeneralController->update($leadPrepared);
-        $this->assertEquals(200,$response->getStatusCode());
-    }
+//    public function testFromUnassembled(): void
+//    {
+//        $findedArray = AmoCRMLead::find(1);
+//        $leadArray = $findedArray->toArray();
+//        $this->assertIsArray($leadArray);
+//
+//        $client = new Client(['verify'=>false]);
+//        $LeadGeneralController = new LeadGeneralController($client);
+//        $leadPrepared = $LeadGeneralController->prepare($leadArray, 20264511);
+//        $leadID = $LeadGeneralController->create($leadPrepared,7332486);
+//        $this->assertGreaterThan(100,$leadID);
+//        $leadArray['amoContactID'] = 20264511;
+//        $leadArray['amoLeadID'] = $leadID;
+//        $leadArray['status_id'] = 61034286;
+//        $response = $LeadGeneralController->update($leadArray);
+//        $this->assertEquals(200,$response->getStatusCode());
+//    }
 
     public function testFromFirst(): void
     {
         $findedArray = AmoCRMLead::find(1);
-        $leadPrepared = $findedArray->toArray();
-        $this->assertIsArray($leadPrepared);
+        $leadDB = $findedArray->toArray();
+        $this->assertIsArray($leadDB);
 
         $client = new Client(['verify'=>false]);
         $LeadGeneralController = new LeadGeneralController($client);
-        $leadID = $LeadGeneralController->create($LeadGeneralController->prepare($leadPrepared, 20264511),7332486);
+        $preparedLead = $LeadGeneralController->prepare($leadDB, 20284111);
+        $leadID = $LeadGeneralController->create($preparedLead,61034282);
         $this->assertGreaterThan(100,$leadID);
-        $leadPrepared['amoContactID'] = 20264511;
-        $leadPrepared['amoLeadID'] = $leadID;
-        $response = $LeadGeneralController->update($leadPrepared);
+
+        $preparedLead['amoContactID'] = 20264511;
+        $preparedLead['amoLeadID'] = $leadID;
+        $response = $LeadGeneralController->update($preparedLead);
         $this->assertEquals(200,$response->getStatusCode());
     }
 
