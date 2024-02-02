@@ -38,10 +38,7 @@ class deleteLead extends Command
         if ($options['leadDbId'] !== 'null'){
             $amoLeadID = AmocrmIDs::where('leadDbId', $options['leadDbId'])->first()->amoLeadID;
             if ($amoLeadID){
-//                dispatch(new ProcessBulkLead([$amoLeadID],$options['withreason']));
-                $withreason = filter_var($options['withreason'], FILTER_VALIDATE_BOOLEAN);
-                $DeleteLeads = new DeleteLeadController([$amoLeadID]);
-                $DeleteLeads->deleteLeads($withreason);
+                dispatch(new ProcessBulkLead([$amoLeadID],$options['withreason']));
             }
         }
     }

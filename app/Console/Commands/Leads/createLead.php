@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Leads;
 
 use App\Http\Controllers\SendToAmoCRM;
+use App\Jobs\CreateLeadJob;
 use Illuminate\Console\Command;
 
 class createLead extends Command
@@ -81,8 +82,7 @@ class createLead extends Command
                 $options[$optionKey] = NULL;
             }
             unset($option);
-            $SendToAmoCRM = new SendToAmoCRM($options);
-            $SendToAmoCRM->sendDealToAmoCRM();
+            dispatch(new CreateLeadJob($options));
         }
     }
 }

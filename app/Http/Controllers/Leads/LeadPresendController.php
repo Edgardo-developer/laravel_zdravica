@@ -9,24 +9,18 @@ use JsonException;
 
 class LeadPresendController extends Controller
 {
-    public function getAmoID(Client $client, array $DBLead): string
+    public function getAmoID(Client $client, array $DBLead): int
     {
-        $leadID = $this->checkExists($client, $DBLead);
+        $leadID = $this->checkExists($client, $DBLead,61034282);
         if (!$leadID) {
-            $leadID = $this->checkExistsNerazobrannoe($client,$DBLead);
+            $leadID = $this->checkExists($client,$DBLead,61034278);
         }
         return $leadID ?: 0;
     }
 
-    private function checkExists(Client $client, array $DBLead)
+    private function checkExists(Client $client, array $DBLead,int $statusID)
     {
-        $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034282&query=' . $DBLead['amoContactID'];
-        return $this->checkExistsLogic($client, $query);
-    }
-
-    private function checkExistsNerazobrannoe(Client $client, array $DBLead)
-    {
-        $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]=61034278&query=' . $DBLead['amoContactID'];
+        $query = '?filter[statuses][0][pipeline_id]=7332486&filter[statuses][0][status_id]='.$statusID.'&query=' . $DBLead['amoContactID'];
         return $this->checkExistsLogic($client, $query);
     }
 

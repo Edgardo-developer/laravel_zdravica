@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Product\ProductPrepareController;
 use App\Http\Controllers\Product\ProductRequestController;
-use App\Jobs\ProcessLead;
+use App\Jobs\CreateLeadJob;
 use App\Jobs\ProcessProduct;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;

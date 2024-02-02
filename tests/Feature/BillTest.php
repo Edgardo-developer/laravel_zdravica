@@ -27,16 +27,15 @@ class BillTest extends TestCase
         $billDB = [
             'offers' => $offersData,
             'price' => 5000,
-            'billStatus' => 0,
             'status' => 'Создан',
         ];
-        $billID = $Bill->createBill($billDB);
+        $billID = $Bill->createBill($billDB,0);
         $this->assertGreaterThan(0,$billID);
 
         $leadDBJustContact = ['amoContactID' => 20284111];
         $LeadLinksController = new LeadLinksController($client);
         $preparedData = $LeadLinksController->prepare($leadDBJustContact,$billID);
-        $preparedData['amoLeadID'] = 13620685;
+        $preparedData['amoLeadID'] = 13657803;
         $response = $LeadLinksController->create($preparedData);
         $this->assertEquals(200,$response->getStatusCode());
     }

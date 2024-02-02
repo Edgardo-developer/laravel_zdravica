@@ -62,10 +62,9 @@ class ProductTest extends TestCase
                 5000
             ],
         ];
-        $leadDB = ['amoContactID'=>20284111];
         $client = new Client(['verify'=>false]);
         $Product = new ProductController($client);
-        $response = $Product->setProducts(13620685,$offersData);
+        $response = $Product->setProducts(13657803,$offersData);
         $this->assertEquals(200,$response->getStatusCode());
     }
 }

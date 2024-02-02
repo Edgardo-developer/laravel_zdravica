@@ -3,8 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Product\ProductController;
-use App\Http\Controllers\Product\ProductPrepareController;
-use App\Http\Controllers\Product\ProductRequestController;
 use App\Models\AmoProducts;
 use App\Models\OffersDB;
 use GuzzleHttp\Client;
@@ -37,8 +35,8 @@ class BulkProducts extends Command
 
         $ProductController = new ProductController($client);
         foreach ($offersChunks as $offersChunk) {
-            $products = $ProductController->prepare($offersChunk, 1);
-            $proids = $ProductController->create($client, $products);
+            $preparedProducts = $ProductController->prepare($offersChunk, 1);
+            $proids = $ProductController->create($preparedProducts);
             $amoProduct = [];
             foreach ($offersChunk as $k => $product) {
                 $amoProduct[] = [

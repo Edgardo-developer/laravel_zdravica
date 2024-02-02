@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ProcessLead implements ShouldQueue
+class CreateLeadJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,6 +28,7 @@ class ProcessLead implements ShouldQueue
      */
     public function handle(): void
     {
-        (new SendToAmoCRM())->sendDealToAmoCRM($this->options);
+        $SendToAmoCRM = new SendToAmoCRM($this->options);
+        $SendToAmoCRM->sendDealToAmoCRM();
     }
 }

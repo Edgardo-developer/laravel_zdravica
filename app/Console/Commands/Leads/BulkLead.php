@@ -39,10 +39,7 @@ class BulkLead extends Command
         if ($options['amoLeadIDs'] !== 'null'){
             $amoLeadIDsArr = explode(',',$options['amoLeadIDs']);
             if ($amoLeadIDsArr){
-                $withreason = filter_var($options['withreason'], FILTER_VALIDATE_BOOLEAN);
-                $DeleteLeads = new DeleteLeadController($amoLeadIDsArr);
-                $DeleteLeads->deleteLeads($withreason);
-//                dispatch(new ProcessBulkLead($amoLeadIDsArr,$options['withreason']));
+                dispatch(new ProcessBulkLead($amoLeadIDsArr,$options['withreason']));
             }
         }
     }

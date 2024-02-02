@@ -79,14 +79,15 @@ class UpdateLeadController extends SendToAmoCRM
     {
         $billDB = [
             'offers' => $offersData,
-            'price' => $buildLead['billSum'],
+            'price' => (int)$buildLead['billSum'],
+            'status' => 'Создан',
             'account' => [
                 'entity_type' => 'contacts',
                 'entity_id' => (int) $buildLead['amoContactID'],
             ]
         ];
         if ($buildLead['amoBillID'] === null && count($offersData['offerNames']) > 0) {
-            return $this->BillController->createBill($billDB,0);
+            $buildLead['amoBillID'] = $this->BillController->createBill($billDB,0);
         }
 
 
@@ -107,7 +108,7 @@ class UpdateLeadController extends SendToAmoCRM
         }
     }
 
-    private function processBill($buildLead){
+    private function processBill($buildLead) : int{
         if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && $buildLead['offerLists']) {
             $offersData = self::explodeOffers($buildLead['offerLists']);
             if ($offersData){

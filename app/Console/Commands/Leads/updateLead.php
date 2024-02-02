@@ -3,6 +3,8 @@
 namespace App\Console\Commands\Leads;
 
 use App\Http\Controllers\Sends\UpdateLeadController;
+use App\Jobs\CreateLeadJob;
+use App\Jobs\UpdateLeadJob;
 use Illuminate\Console\Command;
 
 class updateLead extends Command
@@ -81,8 +83,7 @@ class updateLead extends Command
                 $options[$optionKey] = NULL;
             }
             unset($option);
-            $UpdateLeadController = new UpdateLeadController($options);
-            $UpdateLeadController->sendDealToAmoCRM();
+            dispatch(new UpdateLeadJob($options));
         }
     }
 }
