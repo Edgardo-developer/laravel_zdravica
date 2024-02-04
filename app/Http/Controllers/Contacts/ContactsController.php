@@ -32,6 +32,7 @@ class ContactsController extends Controller
 
     public function getAmoID(array $contactDB) : int{
         $contactID = $this->AccrossGetRequests($contactDB);
+        Log::info('I found '.$contactID);
         if ($contactID) {
             return $contactID;
         }
@@ -54,6 +55,7 @@ class ContactsController extends Controller
     public function AccrossGetRequests(array $contactDB) : int{
         $contacts = $this->ContactsPresendController->checkExistsByNumber($contactDB);
         Log::info('Contacts found:'.count($contacts));
+        Log::info('Contacts mobile is :'.$contactDB['MOBIL_NYY']);
         if (!$contacts){
             if (isset($contactDB['EMAIL'])) {
                 $contacts = $this->ContactsPresendController->checkExistsByEMAIL($contactDB['EMAIL']);
