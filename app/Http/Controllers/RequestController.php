@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -55,7 +56,7 @@ class RequestController extends Controller
                     $jsonData
                 );
                 $res = $client->sendAsync($request)->wait();
-            }catch (RequestException $exception){
+            }catch (ClientException $exception){
 //                Log::warning($exception->getMessage());
                 Log::warning($exception->getCode());
                 Log::info($jsonData);
