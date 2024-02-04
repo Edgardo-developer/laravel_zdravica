@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Contacts;
 
 use App\Http\Controllers\Controller;
 use App\Models\PATIENTS;
+use Illuminate\Support\Facades\Log;
 
 class ContactsBuilderController extends Controller
 {
     public function getRow(int $id, bool $declareCall = false): array
     {
+        Log::info($id);
         $pat = PATIENTS::find($id);
         if($pat->count() > 0){
             return $pat->first()->only(self::getColumns($declareCall ? 1 : 0));

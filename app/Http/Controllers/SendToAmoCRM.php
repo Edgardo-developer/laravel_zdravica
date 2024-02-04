@@ -42,9 +42,6 @@ class SendToAmoCRM extends Controller
         }
 
         if ($buildLead && $buildContact) {
-            Log::info(print_r($buildContact,true));
-            Log::info(print_r($buildLead,true));
-            throw new Exception("Sample error");
             $buildLead['amoContactID'] = $this->ContactsController->getAmoID($buildContact);
             $buildLead['amoLeadID'] = $this->LeadController->getAmoID($buildLead);
 
@@ -119,7 +116,10 @@ class SendToAmoCRM extends Controller
         } else {
             $buildContact = ['FIO' => $buildLead['FIO'] ?? ''];
         }
-
+        Log::info($buildLead['patID']);
+        Log::info(print_r($buildContact,true));
+        Log::info(print_r($buildLead,true));
+        throw new Exception("Sample error");
         return $buildContact;
     }
 
