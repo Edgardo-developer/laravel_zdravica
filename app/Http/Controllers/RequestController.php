@@ -48,6 +48,7 @@ class RequestController extends Controller
         $body = $getRequestExt['body'];
         try {
             $jsonData = json_encode($body, JSON_THROW_ON_ERROR);
+            Log::info($jsonData);
             $request = new Request(
                 'POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
                 $jsonData
