@@ -10,9 +10,7 @@ class ContactsBuilderController extends Controller
 {
     public function getRow(int $id, bool $declareCall = false): array
     {
-        Log::info($id);
         $pat = PATIENTS::where('PATIENTS_ID','=',$id);
-        Log::info("I found ".$pat->count());
         if($pat->count() > 0){
             return $pat->first()->only(self::getColumns($declareCall ? 1 : 0));
         }

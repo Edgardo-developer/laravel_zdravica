@@ -7,10 +7,7 @@ use App\Http\Controllers\Contacts\ContactsController;
 use App\Http\Controllers\Leads\LeadController;
 use App\Models\AmocrmIDs;
 use App\Models\PLANNING;
-use Exception;
 use GuzzleHttp\Client;
-
-use Illuminate\Support\Facades\Log;
 
 use function PHPUnit\Framework\throwException;
 
@@ -116,10 +113,6 @@ class SendToAmoCRM extends Controller
         } else {
             $buildContact = ['FIO' => $buildLead['FIO'] ?? ''];
         }
-        Log::info($buildLead['patID']);
-        Log::info(print_r($buildContact,true));
-        Log::info(print_r($buildLead,true));
-        throw new Exception("Sample error");
         return $buildContact;
     }
 
