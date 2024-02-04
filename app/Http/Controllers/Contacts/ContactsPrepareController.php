@@ -101,7 +101,7 @@ class ContactsPrepareController extends Controller
 
     private static function getBirthDay($birthday) : string{
         $timeStamp = strtotime($birthday);
-        return date('Y-m-d',$timeStamp);
+        return date('d.m.Y',$timeStamp);
     }
 
     private static function checkPol(string $lastName, string $fatherName): string

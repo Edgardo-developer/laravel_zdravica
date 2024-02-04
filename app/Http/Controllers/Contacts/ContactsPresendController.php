@@ -104,9 +104,8 @@ class ContactsPresendController extends Controller
             $customFields = $amoContact['custom_fields_values'];
             foreach ($customFields as $customField){
                 if($customField['field_id'] === 391183){
-                    $birthString = str_replace('.','-',$customField['values'][0]['value']);
-                    $birthDay = date('Y-m-d',strtotime($birthString));
-                    $contactDBDateBirthTime = date('Y-m-d', strtotime($contactDB['NE_LE']));
+                    $birthDay = date('d.m.Y',strtotime($customField['values'][0]['value']));
+                    $contactDBDateBirthTime = date('d.m.Y', strtotime($contactDB['NE_LE']));
                     if ($contactDBDateBirthTime === $birthDay){
                         return $amoContact['id'];
                     }
