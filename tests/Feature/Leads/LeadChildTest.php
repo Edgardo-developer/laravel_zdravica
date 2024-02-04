@@ -5,12 +5,10 @@ namespace Leads;
 use App\Http\Controllers\Contacts\ContactsController;
 use App\Models\PATIENTS;
 use GuzzleHttp\Client;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LeadChildTest extends TestCase
 {
-    use RefreshDatabase;
     private static $amoFatherID = 20284111;
     private static $amoChildID_f = 20284239; // With FIO only
     private static $amoChildID_b = 20284357; // With BirthDate only

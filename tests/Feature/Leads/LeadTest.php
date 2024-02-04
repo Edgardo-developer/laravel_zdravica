@@ -5,12 +5,10 @@ namespace Leads;
 use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmLead;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LeadTest extends TestCase
 {
-    use RefreshDatabase;
 
 //    public function testLeadCreated()
 //    {

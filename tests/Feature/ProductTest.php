@@ -2,12 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Http\Controllers\Product\ProductController;
-use App\Models\AmoProducts;
 use GuzzleHttp\Client;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
