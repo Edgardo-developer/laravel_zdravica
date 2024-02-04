@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
@@ -37,10 +37,11 @@ class RequestController extends Controller
     }
 
     /**
-     * @return void
+     * @param $client
+     * @return Response|array Description: update access token to the AmoCRM
      * Description: update access token to the AmoCRM
      */
-    protected static function updateAccess($client)
+    public static function updateAccess($client) : Response|array
     {
         $getRequestExt = self::getRequestExt(true);
         $headers = $getRequestExt['headers'];
@@ -56,7 +57,7 @@ class RequestController extends Controller
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            return;
+            return [];
         }
 
 
@@ -66,7 +67,7 @@ class RequestController extends Controller
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            return;
+            return [];
         }
 
         foreach ($result as $resultLineName => $resultLine) {
@@ -77,6 +78,7 @@ class RequestController extends Controller
                 'value' => $resultLine
             ]);
         }
+        return $res;
     }
 
     /**
