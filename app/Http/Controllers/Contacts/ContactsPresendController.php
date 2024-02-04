@@ -85,11 +85,11 @@ class ContactsPresendController extends Controller
             if ($byFIO){ return $byFIO; }
         }
 
-        if (isset($contactDB['agePat'])){
-            $isChild = $contactDB['agePat'] <= 18;
-            $byAge = $this->getByAge($contacts, $isChild);
-            if ($byAge){ return $byAge; }
-        }
+//        if (isset($contactDB['agePat'])){
+//            $isChild = $contactDB['agePat'] <= 18;
+//            $byAge = $this->getByAge($contacts, $isChild);
+//            if ($byAge){ return $byAge; }
+//        }
         return 0;
     }
 

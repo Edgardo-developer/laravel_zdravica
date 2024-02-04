@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Controllers\Bill\BillController;
 use App\Http\Controllers\Contacts\ContactsController;
 use App\Http\Controllers\Leads\LeadController;
-use App\Http\Controllers\Leads\LeadPrepareController;
-use App\Http\Controllers\Leads\LeadPresendController;
-use App\Http\Controllers\Leads\LeadRequestController;
 use App\Models\AmocrmIDs;
 use App\Models\PLANNING;
 use GuzzleHttp\Client;
@@ -16,6 +12,7 @@ use GuzzleHttp\Client;
 class SendToAmoCRM extends Controller
 {
     private ContactsController $ContactsController;
+    private LeadController $LeadController;
 
     public function __construct($DBlead)
     {
