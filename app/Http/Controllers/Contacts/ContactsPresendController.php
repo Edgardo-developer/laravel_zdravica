@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Contacts;
 
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 class ContactsPresendController extends Controller
 {
@@ -143,6 +144,7 @@ class ContactsPresendController extends Controller
 
     public function get($query): array
     {
+        Log::info('This query was sent:'.$query);
         return $this->ContactsRequestController->get($this->client,$query);
     }
 }

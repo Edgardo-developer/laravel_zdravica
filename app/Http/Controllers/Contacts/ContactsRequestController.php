@@ -53,7 +53,7 @@ class ContactsRequestController extends RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $request = new Request('GET', self::$URI . $query, $headers);
-        $res = self::handleErrors($client, $request, true);
+        $res = self::handleErrors($client, $request);
         if ($res) {
             try {
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);

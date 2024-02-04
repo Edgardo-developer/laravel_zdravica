@@ -54,9 +54,6 @@ class ContactsPrepareController extends Controller
                 foreach ($mergedContactField as $customFieldsName => $customFieldsID) {
                         $val = self::matchFields($customFieldsName, $contactDB);
                         if ($val && $val !== 'null') {
-                            if ($mergedContactField === 'mobile') {
-                                $val = '8' . $val;
-                            }
                             $prepared['custom_fields_values'][] = [
                                 'field_id' => $customFieldsID,
                                 'values' => [['value' => $val]],
@@ -83,7 +80,7 @@ class ContactsPrepareController extends Controller
             'last_name' => $contactDB['PRENOM'] ?? '',
             'created_by' => $contactDB['created_at'] ?? '',
             'updated_by' => $contactDB['updated_at'] ?? '',
-            'mobile', => $contactDB['MOBIL_NYY'] ?? '',
+            'mobile', => $contactDB['MOBIL_NYY'] ? '8'.$contactDB['MOBIL_NYY'] : '',
             'email', => $contactDB['EMAIL'] ?? '',
             'GOROD', => $contactDB['GOROD'] ?? '',
             'FIO', => $contactDB['FIO'] ?? ($contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME']),
