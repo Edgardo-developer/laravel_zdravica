@@ -43,6 +43,7 @@ class SendToAmoCRM extends Controller
 
         if ($buildLead && $buildContact) {
             Log::info(print_r($buildContact,true));
+            Log::info(print_r($buildLead,true));
             throw new Exception("Sample error");
             $buildLead['amoContactID'] = $this->ContactsController->getAmoID($buildContact);
             $buildLead['amoLeadID'] = $this->LeadController->getAmoID($buildLead);
