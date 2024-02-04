@@ -12,6 +12,7 @@ class ContactsBuilderController extends Controller
     {
         Log::info($id);
         $pat = PATIENTS::find($id);
+        Log::info("I found ".$pat->count());
         if($pat->count() > 0){
             return $pat->first()->only(self::getColumns($declareCall ? 1 : 0));
         }
