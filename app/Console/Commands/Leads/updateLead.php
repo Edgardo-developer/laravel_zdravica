@@ -2,8 +2,6 @@
 
 namespace App\Console\Commands\Leads;
 
-use App\Http\Controllers\Sends\UpdateLeadController;
-use App\Jobs\CreateLeadJob;
 use App\Jobs\UpdateLeadJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -78,7 +76,7 @@ class updateLead extends Command
         ];
 
         if ($options){
-            Log::info('LeadDBID: '.$options['leadDBId'] . ' UPDATE');
+            Log::info('leadDBId: '.$options['leadDBId'] . ' UPDATE');
             foreach ($options as $optionKey => &$option){
                 if ($option !== 'null'){
                     continue;

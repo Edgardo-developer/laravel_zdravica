@@ -73,7 +73,6 @@ class createLead extends Command
             'responsibleFIO' => $this->option('responsibleFIO'),
             'declareCall' => $this->option('declareCall'),
             'declareVisit' => $this->option('declareVisit'),
-            'delete' => $this->option('delete'),
         ];
         if ($options) {
             Log::info('LeadDBID: '.$options['leadDBId'] . ' CREATE');
