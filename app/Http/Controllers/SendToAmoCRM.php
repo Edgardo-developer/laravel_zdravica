@@ -61,7 +61,7 @@ class SendToAmoCRM extends Controller
         if (isset($dbLead['fioPat']) && $dbLead['fioPat'] !== ''){
             return $dbLead['fioPat'];
         }
-        $PLANNING = PLANNING::find($dbLead['leadDBId']);
+        $PLANNING = PLANNING::where('PLANNING_ID','=',$dbLead['leadDBId']);
         if ($PLANNING && $PLANNING->count() > 0) {
             $planningFirst = $PLANNING->first();
             return $planningFirst?->PRENOM . ' ' . $planningFirst->NOM . ' ' . $planningFirst?->PATRONYME;

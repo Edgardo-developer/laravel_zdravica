@@ -87,7 +87,7 @@ class ContactsPresendController extends Controller
 
         if (isset($contactDB['agePat'])){
             $isChild = $contactDB['agePat'] <= 18;
-            $byAge = $this->getByAge($contacts, $isChild);
+            $byAge = $this->getByAge($contacts, $isChild,$contactDB);
             if ($byAge){ return $byAge; }
         }
         return 0;
@@ -96,20 +96,27 @@ class ContactsPresendController extends Controller
     /**
      * @param array $amoContacts
      * @param bool $is_child
+     * @param array $contactDB
      * @return int
      */
-    private function getByAge(array $amoContacts, bool $is_child) : int{
+    private function getByAge(array $amoContacts, bool $is_child, array $contactDB) : int{
         foreach ($amoContacts as $amoContact){
             $customFields = $amoContact['custom_fields_values'];
             foreach ($customFields as $customField){
                 if($customField['field_id'] === 391183){
-                    $birthString = str_replace('.','/',$customField['values'][0]['value']);
-                    $birthDay = date('Y',strtotime($birthString));
-                    $now = date('Y');
-                    $diff = $now - $birthDay;
-                    if (($diff > 18 && !$is_child) || ($diff < 18 && $is_child)){
+                    $birthString = str_replace('.','-',$customField['values'][0]['value']);
+                    $birthDay = date('Y-m-d',strtotime($birthString));
+                    $contactDBDateBirthTime = date('Y-m-d', strtotime($contactDB['NE_LE']));
+                    if ($contactDBDateBirthTime === $birthDay){
                         return $amoContact['id'];
                     }
+//                    $birthString = str_replace('.','/',$customField['values'][0]['value']);
+//                    $birthDay = date('Y',strtotime($birthString));
+//                    $now = date('Y');
+//                    $diff = $now - $birthDay;
+//                    if (($diff > 18 && !$is_child) || ($diff < 18 && $is_child)){
+//                        return $amoContact['id'];
+//                    }
                 }
             }
         }

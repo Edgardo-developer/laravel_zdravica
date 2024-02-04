@@ -32,7 +32,6 @@ class ContactsController extends Controller
 
     public function getAmoID(array $contactDB) : int{
         $contactID = $this->AccrossGetRequests($contactDB);
-        Log::info('I found '.$contactID);
         if ($contactID) {
             return $contactID;
         }
