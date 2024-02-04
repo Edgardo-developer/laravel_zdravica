@@ -1,12 +1,9 @@
 <?php
 
-namespace Tests\Feature;
 
 use App\Http\Controllers\RequestController;
 use App\Models\AmoCrmTable;
 use GuzzleHttp\Client;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CheckAccessTokenTest extends TestCase
