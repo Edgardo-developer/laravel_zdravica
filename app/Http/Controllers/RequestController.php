@@ -48,12 +48,19 @@ class RequestController extends Controller
         $body = $getRequestExt['body'];
         try {
             $jsonData = json_encode($body, JSON_THROW_ON_ERROR);
-            Log::info($jsonData);
-            $request = new Request(
-                'POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
-                $jsonData
-            );
-            $res = $client->sendAsync($request)->wait();
+
+            try {
+                $request = new Request(
+                    'POST', 'https://zdravitsa.amocrm.ru/oauth2/access_token', $headers,
+                    $jsonData
+                );
+                $res = $client->sendAsync($request)->wait();
+            }catch (RequestException $exception){
+//                Log::warning($exception->getMessage());
+                Log::warning($exception->getCode());
+                Log::info($jsonData);
+                return [];
+            }
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
