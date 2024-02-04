@@ -37,6 +37,7 @@ class updateLead extends Command
     {--amoContactID=null}
     {--responsibleFIO=null}
     {--responsible_user_id=null}
+    {--patID_changed=false}
 ';
 
     /**
