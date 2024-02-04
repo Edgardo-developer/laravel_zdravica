@@ -59,10 +59,13 @@ class SendToAmoCRM extends Controller
      */
     protected function getPlanningFIO(array &$dbLead): string
     {
+        if (isset($dbLead['fioPat']) && $dbLead['fioPat'] !== ''){
+            return $dbLead['fioPat'];
+        }
         $PLANNING = PLANNING::find($dbLead['leadDBId']);
         if ($PLANNING && $PLANNING->count() > 0) {
             $planningFirst = $PLANNING->first();
-            return $planningFirst->NOM . ' ' . $planningFirst?->PRENOM . ' ' . $planningFirst?->PATRONYME;
+            return $planningFirst?->PRENOM . ' ' . $planningFirst->NOM . ' ' . $planningFirst?->PATRONYME;
         }
         return '';
     }
