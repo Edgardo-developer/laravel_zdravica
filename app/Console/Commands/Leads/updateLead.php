@@ -6,6 +6,7 @@ use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Jobs\CreateLeadJob;
 use App\Jobs\UpdateLeadJob;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class updateLead extends Command
 {
@@ -74,10 +75,10 @@ class updateLead extends Command
             'responsibleFIO' => $this->option('responsibleFIO'),
             'declareCall' => $this->option('declareCall'),
             'declareVisit' => $this->option('declareVisit'),
-            'delete' => $this->option('delete'),
         ];
 
         if ($options){
+            Log::info('LeadDBID: '.$options['leadDBId'] . ' UPDATE');
             foreach ($options as $optionKey => &$option){
                 if ($option !== 'null'){
                     continue;

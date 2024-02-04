@@ -5,6 +5,7 @@ namespace App\Console\Commands\Leads;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Jobs\CreateLeadJob;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class createLead extends Command
 {
@@ -49,7 +50,7 @@ class createLead extends Command
     /**
      * Execute the console command.
      */
-    public function handle(SendToAmoCRM $SendToAmoCRM)
+    public function handle()
     {
         $options = [
             'id' => $this->option('id'),
@@ -75,6 +76,7 @@ class createLead extends Command
             'delete' => $this->option('delete'),
         ];
         if ($options) {
+            Log::info('LeadDBID: '.$options['leadDBId'] . ' CREATE');
             foreach ($options as $optionKey => &$option){
                 if ($option !== 'null'){
                     continue;

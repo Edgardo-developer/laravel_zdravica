@@ -6,6 +6,7 @@ use App\Http\Controllers\Sends\DeleteLeadController;
 use App\Jobs\ProcessBulkLead;
 use App\Models\AmocrmIDs;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class deleteLead extends Command
 {
@@ -36,6 +37,7 @@ class deleteLead extends Command
             'withreason'   => $this->option('withreason'),
         ];
         if ($options['leadDbId'] !== 'null'){
+            Log::info('LeadDBID: '.$options['leadDBId'] . ' DELETE');
             $amoLeadID = AmocrmIDs::where('leadDbId', $options['leadDbId'])->first()->amoLeadID;
             if ($amoLeadID){
                 dispatch(new ProcessBulkLead([$amoLeadID],$options['withreason']));
