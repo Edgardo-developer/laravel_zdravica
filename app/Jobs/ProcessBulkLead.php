@@ -15,13 +15,13 @@ class ProcessBulkLead implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $amoLeadIDs;
-    protected $finish;
+    protected $withReason;
     /**
      * Create a new job instance.
      */
-    public function __construct($amoLeadIDs, $withreason)
+    public function __construct($amoLeadIDs, $withReason)
     {
-        $this->withreason = $withreason;
+        $this->withReason = $withReason;
         $this->amoLeadIDs = $amoLeadIDs;
     }
 
@@ -31,7 +31,7 @@ class ProcessBulkLead implements ShouldQueue
     public function handle(): void
     {
         Log::info('This is job of deleting ' . date('H:i:s'));
-        $withreason = filter_var($this->withreason, FILTER_VALIDATE_BOOLEAN);
+        $withreason = filter_var($this->withReason, FILTER_VALIDATE_BOOLEAN);
         $DeleteLeads = new DeleteLeadController($this->amoLeadIDs);
         $DeleteLeads->deleteLeads($withreason);
     }
