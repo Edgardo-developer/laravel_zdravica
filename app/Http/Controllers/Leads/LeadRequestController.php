@@ -23,6 +23,7 @@ class LeadRequestController extends RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         $preparedData['status_id'] = $status;
+        Log::info(print_r($preparedData,true));
         try {
             $request = new Request('POST',
                 self::$URI, $headers,
