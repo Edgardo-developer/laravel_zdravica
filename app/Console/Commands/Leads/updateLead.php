@@ -49,7 +49,7 @@ class updateLead extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $options = [
             'id' => $this->option('id'),
@@ -78,10 +78,9 @@ class updateLead extends Command
         if ($options){
             Log::info('leadDBId: '.$options['leadDBId'] . ' UPDATE');
             foreach ($options as $optionKey => &$option){
-                if ($option !== 'null'){
-                    continue;
+                if ($option === 'null'){
+                    $options[$optionKey] = NULL;
                 }
-                $options[$optionKey] = NULL;
             }
             unset($option);
             if ($options){
