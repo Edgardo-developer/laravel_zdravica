@@ -15,7 +15,7 @@ class deleteLead extends Command
      * @var string
      */
     protected $signature = 'laradeal:deleteLead
-    {--leadDBId=null}
+    {--amoLeadID=null}
     {--withReason=false}
     ';
 
@@ -32,20 +32,14 @@ class deleteLead extends Command
     public function handle(): void
     {
         $options = [
-            'leadDBId' => $this->option('leadDBId'),
+            'amoLeadID' => $this->option('amoLeadID'),
             'withReason'   => $this->option('withReason'),
         ];
-        if ($options['leadDBId'] !== 'null'){
+        if ($options['amoLeadID'] !== 'null' && (int)$options['amoLeadID'] > 0){
             Log::info('LeadDBID: '.$options['leadDBId'] . ' DELETE');
-//            $amoLeadID = AmocrmIDs::where('leadDBId','=', $options['leadDBId'])->get();
-//            Log::info('$amoLeadID count is: '.count($amoLeadID));
-//            Log::info('leadDBId is: '.$options['leadDBId']);
-//            if (count($amoLeadID) > 0){
-//                $amoLeadIDFirst = $amoLeadID->first()->amoLeadID;
-//                Log::info('amoLeadID is: '.$amoLeadIDFirst);
-//                dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']));
-//            }
-            Log::info('Deleting works correctly');
+            $amoLeadIDFirst = $options['amoLeadID'];
+            dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']));
+            Log::info('Deleting jobs created');
         }
     }
 }
