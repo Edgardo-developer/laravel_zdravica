@@ -38,9 +38,9 @@ class deleteLead extends Command
         ];
         if ($options['leadDBId'] !== 'null'){
             Log::info('LeadDBID: '.$options['leadDBId'] . ' DELETE');
-            $amoLeadID = AmocrmIDs::where('leadDBId', $options['leadDBId'])->first()->amoLeadID;
-            if ($amoLeadID){
-                dispatch(new ProcessBulkLead([$amoLeadID],$options['withReason']));
+            $amoLeadID = AmocrmIDs::where('leadDBId', $options['leadDBId'])->get();
+            if (count($amoLeadID)){
+                dispatch(new ProcessBulkLead([$amoLeadID->first()->amoLeadID],$options['withReason']));
             }
         }
     }
