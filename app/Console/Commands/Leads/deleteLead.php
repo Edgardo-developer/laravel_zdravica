@@ -37,14 +37,15 @@ class deleteLead extends Command
         ];
         if ($options['leadDBId'] !== 'null'){
             Log::info('LeadDBID: '.$options['leadDBId'] . ' DELETE');
-            $amoLeadID = AmocrmIDs::where('leadDBId', $options['leadDBId'])->get();
-            Log::info('$amoLeadID count is: '.count($amoLeadID));
-            Log::info('leadDBId is: '.$options['leadDBId']);
-            if (count($amoLeadID) > 0){
-                $amoLeadIDFirst = $amoLeadID->first()->amoLeadID;
-                Log::info('amoLeadID is: '.$amoLeadIDFirst);
-                dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']));
-            }
+//            $amoLeadID = AmocrmIDs::where('leadDBId','=', $options['leadDBId'])->get();
+//            Log::info('$amoLeadID count is: '.count($amoLeadID));
+//            Log::info('leadDBId is: '.$options['leadDBId']);
+//            if (count($amoLeadID) > 0){
+//                $amoLeadIDFirst = $amoLeadID->first()->amoLeadID;
+//                Log::info('amoLeadID is: '.$amoLeadIDFirst);
+//                dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']));
+//            }
+            Log::info('Deleting works correctly');
         }
     }
 }
