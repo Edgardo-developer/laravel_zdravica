@@ -14,6 +14,8 @@ class UpdateLeadJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private $options;
+
     /**
      * Create a new job instance.
      */
@@ -27,7 +29,9 @@ class UpdateLeadJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $UpdateLeadController = new UpdateLeadController($this->options);
-        $UpdateLeadController->sendDealToAmoCRM();
+        if ($this->options){
+            $UpdateLeadController = new UpdateLeadController($this->options);
+            $UpdateLeadController->sendDealToAmoCRM();
+        }
     }
 }

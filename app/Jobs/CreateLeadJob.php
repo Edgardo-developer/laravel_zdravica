@@ -27,7 +27,9 @@ class CreateLeadJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $SendToAmoCRM = new SendToAmoCRM($this->options);
-        $SendToAmoCRM->sendDealToAmoCRM();
+        if ($this->options){
+            $SendToAmoCRM = new SendToAmoCRM($this->options);
+            $SendToAmoCRM->sendDealToAmoCRM();
+        }
     }
 }
