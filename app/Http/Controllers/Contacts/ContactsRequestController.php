@@ -59,6 +59,7 @@ class ContactsRequestController extends RequestController
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 return $result ?? [];
             } catch (JsonException $ex) {
+                Log::info($res->getStatusCode());
                 Log::warning($ex->getMessage());
                 Log::warning($ex->getFile());
                 Log::warning($ex->getTraceAsString());

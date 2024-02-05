@@ -83,7 +83,9 @@ class createLead extends Command
                 $options[$optionKey] = NULL;
             }
             unset($option);
-            dispatch(new CreateLeadJob($options));
+            if ($options){
+                dispatch(new CreateLeadJob($options));
+            }
         }
     }
 }

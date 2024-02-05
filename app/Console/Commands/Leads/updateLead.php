@@ -84,7 +84,9 @@ class updateLead extends Command
                 $options[$optionKey] = NULL;
             }
             unset($option);
-            dispatch(new UpdateLeadJob($options));
+            if ($options){
+                dispatch(new UpdateLeadJob($options));
+            }
         }
     }
 }
