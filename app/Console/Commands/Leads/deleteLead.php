@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Leads;
 
-use App\Http\Controllers\Sends\DeleteLeadController;
 use App\Jobs\ProcessBulkLead;
 use App\Models\AmocrmIDs;
 use Illuminate\Console\Command;
@@ -30,7 +29,7 @@ class deleteLead extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $options = [
             'leadDBId' => $this->option('leadDBId'),
@@ -39,8 +38,12 @@ class deleteLead extends Command
         if ($options['leadDBId'] !== 'null'){
             Log::info('LeadDBID: '.$options['leadDBId'] . ' DELETE');
             $amoLeadID = AmocrmIDs::where('leadDBId', $options['leadDBId'])->get();
-            if (count($amoLeadID)){
-                dispatch(new ProcessBulkLead([$amoLeadID->first()->amoLeadID],$options['withReason']));
+            Log::info('$amoLeadID count is: '.count($amoLeadID));
+            Log::info('leadDBId is: '.$options['leadDBId']);
+            if (count($amoLeadID) > 0){
+                $amoLeadIDFirst = $amoLeadID->first()->amoLeadID;
+                Log::info('amoLeadID is: '.$amoLeadIDFirst);
+                dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']));
             }
         }
     }
