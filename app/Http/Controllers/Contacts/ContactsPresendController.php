@@ -21,7 +21,7 @@ class ContactsPresendController extends Controller
      * @return array
      */
     public function checkExistsByNumber(array $contact) : array{
-        if (isset($contact['MOBIL_NYY'])){
+        if (isset($contact['MOBIL_NYY']) && (int)$contact['MOBIL_NYY'] > 0){
             $query = '?query=' . $contact['MOBIL_NYY'];
             $result = $this->get($query);
             if ($result && $result['_embedded']) {
