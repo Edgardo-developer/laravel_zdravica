@@ -80,7 +80,7 @@ class ContactsPrepareController extends Controller
             'last_name' => $contactDB['PRENOM'] ?? '',
             'created_by' => $contactDB['created_at'] ?? '',
             'updated_by' => $contactDB['updated_at'] ?? '',
-            'mobile', => $contactDB['MOBIL_NYY'] ? '8'.$contactDB['MOBIL_NYY'] : '',
+            'mobile', => isset($contactDB['MOBIL_NYY']) ? '8'.$contactDB['MOBIL_NYY'] : '',
             'email', => $contactDB['EMAIL'] ?? '',
             'GOROD', => $contactDB['GOROD'] ?? '',
             'FIO', => $contactDB['FIO'] ?? ($contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME']),
