@@ -70,7 +70,7 @@ class LeadPrepareController extends Controller
             'direction' => $leadDB['direction'],
             'filial' => $leadDB['filial'],
             'fioDoc' => $leadDB['fioDoc'],
-            'fioPat' => $leadDB['fioPat'],
+            'fioPat' => self::getFIO($leadDB),
             'agePat' => isset($leadDB['agePat']) ? (string)$leadDB['agePat'] : 'null',
             'offers' => $leadDB['offers'],
             'specDoc' => $leadDB['specDoc'],
@@ -79,5 +79,15 @@ class LeadPrepareController extends Controller
             'responsibleFIO' => $leadDB['responsibleFIO'],
             'declareVisit' => (int)$leadDB['declareVisit'] === 1,
         };
+    }
+
+    private static function getFIO($leadDB){
+        if (isset($leadDB['fioPat']) && $leadDB['fioPat'] !== ''){
+            return $leadDB['fioPat'];
+        }
+        if (isset($leadDB['FIO']) && $leadDB['FIO'] !== ''){
+            return $leadDB['FIO'];
+        }
+        return '';
     }
 }
