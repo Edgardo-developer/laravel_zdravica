@@ -84,7 +84,7 @@ class ContactsPrepareController extends Controller
             'email', => $contactDB['EMAIL'] ?? '',
             'GOROD', => $contactDB['GOROD'] ?? '',
             'FIO', => $contactDB['FIO'] ?? ($contactDB['PRENOM'] . ' ' . $contactDB['NOM'] . ' ' . $contactDB['PATRONYME']),
-            'Birthday', => $contactDB['NE_LE'] ? self::getBirthDay($contactDB['NE_LE'])  : '',
+            'Birthday', => isset($contactDB['NE_LE']) ? self::getBirthDay($contactDB['NE_LE'])  : '',
             'POL', => isset($contactDB['NOM']) ? self::checkPol($contactDB['NOM'], $contactDB['PATRONYME']) : '',
             'RAYON_VYBORKA' => $contactDB['RAYON_VYBORKA'] ?? '',
             'ULICA' => $contactDB['ULICA'] ?? '',
