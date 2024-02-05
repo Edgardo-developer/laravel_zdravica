@@ -36,7 +36,7 @@ class deleteLead extends Command
             'withReason'   => $this->option('withReason'),
         ];
         if ($options['amoLeadID'] !== 'null' && (int)$options['amoLeadID'] > 0){
-            Log::info('LeadDBID: '.$options['leadDBId'] . ' DELETE');
+            Log::info('AmoLeadID: '.$options['amoLeadID'] . ' DELETE');
             $amoLeadIDFirst = $options['amoLeadID'];
             dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']));
             Log::info('Deleting jobs created');
