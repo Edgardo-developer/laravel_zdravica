@@ -26,16 +26,17 @@ class DeleteLeadController extends Controller
         $billArray = [];
         foreach ($this->dbIDs as $dbID) {
             $leadID = (int)$dbID;
-            $billID = AmocrmIDs::with('WITH(NOLOCK)')->where('amoLeadID','=', $leadID)->first();
+            $billObj = AmocrmIDs::with('WITH(NOLOCK)')->where('amoLeadID','=', $leadID)->first();
 
             if ($leadID > 0) {
                 $leadArray[] = $withReason ?
                     $this->LeadController->closeLead($leadID) :
                     $this->LeadController->finishLead($leadID);
             }
-            if ($billID) {
+            if ($billObj) {
                 $billArray[] = $this->BillController->prepare(
-                    $billID->amoBillID, $withReason ? 0 : 1);
+                    $billObj->amoBillID, $withReason ? 0 : 1);
+                $billObj->delete();
             }
         }
         $this->removeThem($leadArray,$billArray);
