@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Leads;
 
 use App\Http\Controllers\Controller;
+use DateTime;
+use DateTimeZone;
 
 class LeadPrepareController extends Controller
 {
@@ -75,7 +77,7 @@ class LeadPrepareController extends Controller
             'offers' => $leadDB['offers'],
             'specDoc' => $leadDB['specDoc'],
             'responsible_user_id' => $leadDB['responsible_user_id'] === 'NULL' ? 10182090 : $leadDB['responsible_user_id'],
-            'date' => strtotime($leadDB['date']),
+            'date' => self::getDateTime($leadDB),
             'responsibleFIO' => $leadDB['responsibleFIO'],
             'declareVisit' => (int)$leadDB['declareVisit'] === 1,
         };
@@ -87,6 +89,15 @@ class LeadPrepareController extends Controller
         }
         if (isset($leadDB['FIO']) && $leadDB['FIO'] !== ''){
             return $leadDB['FIO'];
+        }
+        return '';
+    }
+
+    private static function getDateTime($leadDB) : string{
+        if (isset($leadDB['date'])){
+            $timezone = new DateTimeZone('Asia/Barnaul');
+            $date = new DateTime($leadDB['date'], $timezone);
+            return $date->format('U');
         }
         return '';
     }
