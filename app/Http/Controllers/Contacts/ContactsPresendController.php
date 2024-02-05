@@ -144,7 +144,6 @@ class ContactsPresendController extends Controller
 
     public function get($query): array
     {
-        Log::info('This query was sent:'.$query);
         return $this->ContactsRequestController->get($this->client,$query);
     }
 }

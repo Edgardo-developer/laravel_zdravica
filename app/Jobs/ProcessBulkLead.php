@@ -15,6 +15,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ProcessBulkLead implements ShouldQueue
 {
@@ -36,6 +37,7 @@ class ProcessBulkLead implements ShouldQueue
      */
     public function handle(): void
     {
+        Log::info('This is job of deleting ' . date('H:i:s'));
         $withreason = filter_var($this->withreason, FILTER_VALIDATE_BOOLEAN);
         $DeleteLeads = new DeleteLeadController($this->amoLeadIDs);
         $DeleteLeads->deleteLeads($withreason);

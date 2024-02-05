@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class CreateLeadJob implements ShouldQueue
 {
@@ -28,6 +29,7 @@ class CreateLeadJob implements ShouldQueue
     public function handle(): void
     {
         if ($this->options){
+            Log::info('This is job of creating ' . date('H:i:s'));
             $SendToAmoCRM = new SendToAmoCRM($this->options);
             $SendToAmoCRM->sendDealToAmoCRM();
         }

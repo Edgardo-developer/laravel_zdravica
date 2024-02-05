@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLeadJob implements ShouldQueue
 {
@@ -30,6 +31,7 @@ class UpdateLeadJob implements ShouldQueue
     public function handle(): void
     {
         if ($this->options){
+            Log::info('This is job of updating ' . date('H:i:s'));
             $UpdateLeadController = new UpdateLeadController($this->options);
             $UpdateLeadController->sendDealToAmoCRM();
         }
