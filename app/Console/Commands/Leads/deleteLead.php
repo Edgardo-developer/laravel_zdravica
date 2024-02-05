@@ -16,7 +16,7 @@ class deleteLead extends Command
      * @var string
      */
     protected $signature = 'laradeal:deleteLead
-    {--leadDbId=null}
+    {--leadDBId=null}
     {--withreason=false}
     ';
 
@@ -33,12 +33,12 @@ class deleteLead extends Command
     public function handle()
     {
         $options = [
-            'leadDbId' => $this->option('id'),
+            'leadDBId' => $this->option('leadDBId'),
             'withreason'   => $this->option('withreason'),
         ];
-        if ($options['leadDbId'] !== 'null'){
+        if ($options['leadDBId'] !== 'null'){
             Log::info('LeadDBID: '.$options['leadDBId'] . ' DELETE');
-            $amoLeadID = AmocrmIDs::where('leadDbId', $options['leadDbId'])->first()->amoLeadID;
+            $amoLeadID = AmocrmIDs::where('leadDBId', $options['leadDBId'])->first()->amoLeadID;
             if ($amoLeadID){
                 dispatch(new ProcessBulkLead([$amoLeadID],$options['withreason']));
             }
