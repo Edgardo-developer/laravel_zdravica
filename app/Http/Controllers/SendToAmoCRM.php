@@ -87,7 +87,7 @@ class SendToAmoCRM extends Controller
             'leadDBId' => ''
         ];
         foreach ($amoData as $k => &$IdsName) {
-            if ($k === 'amoOffers' && $buildLead['offerLists'] !== '') {
+            if ($k === 'amoOffers' && isset($buildLead['offerLists']) && $buildLead['offerLists'] !== '') {
                 $amoData[$k] = $buildLead['offerLists'];
                 continue;
             }

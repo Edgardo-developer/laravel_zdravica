@@ -9,6 +9,7 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLeadController extends SendToAmoCRM
 {
@@ -30,7 +31,7 @@ class UpdateLeadController extends SendToAmoCRM
 
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
-
+        Log::info(print_r($buildLead, true));
         if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && isset($buildLead['offerLists'])) {
             $amoBillID = $this->processBill($buildLead);
             if ($amoBillID && $amoBillID > 0){
