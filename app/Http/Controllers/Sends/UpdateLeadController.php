@@ -118,9 +118,8 @@ class UpdateLeadController extends SendToAmoCRM
 
                 if ($amoBillID && $amoBillID > 0){
                     $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
-                    $response = $this->LeadLinksController->create($leadLinks);
-                    Log::info('status code is: '.$response->getStatusCode());
-                    Log::info('json body is: '.$response->getBody());
+                    $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
+                    $this->LeadLinksController->create($leadLinks);
                     $this->ProductController->setProducts($buildLead['amoLeadID'], $offersData);
                 }
             }
