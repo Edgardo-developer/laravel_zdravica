@@ -16,7 +16,7 @@ class BulkLead extends Command
      * @var string
      */
     protected $signature = 'laradeal:bulkLead
-    {--amoLeadIDs=null}
+    {--leadDBIds=null}
     {--withreason=false}
     ';
 
@@ -30,16 +30,17 @@ class BulkLead extends Command
     /**
      * Execute the console command.
      */
-    public function handle(SendToAmoCRM $sendDealToAmoCRM)
+    public function handle()
     {
         $options = [
-            'amoLeadIDs' => $this->option('id'),
-            'withreason'   => $this->option('withreason'),
+            'leadDBIds' => $this->option('leadDBIds'),
+            'withReason'   => $this->option('withReason'),
         ];
         if ($options['amoLeadIDs'] !== 'null'){
-            $amoLeadIDsArr = explode(',',$options['amoLeadIDs']);
-            if ($amoLeadIDsArr){
-                dispatch(new ProcessBulkLead($amoLeadIDsArr,$options['withreason']));
+            $leadDBIds = explode(',',$options['leadDBIds']);
+            $amoLeadIDs = AmocrmIDs::whereIn('leadDBId', $leadDBIds)->pluck('amoLeadID')->toArray();
+            if ($leadDBIds){
+                dispatch(new ProcessBulkLead($amoLeadIDs,$options['withReason']));
             }
         }
     }

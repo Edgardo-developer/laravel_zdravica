@@ -39,7 +39,6 @@ class deleteLead extends Command
             Log::info('AmoLeadID: '.$options['amoLeadID'] . ' DELETE');
             $amoLeadIDFirst = $options['amoLeadID'];
             dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']));
-            Log::info('Deleting jobs created');
         }
     }
 }

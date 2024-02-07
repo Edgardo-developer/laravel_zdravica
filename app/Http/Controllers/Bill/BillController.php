@@ -27,7 +27,8 @@ class BillController extends Controller
         ];
     }
 
-    public function prepare(array $billDB, int $billStatus){
+    public function prepare(array $billDB, int $billStatus): array
+    {
         return $this->BillPrepareController->prepare($billDB, $billStatus);
     }
 

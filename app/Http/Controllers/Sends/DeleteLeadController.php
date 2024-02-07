@@ -14,30 +14,30 @@ class DeleteLeadController extends Controller
     private LeadController $LeadController;
     private array $dbIDs;
 
-    public function __construct($ids){
+    public function __construct($amoIDs = []){
         $client = new Client(['verify'=>false]);
         $this->BillController = new BillController($client);
         $this->LeadController = new LeadController($client);
-        $this->dbIDs = $ids;
+        $this->amoIDs = $amoIDs;
     }
 
     public function deleteLeads(bool $withReason) : void{
         $leadArray = [];
         $billArray = [];
-        foreach ($this->dbIDs as $dbID) {
-            $leadID = (int)$dbID;
-            $billObj = AmocrmIDs::with('WITH(NOLOCK)')->where('amoLeadID','=', $leadID)->first();
+        foreach ($this->amoIDs as $amoID) {
+            $amoID = (int)$amoID;
+            $leadObj = AmocrmIDs::where('amoLeadID','=', $amoID)->first();
 
-            if ($leadID > 0) {
+            if ($amoID > 0) {
                 $leadArray[] = $withReason ?
-                    $this->LeadController->closeLead($leadID) :
-                    $this->LeadController->finishLead($leadID);
+                    $this->LeadController->closeLead($amoID) :
+                    $this->LeadController->finishLead($amoID);
             }
-            if ($billObj) {
+            if ($leadObj) {
                 $billArray[] = $this->BillController->prepare(
-                    $billObj->amoBillID, $withReason ? 0 : 1);
-                $billObj->delete();
+                    $leadObj->amoBillID, $withReason ? 0 : 1);
             }
+            //$leadObj->delete();
         }
         $this->removeThem($leadArray,$billArray);
     }
