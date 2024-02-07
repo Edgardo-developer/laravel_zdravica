@@ -136,7 +136,7 @@ class UpdateLeadController extends SendToAmoCRM
             return $dbLead;
         }
 
-        AmocrmIDs::where('leadDBId', '=', $dbLead['leadDBId'])->first(['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'])->toArray()
+        AmocrmIDs::where('leadDBId', '=', $dbLead['leadDBId']);
         $rawArray = $raw->first(['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'])->toArray();
         $dbLead = array_merge(array_diff($dbLead,$rawArray),$rawArray);
 //        $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'];
