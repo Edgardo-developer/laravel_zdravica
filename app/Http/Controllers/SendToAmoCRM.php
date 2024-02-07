@@ -89,6 +89,7 @@ class SendToAmoCRM extends Controller
         foreach ($amoData as $k => &$IdsName) {
             if ($k === 'amoOffers' && $buildLead['offerLists'] !== '') {
                 $amoData[$k] = $buildLead['offerLists'];
+                continue;
             }
             if ($buildLead[$k] !== 'null' && $buildLead[$k] && $buildLead[$k] !== '') {
                 $amoData[$k] = $buildLead[$k];
@@ -99,6 +100,7 @@ class SendToAmoCRM extends Controller
         unset($IdsName);
         Log::info(print_r($amoData,true));
         Log::info(print_r($buildLead,true));
+
         return $amoData;
     }
 
