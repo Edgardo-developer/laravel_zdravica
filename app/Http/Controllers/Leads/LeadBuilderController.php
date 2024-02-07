@@ -11,7 +11,6 @@ class LeadBuilderController extends Controller
         return [
             'id' => $amoLeadID,
             'amoLeadID' => $amoLeadID,
-            'name' => '1',
             'closed_at' => time() + 5,
             'status_id' => 143,
             'updated_by' => 0
