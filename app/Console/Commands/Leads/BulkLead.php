@@ -36,10 +36,10 @@ class BulkLead extends Command
             'leadDBIds' => $this->option('leadDBIds'),
             'withReason'   => $this->option('withReason'),
         ];
-        if ($options['amoLeadIDs'] !== 'null'){
+        if ($options['leadDBIds'] !== 'null'){
             $leadDBIds = explode(',',$options['leadDBIds']);
             $amoLeadIDs = AmocrmIDs::whereIn('leadDBId', $leadDBIds)->pluck('amoLeadID')->toArray();
-            if ($leadDBIds){
+            if (count($leadDBIds) > 0){
                 dispatch(new ProcessBulkLead($amoLeadIDs,$options['withReason']));
             }
         }
