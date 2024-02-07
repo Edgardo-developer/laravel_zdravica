@@ -31,9 +31,11 @@ class UpdateLeadController extends SendToAmoCRM
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
 
-        $amoBillID = $this->processBill($buildLead);
-        if ($amoBillID && $amoBillID > 0){
-            $buildLead['amoBillID']  = $amoBillID;
+        if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && isset($buildLead['offerLists'])) {
+            $amoBillID = $this->processBill($buildLead);
+            if ($amoBillID && $amoBillID > 0){
+                $buildLead['amoBillID']  = $amoBillID;
+            }
         }
         $this->updatePatID($buildLead);
 
@@ -113,17 +115,15 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     private function processBill($buildLead) : int{
-        if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && $buildLead['offerLists']) {
-            $offersData = self::explodeOffers($buildLead['offerLists']);
-            if ($offersData){
-                $amoBillID = $this->getBillAmoID($buildLead, $offersData);
+        $offersData = self::explodeOffers($buildLead['offerLists']);
+        if ($offersData){
+            $amoBillID = $this->getBillAmoID($buildLead, $offersData);
 
-                if ($amoBillID && $amoBillID > 0){
-                    $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
-                    $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
-                    $this->LeadLinksController->create($leadLinks);
-                    $this->ProductController->setProducts($buildLead['amoLeadID'], $offersData);
-                }
+            if ($amoBillID && $amoBillID > 0){
+                $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
+                $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
+                $this->LeadLinksController->create($leadLinks);
+                $this->ProductController->setProducts($buildLead['amoLeadID'], $offersData);
             }
         }
         return $amoBillID ?? 0;
