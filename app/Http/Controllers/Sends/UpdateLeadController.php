@@ -136,15 +136,8 @@ class UpdateLeadController extends SendToAmoCRM
             return $dbLead;
         }
 
-        AmocrmIDs::where('leadDBId', '=', $dbLead['leadDBId']);
         $rawArray = $raw->first(['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'])->toArray();
         $dbLead = array_merge(array_diff($dbLead,$rawArray),$rawArray);
-//        $keysToCopy = ['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'];
-//        $rawArray = $raw ? $raw->toArray() : [null, null, null, null];
-
-//        foreach ($keysToCopy as $key) {
-//            $dbLead[$key] = isset($raw[$key]) ? $rawArray[$key] : null;
-//        }
 
         ksort($dbLead, SORT_NATURAL);
         return $dbLead;
