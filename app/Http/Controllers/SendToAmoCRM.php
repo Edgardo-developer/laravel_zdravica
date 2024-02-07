@@ -9,8 +9,6 @@ use App\Models\AmocrmIDs;
 use App\Models\PLANNING;
 use GuzzleHttp\Client;
 
-use function PHPUnit\Framework\throwException;
-
 class SendToAmoCRM extends Controller
 {
     private ContactsController $ContactsController;
@@ -84,13 +82,13 @@ class SendToAmoCRM extends Controller
             'amoContactID' => '',
             'amoLeadID' => '',
             'amoBillID' => '',
-            'offers' => '',
+            'amoOffers' => '',
             'leadDBId' => ''
         ]);
         foreach ($amoData as $k => &$IdsName) {
             if ($buildLead[$k] !== 'null') {
-                if ($k === 'offers') {
-                    $amoData[$k] = (int)$buildLead[$k];
+                if ($k === 'amoOffers') {
+                    $amoData[$k] = (int)$buildLead['offerLists'];
                 } else {
                     $amoData[$k] = $buildLead[$k];
                 }
