@@ -87,7 +87,7 @@ class UpdateLeadController extends SendToAmoCRM
                 'entity_id' => (int) $buildLead['amoContactID'],
             ]
         ];
-        if ($buildLead['amoBillID'] === null && count($offersData['offerNames']) > 0) {
+        if ((!$buildLead['amoBillID'] || (int)$buildLead['amoBillID'] === 0) && count($offersData['offerNames']) > 0) {
             $buildLead['amoBillID'] = $this->BillController->createBill($billDB,0);
         }
 
