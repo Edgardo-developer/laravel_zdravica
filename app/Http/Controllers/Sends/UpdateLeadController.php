@@ -87,8 +87,9 @@ class UpdateLeadController extends SendToAmoCRM
                 'entity_id' => (int) $buildLead['amoContactID'],
             ]
         ];
-        if ((!$buildLead['amoBillID'] || (int)$buildLead['amoBillID'] === 0) && count($offersData['offerNames']) > 0) {
-            $buildLead['amoBillID'] = $this->BillController->createBill($billDB,0);
+        $amoBillID = $buildLead['amoBillID'] ?? 0;
+        if ((!$amoBillID || (int)$amoBillID === 0) && count($offersData['offerNames']) > 0) {
+            $amoBillID = $this->BillController->createBill($billDB,0);
         }
 
 
@@ -96,7 +97,7 @@ class UpdateLeadController extends SendToAmoCRM
             $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null) {
             $this->BillController->updateBill($billDB,'Создан');
         }
-        return $buildLead['amoBillID'] ?? 0;
+        return $amoBillID ?? 0;
     }
 
     private function updatePatID($buildLead): void
