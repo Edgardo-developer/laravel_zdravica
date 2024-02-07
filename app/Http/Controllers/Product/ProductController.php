@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Models\AmoProducts;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -95,6 +96,7 @@ class ProductController extends Controller
         if (count($offersData['offerNames']) > 0){
             $productIDs = $this->getAmoIDs($offersData['offerNames']);
             $linksPrepared = $this->LeadLinksController->prepareAll($productIDs);
+            Log::info(print_r($linksPrepared,true));
             return $this->LeadLinksController->update($linksPrepared,$amoLeadID);
         }
         return [];
