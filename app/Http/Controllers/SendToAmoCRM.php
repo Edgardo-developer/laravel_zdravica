@@ -78,13 +78,13 @@ class SendToAmoCRM extends Controller
 
     protected function prepareDataForAmoCRMIds(array $buildLead)
     {
-        $amoData = array_intersect_key($buildLead, [
+        $amoData = [
             'amoContactID' => '',
             'amoLeadID' => '',
             'amoBillID' => '',
             'amoOffers' => '',
             'leadDBId' => ''
-        ]);
+        ];
         foreach ($amoData as $k => &$IdsName) {
             if ($k === 'amoOffers' && $buildLead['offerLists']) {
                 $amoData[$k] = $buildLead['offerLists'];
