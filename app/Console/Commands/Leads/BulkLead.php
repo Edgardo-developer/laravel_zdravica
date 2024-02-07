@@ -40,6 +40,8 @@ class BulkLead extends Command
             $leadDBIds = explode(',',$options['leadDBIds']);
             $amoLeadIDs = AmocrmIDs::whereIn('leadDBId', $leadDBIds)->pluck('amoLeadID')->toArray();
             if (count($leadDBIds) > 0){
+//                $on = \Carbon\Carbon::now()->addHour();
+//                dispatch(new ProcessBulkLead($amoLeadIDs,$options['withReason']))->delay($on);
                 dispatch(new ProcessBulkLead($amoLeadIDs,$options['withReason']));
             }
         }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductPrepareController;
 use App\Http\Controllers\Product\ProductRequestController;
 use GuzzleHttp\Client;
@@ -35,9 +36,10 @@ class ProcessProduct implements ShouldQueue
     public function handle(): void
     {
         $client = new Client();
-        $prepared = ProductPrepareController::prepare([
+        $ProductController = new ProductController($client);
+        $prepared = $ProductController->prepare([
             'name' => $this->name
-        ], 1);
+        ]);
 
         if ($this->update) {
             $prepared['amoID'] = $this->amoID;

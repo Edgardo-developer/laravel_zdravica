@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Sends;
 
 use App\Http\Controllers\Bill\BillController;
 use App\Http\Controllers\Contacts\ContactsController;
-use App\Http\Controllers\Contacts\ContactsPrepareController;
-use App\Http\Controllers\Contacts\ContactsRequestController;
 use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLeadController extends SendToAmoCRM
 {
@@ -32,6 +31,7 @@ class UpdateLeadController extends SendToAmoCRM
 
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
+        Log::info(print_r($buildLead,true));
 
         $amoBillID = $this->processBill($buildLead);
         if ($amoBillID){
@@ -40,6 +40,7 @@ class UpdateLeadController extends SendToAmoCRM
         $this->updatePatID($buildLead);
 
         $amoData = $this->prepareDataForAmoCRMIds($buildLead);
+        Log::info(print_r($buildLead,true));
         $this->updateLead($buildLead);
         (new \App\Models\AmocrmIDs)->update([
             'leadDBId' => $buildLead['leadDBId']

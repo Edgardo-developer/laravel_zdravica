@@ -38,7 +38,6 @@ class ContactsController extends Controller
 
         $prepared = $this->prepare($contactDB);
         $contactResponse = $this->create($prepared);
-        Log::info('pretty json: '. $contactResponse->getBody());
         try {
             $result = json_decode($contactResponse->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
             if ($result['_embedded'] && $result['_embedded']['contacts']){
