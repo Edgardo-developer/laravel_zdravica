@@ -40,7 +40,8 @@ class UpdateLeadController extends SendToAmoCRM
         $this->updatePatID($buildLead);
 
         $amoData = $this->prepareDataForAmoCRMIds($buildLead);
-        Log::info(print_r($buildLead,true));
+        Log::info(print_r($amoData,true));
+        Log::info('Bill ID is: '.$amoBillID);
         $this->updateLead($buildLead);
         (new \App\Models\AmocrmIDs)->update([
             'leadDBId' => $buildLead['leadDBId']
