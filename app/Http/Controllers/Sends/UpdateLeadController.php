@@ -145,6 +145,8 @@ class UpdateLeadController extends SendToAmoCRM
         if ($rawArray){
             $dbLead = array_merge(array_diff($dbLead,$rawArray),$rawArray);
             ksort($dbLead, SORT_NATURAL);
+        }else{
+            Log::info(print_r($dbLead,true));
         }
 
         return $dbLead;
