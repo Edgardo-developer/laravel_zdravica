@@ -39,6 +39,8 @@ class ContactsController extends Controller
         $prepared = $this->prepare($contactDB);
         $contactResponse = $this->create($prepared);
         try {
+            Log::info('Code on creating: '.$contactResponse->getStatusCode());
+            Log::info('LeadDBId: '.$contactDB['id']);
             $result = json_decode($contactResponse->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
             if ($result['_embedded'] && $result['_embedded']['contacts']){
                 return $result['_embedded']['contacts'][0]['id'];

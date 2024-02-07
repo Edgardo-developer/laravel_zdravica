@@ -76,7 +76,6 @@ class createLead extends Command
         ];
         if ($options) {
             Log::info('LeadDBID: '.$options['leadDBId'] . ' CREATE');
-            Log::info(print_r($options,true));
             foreach ($options as $optionKey => &$option){
                 if ($option === 'null'){
                     $options[$optionKey] = NULL;
