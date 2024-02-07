@@ -40,11 +40,11 @@ class UpdateLeadController extends SendToAmoCRM
         $this->updatePatID($buildLead);
 
         $amoData = $this->prepareDataForAmoCRMIds($buildLead);
-        Log::info(print_r($amoData,true));
-        Log::info('Bill ID is: '.$amoBillID);
+
         $this->updateLead($buildLead);
         AmocrmIDs::where('leadDBId','=',$buildLead['leadDBId'])
         ->update($amoData);
+
         return $buildLead;
     }
 
@@ -115,11 +115,12 @@ class UpdateLeadController extends SendToAmoCRM
             $offersData = self::explodeOffers($buildLead['offerLists']);
             if ($offersData){
                 $amoBillID = $this->getBillAmoID($buildLead, $offersData);
-                Log::info('The bill ID is '.$amoBillID);
+
                 if ($amoBillID && $amoBillID > 0){
                     $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
-                    Log::info(print_r($leadLinks,true));
-                    $this->LeadLinksController->create($leadLinks);
+                    $response = $this->LeadLinksController->create($leadLinks);
+                    Log::info('status code is: '.$response->getStatusCode());
+                    Log::info('json body is: '.$response->getBody());
                     $this->ProductController->setProducts($buildLead['amoLeadID'], $offersData);
                 }
             }
