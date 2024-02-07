@@ -12,7 +12,7 @@ class DeleteLeadController extends Controller
 {
     private BillController $BillController;
     private LeadController $LeadController;
-    private array $dbIDs;
+    private array $amoIDs;
 
     public function __construct($amoIDs = []){
         $client = new Client(['verify'=>false]);
