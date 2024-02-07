@@ -34,7 +34,7 @@ class BulkLead extends Command
     {
         $options = [
             'leadDBIds' => $this->option('leadDBIds'),
-            'withreason'   => $this->option('withReason'),
+            'withReason'   => $this->option('withReason'),
         ];
         if ($options['amoLeadIDs'] !== 'null'){
             $leadDBIds = explode(',',$options['leadDBIds']);
