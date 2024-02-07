@@ -141,10 +141,12 @@ class UpdateLeadController extends SendToAmoCRM
             return $dbLead;
         }
 
-        $rawArray = $raw->first(['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'])->toArray();
-        $dbLead = array_merge(array_diff($dbLead,$rawArray),$rawArray);
+        $rawArray = $raw->first(['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'])?->toArray();
+        if ($rawArray){
+            $dbLead = array_merge(array_diff($dbLead,$rawArray),$rawArray);
+            ksort($dbLead, SORT_NATURAL);
+        }
 
-        ksort($dbLead, SORT_NATURAL);
         return $dbLead;
     }
 }
