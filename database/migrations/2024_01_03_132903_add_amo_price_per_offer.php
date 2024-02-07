@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('amocrm_lead', function(Blueprint $table){
-            $table->string('offerLists')->nullable();
+            $table->text('offerLists')->nullable();
         });
     }
 
