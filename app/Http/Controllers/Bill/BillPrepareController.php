@@ -63,14 +63,16 @@ class BillPrepareController extends Controller
     private static function modifyOffers(array $offers): array
     {
         $offersArr = [];
-        foreach ($offers['offerNames'] as $k => $offerPrice) {
-            $offersArr[] = [
-                'value' => [
-                    'description' => $offerPrice,
-                    'unit_price' => $offers['offerPrices'][$k],
-                    'quantity' => 1,
-                ]
-            ];
+        foreach ($offers['offerNames'] as $k => $offerName) {
+            if (isset($offerName,$offers['offerPrices'][$k])){
+                $offersArr[] = [
+                    'value' => [
+                        'description' => $offerName,
+                        'unit_price' => $offers['offerPrices'][$k],
+                        'quantity' => 1,
+                    ]
+                ];
+            }
         }
         return $offersArr;
     }
