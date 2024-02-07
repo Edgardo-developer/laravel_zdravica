@@ -31,7 +31,10 @@ class UpdateLeadController extends SendToAmoCRM
 
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
-        Log::info(print_r($buildLead, true));
+        if ($buildLead === $this->buildlead ){
+            return [];
+        }
+
         if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && isset($buildLead['offerLists'])) {
             $amoBillID = $this->processBill($buildLead);
             if ($amoBillID && $amoBillID > 0){
@@ -145,8 +148,6 @@ class UpdateLeadController extends SendToAmoCRM
         if ($rawArray){
             $dbLead = array_merge(array_diff($dbLead,$rawArray),$rawArray);
             ksort($dbLead, SORT_NATURAL);
-        }else{
-            Log::info(print_r($dbLead,true));
         }
 
         return $dbLead;
