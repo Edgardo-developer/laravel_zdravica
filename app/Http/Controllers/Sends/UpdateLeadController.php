@@ -34,7 +34,7 @@ class UpdateLeadController extends SendToAmoCRM
         Log::info(print_r($buildLead,true));
 
         $amoBillID = $this->processBill($buildLead);
-        if ($amoBillID){
+        if ($amoBillID && $amoBillID > 0){
             $buildLead['amoBillID']  = $amoBillID;
         }
         $this->updatePatID($buildLead);
