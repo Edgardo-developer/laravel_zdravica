@@ -102,7 +102,7 @@ class UpdateLeadController extends SendToAmoCRM
 
         if ($offersData && $offersData['offerNames'] &&
             $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null) {
-            $this->BillController->updateBill($billDB,'Создан');
+            $this->BillController->updateBill($billDB,0);
         }
         return $amoBillID ?? 0;
     }

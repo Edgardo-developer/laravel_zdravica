@@ -37,8 +37,8 @@ class BillController extends Controller
         return BillRequestController::create($this->client, $prepared);
     }
 
-    public function updateBill(array $billDB,$billStatus) : void{
-        $prepared = $this->prepare($billDB,$billStatus);
+    public function updateBill(array $billDB, int $billStatus) : void{
+        $prepared = $this->prepare($billDB, $billStatus);
         BillRequestController::update($this->client, $prepared);
     }
 }
