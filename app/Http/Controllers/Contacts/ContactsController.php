@@ -32,7 +32,7 @@ class ContactsController extends Controller
 
     public function getAmoID(array $contactDB) : int{
         $contactID = $this->AccrossGetRequests($contactDB);
-        if ($contactID) {
+        if ((int)$contactID > 0) {
             return $contactID;
         }
 
