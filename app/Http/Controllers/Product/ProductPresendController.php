@@ -12,12 +12,12 @@ class ProductPresendController extends Controller
     public function saveToDB(array $undefinedAmo, array $newIds) : void{
         $rows = [];
         foreach ($newIds as $k => $newId){
-            $first = amoProducts::all('FM_SERV_ID')->where('FM_SERV_NAME', '=', $undefinedAmo[$k])->first();
+            $first = amoProducts::all('DBId')->where('DBId', '=', $undefinedAmo[$k])->first();
             if ($first){
                 $rows[] = [
                     'name'  => $undefinedAmo[$k],
                     'amoID' => $newId,
-                    'DBId'  => $first->FM_SERV_ID,
+                    'DBId'  => $first->DBId,
                 ];
             }
         }
