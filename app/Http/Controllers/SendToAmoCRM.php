@@ -8,6 +8,7 @@ use App\Http\Controllers\Leads\LeadController;
 use App\Models\AmocrmIDs;
 use App\Models\PLANNING;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class SendToAmoCRM extends Controller
 {
@@ -86,7 +87,7 @@ class SendToAmoCRM extends Controller
             'leadDBId' => ''
         ];
         foreach ($amoData as $k => &$IdsName) {
-            if ($k === 'amoOffers' && $buildLead['offerLists']) {
+            if ($k === 'amoOffers' && $buildLead['offerLists'] !== '') {
                 $amoData[$k] = $buildLead['offerLists'];
             }
             if ($buildLead[$k] !== 'null' && $buildLead[$k] && $buildLead[$k] !== '') {
@@ -96,6 +97,8 @@ class SendToAmoCRM extends Controller
             }
         }
         unset($IdsName);
+        Log::info(print_r($amoData,true));
+        Log::info(print_r($buildLead,true));
         return $amoData;
     }
 
