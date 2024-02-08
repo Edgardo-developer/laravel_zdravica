@@ -48,14 +48,14 @@ class ProductController extends Controller
 
     public function getAmoIDs(array $amoProductNames) : array{
         $checkThem = $this->checkUndefined($amoProductNames);
-        Log::info('Undefined are: '.implode('///',$checkThem));
+        Log::info('Undefined are: '.print_r($checkThem,true));
         $undefinedAmo = $checkThem['undefinedAmo'];
         $ids = $checkThem['ids'];
         if (count($undefinedAmo) > 0) {
             $prepared = $this->prepare($undefinedAmo);
             Log::info('Prepared is: '.print_r($prepared,true));
             $newIds = $this->create($prepared);
-            Log::info('NewIds are: '.implode('///',$newIds));
+            Log::info('NewIds are: '.print_r($newIds,true));
             $this->ProductPresendController->saveToDB($undefinedAmo, $newIds);
             $ids = array_merge($checkThem['ids'], $newIds);
         }
