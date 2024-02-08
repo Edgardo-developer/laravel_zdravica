@@ -188,7 +188,7 @@ class UpdateLeadController extends SendToAmoCRM
     private function getDiffOffersUnlink($amoOffers,$offersList) : array{
         $data = [];
         foreach ($amoOffers['offerNames'] as $key => $offersElement){
-            $definedKey = array_search($offersElement, $amoOffers['offerNames'], true);
+            $definedKey = array_search($offersElement, $offersList['offerNames'], true);
             if (!$definedKey){
                 $data['offerNames'][] = $offersElement;
                 $data['offerPrices'][] = $offersList['offerPrices'][$definedKey];
