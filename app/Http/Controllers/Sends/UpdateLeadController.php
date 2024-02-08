@@ -33,7 +33,6 @@ class UpdateLeadController extends SendToAmoCRM
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
         if (isset($buildLead['amoContactID'], $buildLead['amoLeadID']) && $buildLead && isset($buildLead['offerLists'])) {
-            Log::info(print_r($buildLead,true));
             $amoBillID = $this->processBill($buildLead);
             if ($amoBillID && $amoBillID > 0){
                 $buildLead['amoBillID']  = $amoBillID;
@@ -129,7 +128,7 @@ class UpdateLeadController extends SendToAmoCRM
                 $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
 
                 $newOffersData = $this->unlinkProducts($buildLead);
-                Log::info(print_r($newOffersData));
+                Log::info(print_r($newOffersData,true));
                 if (count($newOffersData['link']) > 0 && isset($newOffersData['link']['offerNames'])){
                     $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
                 }

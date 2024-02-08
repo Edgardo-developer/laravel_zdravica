@@ -51,5 +51,6 @@ class DeleteLeadController extends Controller
             $leadArray['delete'] = true;
             return $this->LeadController->update($leadArray);
         }
+        return [];
     }
 }
