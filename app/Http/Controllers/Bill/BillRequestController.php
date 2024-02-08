@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Bill;
 use App\Http\Controllers\RequestController;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 
@@ -46,7 +47,7 @@ class BillRequestController extends RequestController
         return 0;
     }
 
-    public static function update(Client $client, array $preparedData): void
+    public static function update(Client $client, array $preparedData): array|Response
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
@@ -56,14 +57,12 @@ class BillRequestController extends RequestController
                 'POST', self::$URI, $headers,
                 $jsonData
             );
-            Log::info($jsonData);
-            Log::info(self::$URI);
-            self::handleErrors($client, $request);
+            return self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
             Log::warning($ex->getTraceAsString());
             Log::warning($ex->getLine());
-            return;
+            return [];
         }
     }
 }

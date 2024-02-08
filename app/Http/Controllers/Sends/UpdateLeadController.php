@@ -111,8 +111,8 @@ class UpdateLeadController extends SendToAmoCRM
             $amoBillID = $this->BillController->createBill($billDB,0);
         }else{
             $billDB['id'] = $amoBillID;
-            Log::info(print_r($billDB,true));
-            $this->BillController->updateBill($billDB,0);
+            $res = $this->BillController->updateBill($billDB,0);
+            Log::info('The response was: '.$res->getStatusCode());
         }
 
         return $amoBillID ?? 0;
@@ -138,6 +138,7 @@ class UpdateLeadController extends SendToAmoCRM
                 $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
                 $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
 
+                Log::info(print_r($newOffersData,true));
                 if (isset($newOffersData['link']['offerNames']) && count($newOffersData['link']['offerNames']) > 0){
                     $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
                 }

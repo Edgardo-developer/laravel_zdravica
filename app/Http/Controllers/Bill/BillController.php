@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Bill;
 
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Psr7\Response;
 
 class BillController extends Controller
 {
@@ -37,10 +38,10 @@ class BillController extends Controller
         return BillRequestController::create($this->client, $prepared);
     }
 
-    public function updateBill(array $billDB, int $billStatus) : void{
+    public function updateBill(array $billDB, int $billStatus) : array|Response{
         if ($billStatus === 0){
             $billDB = $this->prepare($billDB, $billStatus);
         }
-        BillRequestController::update($this->client, $billDB);
+        return BillRequestController::update($this->client, $billDB);
     }
 }
