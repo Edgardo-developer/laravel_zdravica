@@ -45,7 +45,7 @@ class DeleteLeadController extends Controller
     private function removeThem($leadArray, $billArray) : Response|array{
         if (count($leadArray[0]) > 0) {
             if (count($billArray) > 0) {
-                $this->BillController->updateBill($billArray, $billArray['billStatus']);
+                $this->BillController->updateBill($billArray, 1);
             }
             $leadArray['delete'] = true;
             return $this->LeadController->update($leadArray);

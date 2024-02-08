@@ -38,7 +38,9 @@ class BillController extends Controller
     }
 
     public function updateBill(array $billDB, int $billStatus) : void{
-        $prepared = $this->prepare($billDB, $billStatus);
-        BillRequestController::update($this->client, $prepared);
+        if ($billStatus !== 1){
+            $prepared = $this->prepare($billDB, $billStatus);
+        }
+        BillRequestController::update($this->client, $billDB);
     }
 }
