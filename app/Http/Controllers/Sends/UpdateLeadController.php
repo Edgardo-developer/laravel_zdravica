@@ -204,8 +204,10 @@ class UpdateLeadController extends SendToAmoCRM
     private function getDiffOffersLink($amoOffers,$offersList) : array{
         $data = [];
         // Те, что в амо. Их должно быть меньше
+        Log::info(print_r($amoOffers,true));
         $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
         // Те, что в БД. Их должно быть больше
+        Log::info(print_r($offersList,true));
         $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
         $result = array_diff($DBFullOffers, $amoFullOffers);
