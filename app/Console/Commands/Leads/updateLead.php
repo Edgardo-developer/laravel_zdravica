@@ -83,7 +83,7 @@ class updateLead extends Command
             }
             unset($option);
             if ($options){
-                dispatch(new UpdateLeadJob($options));
+                dispatch(new UpdateLeadJob($options))->onQueue('low');
             }
         }
     }

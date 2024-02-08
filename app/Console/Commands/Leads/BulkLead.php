@@ -42,7 +42,7 @@ class BulkLead extends Command
             if (count($leadDBIds) > 0){
 //                $on = \Carbon\Carbon::now()->addHour();
 //                dispatch(new ProcessBulkLead($amoLeadIDs,$options['withReason']))->delay($on);
-                dispatch(new ProcessBulkLead($amoLeadIDs,$options['withReason']));
+                dispatch(new ProcessBulkLead($amoLeadIDs,$options['withReason']))->onQueue('low');
             }
         }
     }

@@ -82,7 +82,7 @@ class createLead extends Command
             }
             unset($option);
             if ($options){
-                dispatch(new CreateLeadJob($options));
+                dispatch(new CreateLeadJob($options))->onQueue('high');
             }
         }
     }
