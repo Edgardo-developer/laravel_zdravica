@@ -29,8 +29,8 @@ class LeadLinksController extends Controller
         return $this->LeadLinksPrepareController->prepareAll($ids);
     }
 
-    public function create($preparedData) : Response|array{
-        return $this->LeadLinksRequestController->create($this->client, $preparedData);
+    public function create($preparedData,$amoLeadID) : Response|array{
+        return $this->LeadLinksRequestController->create($this->client, $preparedData,$amoLeadID);
     }
 
     public function update($preparedData, $amoLeadID) : Response|array{

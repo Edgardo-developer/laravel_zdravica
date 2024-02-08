@@ -12,13 +12,9 @@ class LeadLinksRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads/%d/link';
 
-    public function create($client, $preparedData): Response|array
+    public function create($client, $preparedData, $amoLeadID): Response|array
     {
-        if (!isset($preparedData['amoLeadID'])){
-            return [];
-        }
-        $uri = sprintf(self::$URI, $preparedData['amoLeadID']);
-        unset($preparedData['amoLeadID']);
+        $uri = sprintf(self::$URI, $amoLeadID);
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         try {

@@ -30,8 +30,6 @@ class ProcessBulkLead implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info('AmoLeadID: '.implode(',',$this->amoLeadIDs) . ' DELETE');
-        Log::info('This is job of deleting ' . date('H:i:s'));
         $withreason = filter_var($this->withReason, FILTER_VALIDATE_BOOLEAN);
         $DeleteLeads = new DeleteLeadController($this->amoLeadIDs);
         $DeleteLeads->deleteLeads($withreason);

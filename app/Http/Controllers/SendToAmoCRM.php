@@ -44,9 +44,6 @@ class SendToAmoCRM extends Controller
             $this->updateLead($buildLead);
             $buildLead['amoLeadID'] = (int)$buildLead['amoLeadID'];
             $amoData = $this->prepareDataForAmoCRMIds($buildLead);
-            Log::info('<Created amolead_ids>');
-            Log::info(print_r($amoData,true));
-            Log::info('</Created amolead_ids>');
             AmocrmIDs::create($amoData);
             return $buildLead;
         }
