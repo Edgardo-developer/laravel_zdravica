@@ -42,11 +42,14 @@ class BillPrepareController extends Controller
                 if ($amoFieldName === 'account' && $billDB[$amoFieldName]['entity_id'] === 0){
                     continue;
                 }
+                $value = $amoFieldName !== 'offers' ? $billDB[$amoFieldName] : self::modifyOffers($billDB[$amoFieldName]);
+                if (!$value){
+                    continue;
+                }
                 $locArr = [
                     'field_id' => $amoFieldID,
                     'values' => $amoFieldName !== 'offers' ?
-                        [['value' => $billDB[$amoFieldName]]] :
-                        self::modifyOffers($billDB[$amoFieldName])
+                        [['value' => $value]] : $value
                 ];
 
                 $arr['custom_fields_values'][] = $locArr;
