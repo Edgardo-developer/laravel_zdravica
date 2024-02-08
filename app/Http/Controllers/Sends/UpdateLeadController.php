@@ -183,18 +183,18 @@ class UpdateLeadController extends SendToAmoCRM
      * @param $amoOffers
      * @param $offersList
      * @return array
-     * Description: unlink
+     * Description: get the extra of $amoOffers
      */
     private function getDiffOffersUnlink($amoOffers,$offersList) : array{
         $data = [];
-        foreach ($amoOffers['offerNames'] as $key => $offersElement){
-            $definedKey = array_search($offersElement, $offersList['offerNames'], true);
-            if (!$definedKey && isset($offersList['offerPrices'][$definedKey])){
-                $data['offerNames'][] = $offersElement;
-                $data['offerPrices'][] = $offersList['offerPrices'][$definedKey];
-            }
-        }
-        return $data;
+        // Те, что в амо. Их должно быть больше
+        $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
+        // Те, что в БД. Их должно быть меньше
+        $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
+
+        $result = array_diff($amoFullOffers,$DBFullOffers);
+
+        return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
 
     /**
@@ -205,14 +205,14 @@ class UpdateLeadController extends SendToAmoCRM
      */
     private function getDiffOffersLink($amoOffers,$offersList) : array{
         $data = [];
-        foreach ($offersList['offerNames'] as $key => $offersElement){
-            $definedKey = array_search($offersElement, $amoOffers['offerNames'], true);
-            if (!$definedKey && isset($amoOffers['offerPrices'][$definedKey])){
-                $data['offerNames'][] = $offersElement;
-                $data['offerPrices'][] = $amoOffers['offerPrices'][$definedKey];
-            }
-        }
-        return $data;
+        // Те, что в амо. Их должно быть меньше
+        $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
+        // Те, что в БД. Их должно быть больше
+        $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
+
+        $result = array_diff($DBFullOffers, $amoFullOffers);
+
+        return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
 
     /**
