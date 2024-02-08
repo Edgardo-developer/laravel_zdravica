@@ -68,7 +68,7 @@ class LeadPrepareController extends Controller
     {
         return match ($mergedLeadFields) {
             'name' => $leadDB['leadDBId'],
-            'price' => $leadDB['billSum'] ? (int)$leadDB['billSum'] : 0,
+            'price' => isset($leadDB['billSum']) ? (int)$leadDB['billSum'] : 0,
             'direction' => $leadDB['direction'] ?? '',
             'filial' => $leadDB['filial'] ?? '',
             'fioDoc' => $leadDB['fioDoc'] ?? '',
