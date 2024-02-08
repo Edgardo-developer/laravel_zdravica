@@ -67,6 +67,7 @@ class LeadLinksRequestController extends RequestController
             );
             Log::info(json_encode($preparedData, JSON_THROW_ON_ERROR));
             Log::info($uri);
+            Log::info(self::$URIDelete);
             return self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
