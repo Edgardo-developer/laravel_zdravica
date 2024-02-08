@@ -65,11 +65,9 @@ class ContactsPresendController extends Controller
      */
     public function checkExists(array $contactDB,array $contacts): int
     {
-        if ($contacts){
+        if (count($contacts) > 0){
             $contactAmoID = $this->checkMultipleContacts($contacts,$contactDB);
-            if ($contactAmoID){
-                return $contactAmoID;
-            }
+            return $contactAmoID ?? 0;
         }
 
         return 0;
@@ -83,28 +81,31 @@ class ContactsPresendController extends Controller
     private function checkMultipleContacts($contacts, $contactDB){
         if (isset($contactDB['FIO'])){
             $byFIO = $this->getByFIO($contacts,$contactDB['FIO']);
-            if ($byFIO){ return $byFIO; }
+            if ((int)$byFIO > 0){
+                return $byFIO;
+            }
         }
 
-        if (isset($contactDB['agePat'])){
-            $isChild = $contactDB['agePat'] <= 18;
-            $byAge = $this->getByAge($contacts, $isChild,$contactDB);
-            if ($byAge){ return $byAge; }
+        if (isset($contactDB['NE_LE'])){
+            $byAge = $this->getByAge($contacts, $contactDB);
+            if ((int)$byAge > 0){
+                return $byAge;
+            }
         }
         return 0;
     }
 
     /**
      * @param array $amoContacts
-     * @param bool $is_child
      * @param array $contactDB
      * @return int
      */
-    private function getByAge(array $amoContacts, bool $is_child, array $contactDB) : int{
+    private function getByAge(array $amoContacts, array $contactDB) : int{
         foreach ($amoContacts as $amoContact){
             $customFields = $amoContact['custom_fields_values'];
             foreach ($customFields as $customField){
                 if($customField['field_id'] === 391183){
+
                     $birthDay = date('d.m.Y',strtotime($customField['values'][0]['value']));
                     $contactDBDateBirthTime = date('d.m.Y', strtotime($contactDB['NE_LE']));
                     if ($contactDBDateBirthTime === $birthDay){

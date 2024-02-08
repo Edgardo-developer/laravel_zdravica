@@ -91,7 +91,7 @@ class SendToAmoCRM extends Controller
                 $amoData[$k] = $buildLead['offerLists'];
                 continue;
             }
-            if ($buildLead[$k] !== 'null' && $buildLead[$k] && $buildLead[$k] !== '') {
+            if (isset($buildLead[$k]) && $buildLead[$k] !== 'null' && $buildLead[$k] && $buildLead[$k] !== '') {
                 $amoData[$k] = $buildLead[$k];
             } else {
                 unset($amoData[$k]);

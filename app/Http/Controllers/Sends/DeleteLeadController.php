@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Leads\LeadController;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 
 class DeleteLeadController extends Controller
 {
@@ -21,7 +22,7 @@ class DeleteLeadController extends Controller
         $this->amoIDs = $amoIDs;
     }
 
-    public function deleteLeads(bool $withReason) : void{
+    public function deleteLeads(bool $withReason) : Response|array{
         $leadArray = [];
         $billArray = [];
         foreach ($this->amoIDs as $amoID) {
@@ -39,16 +40,16 @@ class DeleteLeadController extends Controller
             }
             //$leadObj->delete();
         }
-        $this->removeThem($leadArray,$billArray);
+        return $this->removeThem($leadArray,$billArray);
     }
 
-    private function removeThem($leadArray, $billArray) : void{
+    private function removeThem($leadArray, $billArray) : Response|array{
         if (count($leadArray[0]) > 0) {
             if (count($billArray) > 0) {
                 $this->BillController->updateBill($billArray, $billArray['billStatus']);
             }
             $leadArray['delete'] = true;
-            $this->LeadController->update($leadArray);
+            return $this->LeadController->update($leadArray);
         }
     }
 }

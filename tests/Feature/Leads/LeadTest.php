@@ -5,11 +5,12 @@ namespace Leads;
 use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmLead;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LeadTest extends TestCase
 {
-
+    use RefreshDatabase;
 //    public function testLeadCreated()
 //    {
 //        $array = AmoCRMLead::find(1);
@@ -33,7 +34,7 @@ class LeadTest extends TestCase
 
         $this->assertIsArray($SendToAmoCRMArr);
         $this->assertNotEmpty($SendToAmoCRMArr);
-        $SendToAmoCRMArr['offerLists'] = 'Эпидурография:2000,Эстеразный ингибитор С1 комплемента - функциональный:3000';
+        $SendToAmoCRMArr['offerLists'] = 'Эпидурография###2000|||Эстеразный ингибитор С1 комплемента - функциональный###3000';
         $SendToAmoCRMArr['billSum'] = 5000;
 
         $SendToAmoCRMUpdate = new UpdateLeadController($SendToAmoCRMArr);

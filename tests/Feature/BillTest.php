@@ -35,7 +35,7 @@ class BillTest extends TestCase
         $leadDBJustContact = ['amoContactID' => 20284111];
         $LeadLinksController = new LeadLinksController($client);
         $preparedData = $LeadLinksController->prepare($leadDBJustContact,$billID);
-        $preparedData['amoLeadID'] = 13657803;
+        $preparedData['amoLeadID'] = 13927257;
         $response = $LeadLinksController->create($preparedData);
         $this->assertEquals(200,$response->getStatusCode());
     }

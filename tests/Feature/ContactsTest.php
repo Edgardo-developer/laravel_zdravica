@@ -4,10 +4,12 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Contacts\ContactsController;
 use GuzzleHttp\Client;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ContactsTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      */

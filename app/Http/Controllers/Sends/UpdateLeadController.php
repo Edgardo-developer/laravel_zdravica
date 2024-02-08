@@ -95,6 +95,7 @@ class UpdateLeadController extends SendToAmoCRM
             ]
         ];
         $amoBillID = $buildLead['amoBillID'] ?? 0;
+
         if ((!$amoBillID || (int)$amoBillID === 0) && count($offersData['offerNames']) > 0) {
             $amoBillID = $this->BillController->createBill($billDB,0);
         }
@@ -102,7 +103,7 @@ class UpdateLeadController extends SendToAmoCRM
 
         if ($offersData && $offersData['offerNames'] &&
             $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null) {
-            $this->BillController->updateBill($billDB,0);
+            $this->BillController->updateBill($billDB,'Создан');
         }
         return $amoBillID ?? 0;
     }
@@ -121,7 +122,6 @@ class UpdateLeadController extends SendToAmoCRM
         $offersData = self::explodeOffers($buildLead['offerLists']);
         if ($offersData){
             $amoBillID = $this->getBillAmoID($buildLead, $offersData);
-            Log::info(print_r($offersData,true));
             if ($amoBillID && $amoBillID > 0){
                 $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
                 $leadLinks['amoLeadID'] = $buildLead['amoLeadID'];
@@ -139,9 +139,6 @@ class UpdateLeadController extends SendToAmoCRM
     protected function checkAmo(array &$dbLead): array
     {
         $raw = AmocrmIDs::where('leadDBId', '=', $dbLead['leadDBId']);
-        if (!$raw) {
-            return $dbLead;
-        }
 
         $rawArray = $raw->first(['amoContactID', 'amoLeadID', 'amoBillID', 'amoOffers'])?->toArray();
         if ($rawArray){

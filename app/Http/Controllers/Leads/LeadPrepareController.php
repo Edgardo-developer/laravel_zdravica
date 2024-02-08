@@ -68,17 +68,17 @@ class LeadPrepareController extends Controller
     {
         return match ($mergedLeadFields) {
             'name' => $leadDB['leadDBId'],
-            'price' => (int)$leadDB['billSum'],
-            'direction' => $leadDB['direction'],
-            'filial' => $leadDB['filial'],
-            'fioDoc' => $leadDB['fioDoc'],
+            'price' => $leadDB['billSum'] ?? 0,
+            'direction' => $leadDB['direction'] ?? '',
+            'filial' => $leadDB['filial'] ?? '',
+            'fioDoc' => $leadDB['fioDoc'] ?? '',
             'fioPat' => self::getFIO($leadDB),
             'agePat' => isset($leadDB['agePat']) ? (string)$leadDB['agePat'] : 'null',
-            'offers' => $leadDB['offers'],
-            'specDoc' => $leadDB['specDoc'],
+            'offers' => $leadDB['offers'] ?? '',
+            'specDoc' => $leadDB['specDoc'] ?? '',
             'responsible_user_id' => $leadDB['responsible_user_id'] === 'NULL' ? 10182090 : $leadDB['responsible_user_id'],
             'date' => self::getDateTime($leadDB),
-            'responsibleFIO' => $leadDB['responsibleFIO'],
+            'responsibleFIO' => $leadDB['responsibleFIO'] ?? '',
             'declareVisit' => (int)$leadDB['declareVisit'] === 1,
         };
     }

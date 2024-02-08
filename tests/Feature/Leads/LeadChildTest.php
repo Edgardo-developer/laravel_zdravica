@@ -5,10 +5,12 @@ namespace Leads;
 use App\Http\Controllers\Contacts\ContactsController;
 use App\Models\PATIENTS;
 use GuzzleHttp\Client;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LeadChildTest extends TestCase
 {
+    use RefreshDatabase;
     private static $amoFatherID = 20284111;
     private static $amoChildID_f = 20284239; // With FIO only
     private static $amoChildID_b = 20284357; // With BirthDate only
@@ -45,7 +47,7 @@ class LeadChildTest extends TestCase
             'MOBIL_NYY' => '1234567891',
         ])->PATIENTS_ID;
         $patData = PATIENTS::find($pat_id)->toArray();
-        $patData['agePat'] = '15';
+        $patData['NE_LE'] = '01.01.2010';
         $client = new Client(['verify'=>false]);
         $contactClass = new ContactsController($client);
         $contactAmoID = $contactClass->AccrossGetRequests($patData);

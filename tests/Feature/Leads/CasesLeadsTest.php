@@ -8,10 +8,12 @@ use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmLead;
 use GuzzleHttp\Client;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CasesLeadsTest extends TestCase
 {
+    use RefreshDatabase;
     private static $amoCurrentEmptyLeadID = 13632087;
 
     public function testWhenLeadIsEmpty()

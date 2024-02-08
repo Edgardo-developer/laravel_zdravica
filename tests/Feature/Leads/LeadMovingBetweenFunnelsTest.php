@@ -7,10 +7,12 @@ use App\Http\Controllers\Sends\DeleteLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmLead;
 use GuzzleHttp\Client;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LeadMovingBetweenFunnelsTest extends TestCase
 {
+    use RefreshDatabase;
     public function testFromFirst(): void
     {
         $findedArray = AmoCRMLead::find(1);
@@ -39,7 +41,7 @@ class LeadMovingBetweenFunnelsTest extends TestCase
         $SendToAmoCRMArr = $SendToAmoCRM->sendDealToAmoCRM();
 
         $delete = new DeleteLeadController([$SendToAmoCRMArr['amoLeadID']]);
-        self::assertTrue($delete->deleteLeads(false));
+        self::assertEquals(200,$delete->deleteLeads(false)->getStatusCode());
     }
 
     public function testToFailure(): void
@@ -51,6 +53,6 @@ class LeadMovingBetweenFunnelsTest extends TestCase
         $SendToAmoCRMArr = $SendToAmoCRM->sendDealToAmoCRM();
 
         $delete = new DeleteLeadController([$SendToAmoCRMArr['amoLeadID']]);
-        self::assertTrue($delete->deleteLeads(true));
+        self::assertEquals(200,$delete->deleteLeads(true)->getStatusCode());
     }
 }
