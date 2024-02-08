@@ -33,6 +33,7 @@ class UpdateLeadJob implements ShouldQueue
         if ($this->options){
             Log::info('leadDBId: '.$this->options['leadDBId'] . ' UPDATE');
             Log::info('This is job of updating ' . date('H:i:s'));
+            Log::info(print_r($this->options, true));
             $UpdateLeadController = new UpdateLeadController($this->options);
             $UpdateLeadController->sendDealToAmoCRM();
         }

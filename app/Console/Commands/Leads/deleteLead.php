@@ -37,7 +37,7 @@ class deleteLead extends Command
         ];
         if ($options['amoLeadID'] !== 'null' && (int)$options['amoLeadID'] > 0){
             $amoLeadIDFirst = $options['amoLeadID'];
-            dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']))->onQueue('high');
+            dispatch(new ProcessBulkLead([$amoLeadIDFirst],$options['withReason']))->onQueue('deleteLead');
         }
     }
 }
