@@ -18,6 +18,10 @@ class BillPrepareController extends Controller
     public function prepare(array $billDB, int $billStatus): array
     {
         $arr = ['custom_fields_values' => []];
+        if (isset($billDB['id'])){
+            $arr['id'] = $billDB['id'];
+            unset($billDB['id']);
+        }
         $arr = $this->accross_fields($arr,$billDB);
         if ($billStatus === 1) {
             $arr['custom_fields_values'][] = [
