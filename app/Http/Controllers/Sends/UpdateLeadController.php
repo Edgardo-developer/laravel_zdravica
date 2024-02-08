@@ -96,6 +96,7 @@ class UpdateLeadController extends SendToAmoCRM
      */
     private function getBillAmoID($buildLead, array $offersData): int
     {
+        $amoBillID = $buildLead['amoBillID'] ?? 0;
         $billDB = [
             'offers' => $offersData,
             'price' => (int)$buildLead['billSum'],
@@ -105,11 +106,11 @@ class UpdateLeadController extends SendToAmoCRM
                 'entity_id' => (int) $buildLead['amoContactID'],
             ]
         ];
-        $amoBillID = $buildLead['amoBillID'] ?? 0;
 
         if ((!$amoBillID || (int)$amoBillID === 0) && count($offersData['offerNames']) > 0) {
             $amoBillID = $this->BillController->createBill($billDB,0);
         }else{
+            $billDB['id'] = $amoBillID;
             Log::info(print_r($billDB,true));
             $this->BillController->updateBill($billDB,0);
         }
