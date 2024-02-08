@@ -172,7 +172,7 @@ class UpdateLeadController extends SendToAmoCRM
             $definedKey = array_search($offersElement, $amoOffers['offerNames'], true);
             if (!$definedKey){
                 $data['offerNames'][] = $offersElement;
-                $data['offerPrices'][] = $offersList['offerPrices'][$key];
+                $data['offerPrices'][] = $offersList['offerPrices'][$definedKey];
             }
         }
         return $data;
@@ -190,7 +190,7 @@ class UpdateLeadController extends SendToAmoCRM
             $definedKey = array_search($offersElement, $amoOffers['offerNames'], true);
             if (!$definedKey){
                 $data['offerNames'][] = $offersElement;
-                $data['offerPrices'][] = $amoOffers['offerPrices'][$key];
+                $data['offerPrices'][] = $amoOffers['offerPrices'][$definedKey];
             }
         }
         return $data;
