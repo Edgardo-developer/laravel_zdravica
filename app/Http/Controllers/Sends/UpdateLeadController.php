@@ -96,6 +96,7 @@ class UpdateLeadController extends SendToAmoCRM
      */
     private function getBillAmoID($buildLead, array $offersData): int
     {
+        Log::info(print_r($buildLead,true));
         $amoBillID = $buildLead['amoBillID'] ?? 0;
         $billDB = [
             'offers' => $offersData,
