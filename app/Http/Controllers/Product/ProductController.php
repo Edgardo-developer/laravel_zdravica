@@ -103,4 +103,19 @@ class ProductController extends Controller
         }
         return [];
     }
+
+    /**
+     * @param $amoLeadID
+     * @param array $offersData
+     * @return Response|array
+     */
+    public function unsetProducts($amoLeadID, array $offersData): Response|array
+    {
+        if (count($offersData['offerNames']) > 0){
+            $productIDs = $this->getAmoIDs($offersData['offerNames']);
+            $linksPrepared = $this->LeadLinksController->prepareAll($productIDs);
+            return $this->LeadLinksController->remove($linksPrepared,$amoLeadID);
+        }
+        return [];
+    }
 }

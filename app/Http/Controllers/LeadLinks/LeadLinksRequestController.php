@@ -55,5 +55,22 @@ class LeadLinksRequestController extends RequestController
         }
     }
 
-
+    public function remove($client, $preparedData, $amoLeadID)  : Response|array
+    {
+        $uri = sprintf(self::$URIDelete, $amoLeadID);
+        $RequestExt = self::getRequestExt();
+        $headers = $RequestExt['headers'];
+        try {
+            $request = new Request(
+                'POST', $uri, $headers,
+                json_encode($preparedData, JSON_THROW_ON_ERROR)
+            );
+            return self::handleErrors($client, $request);
+        }catch (JsonException $ex){
+            Log::warning($ex->getMessage());
+            Log::warning($ex->getCode());
+            Log::warning($ex->getLine());
+            return [];
+        }
+    }
 }

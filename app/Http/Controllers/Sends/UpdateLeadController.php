@@ -125,10 +125,16 @@ class UpdateLeadController extends SendToAmoCRM
         if ($offersData){
             $amoBillID = $this->getBillAmoID($buildLead, $offersData);
             if ($amoBillID && $amoBillID > 0){
-                $this->unlinkProducts($buildLead);
                 $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
                 $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
-                $this->ProductController->setProducts($buildLead['amoLeadID'], $offersData);
+
+                $newOffersData = $this->unlinkProducts($buildLead);
+                if (count($newOffersData['link']) > 0){
+                    $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
+                }
+                if (count($newOffersData['unlink']) > 0){
+                    $this->ProductController->unsetProducts($buildLead['amoLeadID'], $newOffersData['unlink']);
+                }
             }
         }
         return $amoBillID ?? 0;
@@ -137,22 +143,47 @@ class UpdateLeadController extends SendToAmoCRM
     private function unlinkProducts($buildLead) : array{
         $amoOffers = self::explodeOffers($buildLead['amoOffers']);
         $offersList = self::explodeOffers($buildLead['offerLists']);
-
+        $link = [];
+        $unlink = [];
         // AmoCRM has less products than DB
         // return for update
         if (count($amoOffers['offerNames']) > count($offersList['offerNames'])){
-            return $this->getDiffOffers($amoOffers,$offersList);
+            $link = $this->getDiffOffers($amoOffers,$offersList);
         }
 
         // AmoCRM has more products than DB
         // Unlink
         if (count($amoOffers['offerNames']) < count($offersList['offerNames'])){
-
+            $unlink = $this->getDiffOffersUnlink($amoOffers,$offersList);
         }
-        return [];
+        return ['link'=>$link,'unlink'=>$unlink];
     }
 
-    private function getDiffOffers($amoOffers,$offersList) : array{
+    /**
+     * @param $amoOffers
+     * @param $offersList
+     * @return array
+     * Description: unlink
+     */
+    private function getDiffOffersUnlink($amoOffers,$offersList) : array{
+        $data = [];
+        foreach ($amoOffers['offerNames'] as $key => $offersElement){
+            $definedKey = array_search($offersElement, $amoOffers['offerNames'], true);
+            if (!$definedKey){
+                $data['offerNames'] = $offersElement;
+                $data['offerPrices'] = $offersList['offerPrices'][$key];
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @param $amoOffers
+     * @param $offersList
+     * @return array
+     * Description:link
+     */
+    private function getDiffOffersLink($amoOffers,$offersList) : array{
         $data = [];
         foreach ($offersList['offerNames'] as $key => $offersElement){
             $definedKey = array_search($offersElement, $amoOffers['offerNames'], true);

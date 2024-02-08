@@ -36,4 +36,8 @@ class LeadLinksController extends Controller
     public function update($preparedData, $amoLeadID) : Response|array{
         return $this->LeadLinksRequestController->update($this->client, $preparedData, $amoLeadID);
     }
+
+    public function remove($preparedData, $amoLeadID) : Response|array{
+        return $this->LeadLinksRequestController->remove($this->client, $preparedData, $amoLeadID);
+    }
 }
