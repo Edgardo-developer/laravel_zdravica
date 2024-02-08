@@ -34,9 +34,8 @@ class DeleteLeadController extends Controller
                     $this->LeadController->closeLead($amoID) :
                     $this->LeadController->finishLead($amoID);
             }
-            if ($leadObj && (int)$leadObj->amoBillID > 0) {
-                $billArray[] = $this->BillController->prepare(
-                    $leadObj->amoBillID, $withReason ? 0 : 1);
+            if ($leadObj && (int)$leadObj->amoBillID > 0 && $withReason) {
+                $billArray[] = $this->BillController->builder($leadObj->amoBillID);
             }
             //$leadObj->delete();
         }
