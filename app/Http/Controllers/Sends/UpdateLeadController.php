@@ -145,10 +145,11 @@ class UpdateLeadController extends SendToAmoCRM
         $offersList = self::explodeOffers($buildLead['offerLists']);
         $link = [];
         $unlink = [];
+
         // AmoCRM has less products than DB
         // return for update
         if (count($amoOffers['offerNames']) > count($offersList['offerNames'])){
-            $link = $this->getDiffOffers($amoOffers,$offersList);
+            $link = $this->getDiffOffersLink($amoOffers,$offersList);
         }
 
         // AmoCRM has more products than DB
