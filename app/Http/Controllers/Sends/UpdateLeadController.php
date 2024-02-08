@@ -10,7 +10,6 @@ use App\Http\Controllers\SendToAmoCRM;
 use App\Jobs\CreateLeadJob;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
 
 class UpdateLeadController extends SendToAmoCRM
 {
