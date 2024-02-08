@@ -28,7 +28,6 @@ class RequestController extends Controller
                 self::updateAccess($client);
                 return self::changeAndTryRequest($client, $request);
             }
-
             Log::warning($ex->getMessage());
             Log::warning($ex->getFile());
             Log::warning($ex->getCode());

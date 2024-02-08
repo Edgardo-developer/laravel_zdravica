@@ -60,7 +60,24 @@ class ProductTest extends TestCase
         ];
         $client = new Client(['verify'=>false]);
         $Product = new ProductController($client);
-        $response = $Product->setProducts(13657803,$offersData);
+        $response = $Product->setProducts(13983829,$offersData);
         $this->assertEquals(200,$response->getStatusCode());
+    }
+
+    public function testUnLinkTheProductToLead(): void
+    {
+
+        $offersData = [
+            'offerNames'    => [
+                'Новая услуга'
+            ],
+            'offerPrices'    => [
+                5000
+            ],
+        ];
+        $client = new Client(['verify'=>false]);
+        $Product = new ProductController($client);
+        $response = $Product->unsetProducts(13983829,$offersData);
+        $this->assertEquals(204,$response->getStatusCode());
     }
 }
