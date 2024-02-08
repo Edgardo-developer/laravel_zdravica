@@ -108,7 +108,9 @@ class SendToAmoCRM extends Controller
                 (int)$buildLead['patID'],
                 (int)$buildLead['declareCall'] === 1
             );
-            $buildContact['FIO'] = $buildLead['fioPat'];
+            if (isset($buildLead['fioPat'])){
+                $buildContact['FIO'] = $buildLead['fioPat'];
+            }
         } else {
             $buildContact = ['FIO' => $buildLead['FIO'] ?? ''];
         }
