@@ -67,10 +67,10 @@ class UpdateLeadController extends SendToAmoCRM
             foreach ($manyOffers as $singleOffer) {
                 $explodeOffer = explode('###', $singleOffer);
                 if ($explodeOffer) {
-                    if (isset($explodeOffer[0])){
+                    if (isset($explodeOffer[0]) && $explodeOffer[0] && $explodeOffer[0] !== ''){
                         $arr['offerNames'][] = $explodeOffer[0];
                     }
-                    if (isset($explodeOffer[1])){
+                    if (isset($explodeOffer[1]) && $explodeOffer[1] && $explodeOffer[1] !== ''){
                         $arr['offerPrices'][] = $explodeOffer[1];
                     }
                 }
