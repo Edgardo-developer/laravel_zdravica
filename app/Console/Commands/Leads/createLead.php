@@ -75,7 +75,6 @@ class createLead extends Command
             'declareVisit' => $this->option('declareVisit'),
         ];
         if ($options) {
-            Log::info('LeadDBID: '.$options['leadDBId'] . ' CREATE');
             foreach ($options as $optionKey => &$option){
                 if ($option === 'null'){
                     $options[$optionKey] = NULL;

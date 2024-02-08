@@ -96,7 +96,6 @@ class ProductController extends Controller
         if (count($offersData['offerNames']) > 0){
             $productIDs = $this->getAmoIDs($offersData['offerNames']);
             $linksPrepared = $this->LeadLinksController->prepareAll($productIDs);
-            Log::info(print_r($linksPrepared,true));
             return $this->LeadLinksController->update($linksPrepared,$amoLeadID);
         }
         return [];

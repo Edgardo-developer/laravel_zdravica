@@ -29,6 +29,7 @@ class CreateLeadJob implements ShouldQueue
     public function handle(): void
     {
         if ($this->options){
+            Log::info('LeadDBID: '.$this->options['leadDBId'] . ' CREATE');
             Log::info('This is job of creating ' . date('H:i:s'));
             $SendToAmoCRM = new SendToAmoCRM($this->options);
             $SendToAmoCRM->sendDealToAmoCRM();

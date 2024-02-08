@@ -76,7 +76,6 @@ class updateLead extends Command
         ];
 
         if ($options){
-            Log::info('leadDBId: '.$options['leadDBId'] . ' UPDATE');
             foreach ($options as $optionKey => &$option){
                 if ($option === 'null'){
                     $options[$optionKey] = NULL;
