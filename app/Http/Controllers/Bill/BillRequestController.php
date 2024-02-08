@@ -56,6 +56,8 @@ class BillRequestController extends RequestController
                 'POST', self::$URI, $headers,
                 $jsonData
             );
+            Log::info($jsonData);
+            Log::info(self::$URI);
             self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
