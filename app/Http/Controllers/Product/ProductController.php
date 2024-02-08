@@ -21,13 +21,13 @@ class ProductController extends Controller
         $this->LeadLinksController = new LeadLinksController($this->client);
     }
 
-    protected function builder(string $offerName): array
+    protected function getAmoIDFromDB(string $offerName): int
     {
         $offerRaw = amoProducts::where('name', '=', $offerName);
-        if ($offerRaw->count() > 0) {
-            return ['amoID' => $offerRaw->first()->amoID];
+        if ($offerRaw->count() > 0 && $offerRaw->first()->amoID > 0) {
+            return (int)$offerRaw->first()->amoID;
         }
-        return ['amoID' => 0];
+        return 0;
     }
 
     public function prepare(array $offers) : array{
@@ -48,11 +48,14 @@ class ProductController extends Controller
 
     public function getAmoIDs(array $amoProductNames) : array{
         $checkThem = $this->checkUndefined($amoProductNames);
+        Log::info('Undefined are: '.implode('///',$checkThem));
         $undefinedAmo = $checkThem['undefinedAmo'];
         $ids = $checkThem['ids'];
         if (count($undefinedAmo) > 0) {
             $prepared = $this->prepare($undefinedAmo);
+            Log::info('Prepared is: '.print_r($prepared,true));
             $newIds = $this->create($prepared);
+            Log::info('NewIds are: '.implode('///',$newIds));
             $this->ProductPresendController->saveToDB($undefinedAmo, $newIds);
             $ids = array_merge($checkThem['ids'], $newIds);
         }
@@ -73,11 +76,11 @@ class ProductController extends Controller
         $undefinedAmo = [];
         $ids = [];
         foreach ($amoProductNames as $amoProductName) {
-            $amoID = $this->builder($amoProductName);
-            if ($amoID['amoID'] === 0) {
+            $amoID = $this->getAmoIDFromDB($amoProductName);
+            if ($amoID === 0) {
                 $undefinedAmo[] = $amoProductName;
             } else {
-                $ids[] = $amoID['amoID'];
+                $ids[] = $amoID;
             }
         }
         return [
