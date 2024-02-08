@@ -19,7 +19,7 @@ class BillPrepareController extends Controller
     {
         $arr = ['custom_fields_values' => []];
         if (isset($billDB['id'])){
-            $arr['id'] = $billDB['id'];
+            $arr['id'] = (int)$billDB['id'];
             unset($billDB['id']);
         }
         $arr = $this->accross_fields($arr,$billDB);
