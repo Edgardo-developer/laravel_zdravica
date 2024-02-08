@@ -40,10 +40,8 @@ class UpdateLeadController extends SendToAmoCRM
             if ($amoBillID && $amoBillID > 0){
                 $buildLead['amoBillID']  = $amoBillID;
             }
-        }else{
-            if (!isset($buildLead['amoContactID'], $buildLead['amoLeadID'])){
-                dispatch(new CreateLeadJob($buildLead));
-            }
+        }elseif (!isset($buildLead['amoContactID'], $buildLead['amoLeadID'])){
+            dispatch(new CreateLeadJob($buildLead));
             return [];
         }
         $this->updatePatID($buildLead);
