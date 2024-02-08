@@ -156,7 +156,7 @@ class UpdateLeadController extends SendToAmoCRM
         $link = [];
         $unlink = [];
 
-        if (count($amoOffers['offerNames']) > 0 && count($offersList['offerNames']) > 0){
+        if (count($amoOffers) > 0 && count($offersList) > 0){
             // AmoCRM has less products than DB
             // return for update
             if (count($amoOffers['offerNames']) < count($offersList['offerNames'])){
