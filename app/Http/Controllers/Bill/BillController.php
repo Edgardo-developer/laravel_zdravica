@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Bill;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 class BillController extends Controller
 {
@@ -40,6 +41,7 @@ class BillController extends Controller
     public function updateBill(array $billDB, int $billStatus) : void{
         if ($billStatus === 0){
             $billDB = $this->prepare($billDB, $billStatus);
+            Log::info(print_r($billDB,true));
         }
         BillRequestController::update($this->client, $billDB);
     }

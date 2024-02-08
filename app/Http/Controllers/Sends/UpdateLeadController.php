@@ -133,7 +133,7 @@ class UpdateLeadController extends SendToAmoCRM
             $amoBillID = $this->getBillAmoID($buildLead, $offersData);
             if ($amoBillID && $amoBillID > 0){
                 $newOffersData = $this->unlinkProducts($buildLead);
-                Log::info(print_r($newOffersData,true));
+
                 $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
                 $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
 
