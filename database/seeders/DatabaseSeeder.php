@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\AmoCrmLead;
 use App\Models\AmoCrmTable;
+use App\Models\OffersDB;
 use App\Models\PATIENTS;
 use App\Models\PLANNING;
 use Illuminate\Database\Seeder;
@@ -20,6 +21,11 @@ class DatabaseSeeder extends Seeder
         PLANNING::factory()->create();
         PATIENTS::factory()->create();
         AmoCrmTable::factory()->create();
+        OffersDB::factory()->create([
+            'name'  => 'Новая услуга',
+            'DBId'  => 111,
+            'amoID' => 465775
+        ]);
         PLANNING::create([
             'NOM'   => 'Фамилие1',
             'PRENOM'    => 'Имя1',

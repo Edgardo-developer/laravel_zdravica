@@ -94,7 +94,7 @@ class UpdateLeadController extends SendToAmoCRM
      * @param $offersData
      * @return int
      */
-    private function getBillAmoID($buildLead, $offersData): int
+    private function getBillAmoID($buildLead, array $offersData): int
     {
         $billDB = [
             'offers' => $offersData,
@@ -109,13 +109,11 @@ class UpdateLeadController extends SendToAmoCRM
 
         if ((!$amoBillID || (int)$amoBillID === 0) && count($offersData['offerNames']) > 0) {
             $amoBillID = $this->BillController->createBill($billDB,0);
-        }
-
-
-        if ($offersData && $offersData['offerNames'] &&
-            $buildLead['amoOffers'] !== $buildLead['offerLists'] && $buildLead['amoOffers'] !== null) {
+        }else{
+            Log::info(print_r($billDB,true));
             $this->BillController->updateBill($billDB,0);
         }
+
         return $amoBillID ?? 0;
     }
 

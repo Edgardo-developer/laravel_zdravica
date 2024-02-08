@@ -9,5 +9,7 @@ class OffersDB extends Model
 {
     use HasFactory;
     protected $connection = 'sqlsrv2';
+    public $timestamps = false;
     protected $table = 'amocrm_products';
+    protected $fillable = ['name','DBId','amoID'];
 }
