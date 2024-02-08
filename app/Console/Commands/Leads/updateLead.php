@@ -81,6 +81,7 @@ class updateLead extends Command
                     $options[$optionKey] = NULL;
                 }
             }
+            Log::info(print_r($options,true));
             unset($option);
             if ($options){
                 dispatch(new UpdateLeadJob($options))->onQueue('updateLead');

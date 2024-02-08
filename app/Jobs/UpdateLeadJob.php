@@ -30,8 +30,8 @@ class UpdateLeadJob implements ShouldQueue
      */
     public function handle(): void
     {
+        Log::info('leadDBId: '.$this->options['leadDBId'] . ' UPDATE');
         if ($this->options){
-            Log::info('leadDBId: '.$this->options['leadDBId'] . ' UPDATE');
             Log::info('This is job of updating ' . date('H:i:s'));
             Log::info(print_r($this->options, true));
             $UpdateLeadController = new UpdateLeadController($this->options);
