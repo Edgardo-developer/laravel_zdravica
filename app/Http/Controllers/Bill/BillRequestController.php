@@ -50,12 +50,10 @@ class BillRequestController extends RequestController
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $amoBillID = $preparedData['amoBillID'];
-        unset($preparedData['amoBillID']);
         try{
             $jsonData = json_encode([$preparedData], JSON_THROW_ON_ERROR);
             $request = new Request(
-                'POST', self::$URI . '/' . $amoBillID, $headers,
+                'POST', self::$URI, $headers,
                 $jsonData
             );
             self::handleErrors($client, $request);
