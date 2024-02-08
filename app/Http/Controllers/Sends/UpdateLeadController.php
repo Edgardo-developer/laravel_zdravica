@@ -7,6 +7,7 @@ use App\Http\Controllers\Contacts\ContactsController;
 use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SendToAmoCRM;
+use App\Jobs\CreateLeadJob;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -32,12 +33,15 @@ class UpdateLeadController extends SendToAmoCRM
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
 
-        if ($buildLead && $buildLead['amoContactID'] && $buildLead['amoLeadID'] && isset($buildLead['offerLists'])) {
+        if (isset($buildLead['amoContactID'], $buildLead['amoLeadID']) && $buildLead && isset($buildLead['offerLists'])) {
             $amoBillID = $this->processBill($buildLead);
             if ($amoBillID && $amoBillID > 0){
                 $buildLead['amoBillID']  = $amoBillID;
             }
         }else{
+            if (!isset($buildLead['amoContactID'], $buildLead['amoLeadID'])){
+                dispatch(new CreateLeadJob($buildLead));
+            }
             return [];
         }
         $this->updatePatID($buildLead);
