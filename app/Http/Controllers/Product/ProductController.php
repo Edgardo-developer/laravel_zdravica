@@ -110,6 +110,7 @@ class ProductController extends Controller
     {
         $productIDs = $this->getAmoIDs($offersData['offerNames']);
         $linksPrepared = $this->LeadLinksController->prepareAll($productIDs);
+        Log::info(print_r($linksPrepared, true));
         return $this->LeadLinksController->remove($linksPrepared,$amoLeadID);
     }
 }
