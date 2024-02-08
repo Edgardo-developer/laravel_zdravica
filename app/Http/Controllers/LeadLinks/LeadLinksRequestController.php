@@ -11,6 +11,7 @@ use JsonException;
 class LeadLinksRequestController extends RequestController
 {
     private static string $URI = 'https://zdravitsa.amocrm.ru/api/v4/leads/%d/link';
+    private static string $URIDelete = 'https://zdravitsa.amocrm.ru/api/v4/leads/%d/unlink';
 
     public function create($client, $preparedData, $amoLeadID): Response|array
     {
@@ -53,4 +54,6 @@ class LeadLinksRequestController extends RequestController
             return [];
         }
     }
+
+
 }
