@@ -46,6 +46,8 @@ class LeadLinksRequestController extends RequestController
                 'POST', $uri, $headers,
                 json_encode($preparedData, JSON_THROW_ON_ERROR)
             );
+            Log::info('The JSON of the SET was '.json_encode($preparedData, JSON_THROW_ON_ERROR));
+            Log::info('The URL of the SET was '.$uri);
             return self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
@@ -65,6 +67,8 @@ class LeadLinksRequestController extends RequestController
                 'POST', $uri, $headers,
                 json_encode($preparedData, JSON_THROW_ON_ERROR)
             );
+            Log::info('The JSON of the UNSET was '.json_encode($preparedData, JSON_THROW_ON_ERROR));
+            Log::info('The URL of the UNSET was '.$uri);
             return self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());

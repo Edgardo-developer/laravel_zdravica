@@ -57,6 +57,8 @@ class BillRequestController extends RequestController
                 'POST', self::$URI, $headers,
                 $jsonData
             );
+            Log::info('The JSON data of updating the Bill was: '.$jsonData);
+            Log::info('The URL of updating the Bill was: '.self::$URI);
             return self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());

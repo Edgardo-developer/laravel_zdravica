@@ -96,7 +96,6 @@ class UpdateLeadController extends SendToAmoCRM
      */
     private function getBillAmoID($buildLead, array $offersData): int
     {
-        Log::info(print_r($buildLead,true));
         $amoBillID = $buildLead['amoBillID'] ?? 0;
         $billDB = [
             'offers' => $offersData,
@@ -115,7 +114,7 @@ class UpdateLeadController extends SendToAmoCRM
         }else{
             $billDB['id'] = $amoBillID;
             $res = $this->BillController->updateBill($billDB,0);
-            Log::info('The response was: '.$res->getStatusCode());
+            Log::info('The response of updating the Bill was: '.$res->getStatusCode());
         }
 
         return $amoBillID ?? 0;
@@ -141,12 +140,15 @@ class UpdateLeadController extends SendToAmoCRM
                 $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
                 $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
 
+                Log::info('The request json of updating the Links was: ');
                 Log::info(print_r($newOffersData,true));
                 if (isset($newOffersData['link']['offerNames']) && count($newOffersData['link']['offerNames']) > 0){
-                    $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
+                    $response1 = $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
+                    Log::info('The response SET of updating the Links was: '.$response1->getStatusCode());
                 }
                 if (isset($newOffersData['unlink']['offerNames']) && count($newOffersData['unlink']['offerNames']) > 0){
-                    $this->ProductController->unsetProducts($buildLead['amoLeadID'], $newOffersData['unlink']);
+                    $response2 = $this->ProductController->unsetProducts($buildLead['amoLeadID'], $newOffersData['unlink']);
+                    Log::info('The response SET of updating the Links was: '.$response2->getStatusCode());
                 }
             }
         }
