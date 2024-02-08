@@ -75,6 +75,16 @@ class UpdateLeadController extends SendToAmoCRM
                     }
                 }
             }
+        }else if(str_contains('###',$offers)){
+            $explodeOffer = explode('###', $offers);
+            if ($explodeOffer) {
+                if (isset($explodeOffer[0])){
+                    $arr['offerNames'][] = $explodeOffer[0];
+                }
+                if (isset($explodeOffer[1])){
+                    $arr['offerPrices'][] = $explodeOffer[1];
+                }
+            }
         }
         return $arr;
     }
