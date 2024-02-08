@@ -138,10 +138,10 @@ class UpdateLeadController extends SendToAmoCRM
                 $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
                 $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
 
-                if (count($newOffersData['link']) > 0 && isset($newOffersData['link']['offerNames'])){
+                if (isset($newOffersData['link']['offerNames']) && count($newOffersData['link']['offerNames']) > 0){
                     $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
                 }
-                if (count($newOffersData['unlink']) > 0 && isset($newOffersData['unlink']['offerNames'])){
+                if (isset($newOffersData['unlink']['offerNames']) && count($newOffersData['unlink']['offerNames']) > 0){
                     $this->ProductController->unsetProducts($buildLead['amoLeadID'], $newOffersData['unlink']);
                 }
             }
