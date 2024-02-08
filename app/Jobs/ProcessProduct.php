@@ -42,13 +42,9 @@ class ProcessProduct implements ShouldQueue
         ]);
 
         if ($this->update) {
-            $prepared['amoID'] = $this->amoID;
-            ProductRequestController::update($client, $prepared);
+            $ProductController->update($prepared,$this->amoID);
         } else {
-            $amoID = ProductRequestController::create($client, $prepared);
-            if ($amoID) {
-                echo $amoID[0];
-            }
+           $ProductController->create($prepared);
         }
     }
 }

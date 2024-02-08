@@ -63,9 +63,9 @@ class ProductController extends Controller
         return $this->ProductRequestController->create($this->client, $preparedData);
     }
 
-    public function update(array $preparedData): void
+    public function update(array $preparedData, int $amoProductID): void
     {
-        $this->ProductRequestController->update($this->client, $preparedData);
+        $this->ProductRequestController->update($this->client, $preparedData, $amoProductID);
     }
 
     private function checkUndefined(array $amoProductNames): array

@@ -38,7 +38,7 @@ class moveProduct extends Command
             dispatch(new ProcessProduct(
                 $this->option('name'),
                 $this->option('update'),
-                $this->option('amoID')));
+                $this->option('amoID')))->onQueue('moveProduct');
         }
     }
 }

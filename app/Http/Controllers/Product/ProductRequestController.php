@@ -28,15 +28,13 @@ class ProductRequestController extends RequestController
         }
     }
 
-    public function update(Client $client, array $preparedData): void
+    public function update(Client $client, array $preparedData, $amoProductID): void
     {
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
-        $amoBillID = $preparedData['amoID'];
-        unset($preparedData['amoID']);
         try {
             $jsonData  = json_encode([$preparedData], JSON_THROW_ON_ERROR);
-            $request = new Request('POST', self::$URI . '/' . $amoBillID, $headers, $jsonData);
+            $request = new Request('POST', self::$URI . '/' . $amoProductID, $headers, $jsonData);
             self::handleErrors($client, $request);
         }catch (JsonException $ex){
             Log::warning($ex->getMessage());
