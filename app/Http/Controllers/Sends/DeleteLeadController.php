@@ -8,6 +8,7 @@ use App\Http\Controllers\Leads\LeadController;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Log;
 
 class DeleteLeadController extends Controller
 {
@@ -23,6 +24,7 @@ class DeleteLeadController extends Controller
     }
 
     public function deleteLeads(bool $withReason) : Response|array{
+        Log::info('Deleting jobs for DBLeads '.implode(',',$this->amoIDs));
         $leadArray = [];
         $billArray = [];
         foreach ($this->amoIDs as $amoID) {

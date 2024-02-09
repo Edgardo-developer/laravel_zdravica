@@ -31,6 +31,7 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     public function sendDealToAmoCRM() : array{
+        Log::info('Updating job for DBLead '.$this->buildlead['leadDBId']);
         $buildLead = $this->checkAmo($this->buildlead);
         if (isset($buildLead['amoContactID'], $buildLead['amoLeadID'], $buildLead['offerLists']) && $buildLead) {
 
@@ -183,7 +184,6 @@ class UpdateLeadController extends SendToAmoCRM
 
     private function getDiffOffersLink($amoOffers,$offersList) : array{
         // Те, что в амо. Их должно быть меньше
-        Log::info(print_r($amoOffers,true));
         $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
         // Те, что в БД. Их должно быть больше
         $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);

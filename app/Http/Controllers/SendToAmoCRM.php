@@ -28,6 +28,7 @@ class SendToAmoCRM extends Controller
      */
     public function sendDealToAmoCRM(): array
     {
+        Log::info('Creating jobs for DBLead '.$this->DBlead);
         $buildLead = $this->DBlead;
         $buildLead['FIO'] = $this->getPlanningFIO($this->DBlead);
         ksort($buildLead, SORT_NATURAL);
