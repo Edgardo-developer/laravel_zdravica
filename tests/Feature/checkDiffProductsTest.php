@@ -79,4 +79,26 @@ class checkDiffProductsTest extends TestCase
         $this->assertEmpty($result['unlink']);
         $this->assertCount(1, $result['link']['offerNames']);
     }
+
+    public function testDeleteOneFromThree(){
+        $updateLead = new UpdateLeadController([]);
+        // В амо было 3 услуга
+        $amoOffers = 'Прием (осмотр, консультация) врача-эндокринолога первичный###3300.00|||Прием (осмотр, консультация) врача-диетолога первичный###4100.00|||Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        // В БД стало 2 услуги
+        $listsOffers = 'Прием (осмотр, консультация) врача-диетолога первичный###4100.00|||Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        $result = $updateLead->manageProducts(['amoOffers'=>$amoOffers,'offerLists'=>$listsOffers]);
+        $this->assertEmpty($result['link']);
+        $this->assertCount(1, $result['unlink']['offerNames']);
+    }
+
+    public function testAddOneToTwo(){
+        $updateLead = new UpdateLeadController([]);
+        // В амо было 2 услуги
+        $listsOffers = 'Прием (осмотр, консультация) врача-эндокринолога первичный###3300.00|||Прием (осмотр, консультация) врача-диетолога первичный###4100.00|||Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        // В БД стало 3 услуги
+        $amoOffers = 'Прием (осмотр, консультация) врача-диетолога первичный###4100.00|||Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        $result = $updateLead->manageProducts(['amoOffers'=>$amoOffers,'offerLists'=>$listsOffers]);
+        $this->assertEmpty($result['unlink']);
+        $this->assertCount(1, $result['link']['offerNames']);
+    }
 }

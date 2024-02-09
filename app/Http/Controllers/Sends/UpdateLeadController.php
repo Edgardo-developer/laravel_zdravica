@@ -149,8 +149,7 @@ class UpdateLeadController extends SendToAmoCRM
     public function manageProducts($buildLead) : array{
         $amoOffers = self::explodeOffers($buildLead['amoOffers']);
         $offersList = self::explodeOffers($buildLead['offerLists']);
-        Log::info(print_r($amoOffers,true));
-        Log::info(print_r($offersList,true));
+
         $link = [];
         $unlink = [];
         if (count($amoOffers['offerNames']) > 0 && count($offersList['offerNames']) > 0){
@@ -182,7 +181,7 @@ class UpdateLeadController extends SendToAmoCRM
         // Те, что в БД. Их должно быть меньше
         $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
-        $result = array_diff($amoFullOffers,array_diff($amoFullOffers, $DBFullOffers));
+        $result = array_diff_assoc($amoFullOffers, $DBFullOffers);
 
         return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
@@ -193,7 +192,7 @@ class UpdateLeadController extends SendToAmoCRM
         // Те, что в БД. Их должно быть больше
         $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
-        $result = array_diff($DBFullOffers,array_diff($DBFullOffers, $amoFullOffers));
+        $result = array_diff_assoc($DBFullOffers, $amoFullOffers);
 
         return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
