@@ -126,7 +126,7 @@ class UpdateLeadController extends SendToAmoCRM
         if ($offersData){
             $amoBillID = $this->getBillAmoID($buildLead, $offersData);
             if ($amoBillID && $amoBillID > 0){
-                $newOffersData = $this->unlinkProducts($buildLead);
+                $newOffersData = $this->manageProducts($buildLead);
 
                 $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
                 $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
@@ -146,13 +146,12 @@ class UpdateLeadController extends SendToAmoCRM
         return $amoBillID ?? 0;
     }
 
-    private function unlinkProducts($buildLead) : array{
+    public function manageProducts($buildLead) : array{
         $amoOffers = self::explodeOffers($buildLead['amoOffers']);
         $offersList = self::explodeOffers($buildLead['offerLists']);
         $link = [];
         $unlink = [];
-
-        if (count($amoOffers) > 0 && count($offersList) > 0){
+        if (count($amoOffers['offerNames']) > 0 && count($offersList['offerNames']) > 0){
             // AmoCRM has less products than DB
             // return for update
             if (count($amoOffers['offerNames']) < count($offersList['offerNames'])){
@@ -165,10 +164,10 @@ class UpdateLeadController extends SendToAmoCRM
                 $unlink = $this->getDiffOffersUnlink($amoOffers,$offersList);
             }
         }else{
-            if (count($amoOffers['offerNames']) === 0 && count($offersList['offerNames']) > 0){
-                $link = $offersList;
-            }else{
+            if (count($amoOffers['offerNames']) > 0){
                 $unlink = $amoOffers;
+            }else{
+                $link = $offersList;
             }
         }
 
@@ -176,27 +175,23 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     private function getDiffOffersUnlink($amoOffers,$offersList) : array{
-        $data = [];
         // Те, что в амо. Их должно быть больше
         $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
         // Те, что в БД. Их должно быть меньше
         $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
-        $result = array_diff($amoFullOffers,$DBFullOffers);
+        $result = array_diff($amoFullOffers,array_diff($amoFullOffers, $DBFullOffers));
 
         return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
 
     private function getDiffOffersLink($amoOffers,$offersList) : array{
-        $data = [];
         // Те, что в амо. Их должно быть меньше
-        Log::info(print_r($amoOffers,true));
         $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
         // Те, что в БД. Их должно быть больше
-        Log::info(print_r($offersList,true));
         $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
-        $result = array_diff($DBFullOffers, $amoFullOffers);
+        $result = array_diff($DBFullOffers,array_diff($DBFullOffers, $amoFullOffers));
 
         return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
