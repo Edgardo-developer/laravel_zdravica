@@ -54,10 +54,12 @@ class ProductTest extends TestCase
     {
         $offersData = [
             'offerNames'    => [
-                'Новая услуга'
+                'Новая услуга',
+                'Эстеразный ингибитор С1 комплемента - функциональный',
             ],
             'offerPrices'    => [
-                5000
+                5000,
+                6000
             ],
         ];
         $client = new Client(['verify'=>false]);

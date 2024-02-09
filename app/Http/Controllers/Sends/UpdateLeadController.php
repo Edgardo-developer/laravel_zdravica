@@ -52,10 +52,6 @@ class UpdateLeadController extends SendToAmoCRM
         return $buildLead;
     }
 
-    /**
-     * @param string $offers
-     * @return array|array[]
-     */
     private static function explodeOffers(string $offers): array
     {
         $arr = [
@@ -89,11 +85,6 @@ class UpdateLeadController extends SendToAmoCRM
         return $arr;
     }
 
-    /**
-     * @param $buildLead
-     * @param $offersData
-     * @return int
-     */
     private function getBillAmoID($buildLead, array $offersData): int
     {
         $amoBillID = $buildLead['amoBillID'] ?? 0;
@@ -184,12 +175,6 @@ class UpdateLeadController extends SendToAmoCRM
         return ['link'=>$link,'unlink'=>$unlink];
     }
 
-    /**
-     * @param $amoOffers
-     * @param $offersList
-     * @return array
-     * Description: get the extra of $amoOffers
-     */
     private function getDiffOffersUnlink($amoOffers,$offersList) : array{
         $data = [];
         // Те, что в амо. Их должно быть больше
@@ -202,12 +187,6 @@ class UpdateLeadController extends SendToAmoCRM
         return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
 
-    /**
-     * @param $amoOffers
-     * @param $offersList
-     * @return array
-     * Description:link
-     */
     private function getDiffOffersLink($amoOffers,$offersList) : array{
         $data = [];
         // Те, что в амо. Их должно быть меньше
@@ -222,10 +201,6 @@ class UpdateLeadController extends SendToAmoCRM
         return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
     }
 
-    /**
-     * @param array $dbLead
-     * @return array
-     */
     protected function checkAmo(array &$dbLead): array
     {
         $raw = AmocrmIDs::where('leadDBId', '=', $dbLead['leadDBId']);

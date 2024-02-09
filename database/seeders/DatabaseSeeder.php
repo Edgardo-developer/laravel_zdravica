@@ -23,8 +23,13 @@ class DatabaseSeeder extends Seeder
         AmoCrmTable::factory()->create();
         OffersDB::factory()->create([
             'name'  => 'Новая услуга',
-            'DBId'  => 111,
+            'DBId'  => 1,
             'amoID' => 465775
+        ]);
+        OffersDB::factory()->create([
+            'name'  => 'Эстеразный ингибитор С1 комплемента - функциональный',
+            'DBId'  => 2,
+            'amoID' => 465295
         ]);
         PLANNING::create([
             'NOM'   => 'Фамилие1',

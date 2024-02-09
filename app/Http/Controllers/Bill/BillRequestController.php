@@ -54,7 +54,7 @@ class BillRequestController extends RequestController
         try{
             $jsonData = json_encode([$preparedData], JSON_THROW_ON_ERROR);
             $request = new Request(
-                'POST', self::$URI, $headers,
+                'PATCH', self::$URI, $headers,
                 $jsonData
             );
             Log::info('The JSON data of updating the Bill was: '.$jsonData);
