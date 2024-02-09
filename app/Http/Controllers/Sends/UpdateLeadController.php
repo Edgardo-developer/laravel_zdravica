@@ -33,16 +33,12 @@ class UpdateLeadController extends SendToAmoCRM
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
         if (isset($buildLead['amoContactID'], $buildLead['amoLeadID'], $buildLead['offerLists']) && $buildLead) {
-            if (isset($offersData['offerPrices']) && count($offersData['offerPrices']) > 0) {
-                $buildLead['billSum'] = array_sum(array_values($offersData['offerPrices']));
-            }
+            $buildLead['billSum'] = array_sum(array_values($buildLead['offerLists']['offerPrices']));
+            Log::info('BillSum is: '.$buildLead['billSum']);
             $amoBillID = $this->processBill($buildLead);
             if ($amoBillID && $amoBillID > 0){
                 $buildLead['amoBillID']  = $amoBillID;
             }
-        }elseif (!isset($buildLead['amoContactID'], $buildLead['amoLeadID'])){
-            dispatch(new CreateLeadJob($buildLead));
-            return [];
         }
         $this->updatePatID($buildLead);
 
