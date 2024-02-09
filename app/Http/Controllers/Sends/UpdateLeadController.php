@@ -32,7 +32,10 @@ class UpdateLeadController extends SendToAmoCRM
 
     public function sendDealToAmoCRM() : array{
         $buildLead = $this->checkAmo($this->buildlead);
-        if (isset($buildLead['amoContactID'], $buildLead['amoLeadID']) && $buildLead && isset($buildLead['offerLists'])) {
+        if (isset($buildLead['amoContactID'], $buildLead['amoLeadID'], $buildLead['offerLists']) && $buildLead) {
+            if (isset($offersData['offerPrices']) && count($offersData['offerPrices']) > 0) {
+                $buildLead['billSum'] = array_sum(array_values($offersData['offerPrices']));
+            }
             $amoBillID = $this->processBill($buildLead);
             if ($amoBillID && $amoBillID > 0){
                 $buildLead['amoBillID']  = $amoBillID;
@@ -90,7 +93,7 @@ class UpdateLeadController extends SendToAmoCRM
         $amoBillID = $buildLead['amoBillID'] ?? 0;
         $billDB = [
             'offers' => $offersData,
-            'price' => (int)$buildLead['billSum'],
+            'price' => $buildLead['billSum'],
             'status' => 'Создан',
             'account' => [
                 'entity_type' => 'contacts',
@@ -123,24 +126,18 @@ class UpdateLeadController extends SendToAmoCRM
 
     private function processBill($buildLead) : int{
         $offersData = self::explodeOffers($buildLead['offerLists']);
-        if ($offersData){
-            $amoBillID = $this->getBillAmoID($buildLead, $offersData);
-            if ($amoBillID && $amoBillID > 0){
-                $newOffersData = $this->manageProducts($buildLead);
+        $amoBillID = $this->getBillAmoID($buildLead, $offersData);
+        if ($amoBillID && $amoBillID > 0){
+            $newOffersData = $this->manageProducts($buildLead);
 
-                $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
-                $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
+            $leadLinks = $this->LeadLinksController->prepare($buildLead, $amoBillID);
+            $this->LeadLinksController->create($leadLinks,$buildLead['amoLeadID']);
 
-                Log::info('The request json of updating the Links was: ');
-                Log::info(print_r($newOffersData,true));
-                if (isset($newOffersData['link']['offerNames']) && count($newOffersData['link']['offerNames']) > 0){
-                    $response1 = $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
-                    Log::info('The response SET of updating the Links was: '.$response1->getStatusCode());
-                }
-                if (isset($newOffersData['unlink']['offerNames']) && count($newOffersData['unlink']['offerNames']) > 0){
-                    $response2 = $this->ProductController->unsetProducts($buildLead['amoLeadID'], $newOffersData['unlink']);
-                    Log::info('The response SET of updating the Links was: '.$response2->getStatusCode());
-                }
+            if (isset($newOffersData['link']['offerNames']) && count($newOffersData['link']['offerNames']) > 0){
+                $this->ProductController->setProducts($buildLead['amoLeadID'], $newOffersData['link']);
+            }
+            if (isset($newOffersData['unlink']['offerNames']) && count($newOffersData['unlink']['offerNames']) > 0){
+                $this->ProductController->unsetProducts($buildLead['amoLeadID'], $newOffersData['unlink']);
             }
         }
         return $amoBillID ?? 0;
