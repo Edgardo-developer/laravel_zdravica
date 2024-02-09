@@ -147,9 +147,10 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     public function manageProducts($buildLead) : array{
-        Log::info(print_r($buildLead,true));
         $amoOffers = self::explodeOffers($buildLead['amoOffers']);
         $offersList = self::explodeOffers($buildLead['offerLists']);
+        Log::info(print_r($amoOffers,true));
+        Log::info(print_r($offersList,true));
         $link = [];
         $unlink = [];
         if (count($amoOffers['offerNames']) > 0 && count($offersList['offerNames']) > 0){
