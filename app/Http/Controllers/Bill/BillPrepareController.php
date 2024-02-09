@@ -47,7 +47,7 @@ class BillPrepareController extends Controller
                     continue;
                 }
                 $value = $amoFieldName !== 'offers' ? $billDB[$amoFieldName] : self::modifyOffers($billDB[$amoFieldName]);
-                if (!$value){
+                if (!$value && $amoFieldName !== 'price'){
                     continue;
                 }
                 $locArr = [
