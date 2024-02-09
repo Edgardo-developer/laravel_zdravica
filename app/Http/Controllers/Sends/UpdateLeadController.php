@@ -34,7 +34,7 @@ class UpdateLeadController extends SendToAmoCRM
         $buildLead = $this->checkAmo($this->buildlead);
         if (isset($buildLead['amoContactID'], $buildLead['amoLeadID'], $buildLead['offerLists']) && $buildLead) {
 
-            $offerLists = self::explodeOffers($buildLead['offerLists']);
+            $offerLists = $this->explodeOffers($buildLead['offerLists']);
             $buildLead['billSum'] = isset($offerLists['offerPrices']) ? array_sum(array_values($offerLists['offerPrices'])) : 0;
             $amoBillID = $this->processBill($buildLead);
             if ($amoBillID && $amoBillID > 0){
@@ -53,7 +53,7 @@ class UpdateLeadController extends SendToAmoCRM
         return $buildLead;
     }
 
-    private static function explodeOffers(string $offers): array
+    public function explodeOffers(string $offers): array
     {
         $arr = [
             'offerNames' => [],
@@ -123,7 +123,7 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     private function processBill($buildLead) : int{
-        $offersData = self::explodeOffers($buildLead['offerLists']);
+        $offersData = $this->explodeOffers($buildLead['offerLists']);
         $amoBillID = $this->getBillAmoID($buildLead, $offersData);
         if ($amoBillID && $amoBillID > 0){
             $newOffersData = $this->manageProducts($buildLead);
@@ -142,8 +142,8 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     public function manageProducts($buildLead) : array{
-        $amoOffers = self::explodeOffers($buildLead['amoOffers']);
-        $offersList = self::explodeOffers($buildLead['offerLists']);
+        $amoOffers = $this->explodeOffers($buildLead['amoOffers']);
+        $offersList = $this->explodeOffers($buildLead['offerLists']);
 
         $link = [];
         $unlink = [];
@@ -183,6 +183,7 @@ class UpdateLeadController extends SendToAmoCRM
 
     private function getDiffOffersLink($amoOffers,$offersList) : array{
         // Те, что в амо. Их должно быть меньше
+        Log::info(print_r($amoOffers,true));
         $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
         // Те, что в БД. Их должно быть больше
         $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);

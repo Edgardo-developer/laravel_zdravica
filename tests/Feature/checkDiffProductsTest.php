@@ -101,4 +101,44 @@ class checkDiffProductsTest extends TestCase
         $this->assertEmpty($result['unlink']);
         $this->assertCount(1, $result['link']['offerNames']);
     }
+
+    public function testCheckExplodeOffer(){
+        $updateLead = new UpdateLeadController([]);
+        $listsOffers = 'Прием (осмотр, консультация) врача-эндокринолога первичный###3300.00|||Прием (осмотр, консультация) врача-диетолога первичный###4100.00|||Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        $offers = $updateLead->explodeOffers($listsOffers);
+        $this->assertCount(3,$offers['offerNames']);
+        $this->assertCount(3,$offers['offerPrices']);
+    }
+
+    public function testCheckExplodeOffer1(){
+        $updateLead = new UpdateLeadController([]);
+        $listsOffers = 'Прием (осмотр, консультация) врача-диетолога первичный###4100.00|||Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        $offers = $updateLead->explodeOffers($listsOffers);
+        $this->assertCount(2,$offers['offerNames']);
+        $this->assertCount(2,$offers['offerPrices']);
+    }
+
+    public function testCheckExplodeOffer3(){
+        $updateLead = new UpdateLeadController([]);
+        $listsOffers = 'Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        $offers = $updateLead->explodeOffers($listsOffers);
+        $this->assertCount(1,$offers['offerNames']);
+        $this->assertCount(1,$offers['offerPrices']);
+    }
+
+    public function testCheckExplodeOfferWithEmptyInStart(){
+        $updateLead = new UpdateLeadController([]);
+        $listsOffers = '|||Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00';
+        $offers = $updateLead->explodeOffers($listsOffers);
+        $this->assertCount(1,$offers['offerNames']);
+        $this->assertCount(1,$offers['offerPrices']);
+    }
+
+    public function testCheckExplodeOfferWithEmptyInEnd(){
+        $updateLead = new UpdateLeadController([]);
+        $listsOffers = 'Прием (осмотр, консультация) врача-гастроэнтеролога первичный###3300.00|||';
+        $offers = $updateLead->explodeOffers($listsOffers);
+        $this->assertCount(1,$offers['offerNames']);
+        $this->assertCount(1,$offers['offerPrices']);
+    }
 }
