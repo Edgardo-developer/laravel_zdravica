@@ -8,6 +8,7 @@ use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Jobs\CreateLeadJob;
+use App\Jobs\ProcessBulkLead;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -41,6 +42,8 @@ class UpdateLeadController extends SendToAmoCRM
                 if ($amoBillID && $amoBillID > 0){
                     $buildLead['amoBillID']  = $amoBillID;
                 }
+                dispatch(new ProcessBulkLead((string)$buildLead['amoLeadID'],false))->onQueue('bulkLead')
+                    ->delay(now()->addSeconds(7));
             }
         }else{
             dispatch(new CreateLeadJob($this->buildlead))->onQueue('createLead');
