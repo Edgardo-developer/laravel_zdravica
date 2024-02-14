@@ -144,8 +144,12 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     public function manageProducts($buildLead) : array{
-        $amoOffers = $this->explodeOffers($buildLead['amoOffers']);
-        $offersList = $this->explodeOffers($buildLead['offerLists']);
+        $defArr = [
+            'offerNames'    => [],
+            'offerPrices'    => [],
+        ];
+        $amoOffers = is_null($buildLead['amoOffers']) ? $defArr : $this->explodeOffers($buildLead['amoOffers']);
+        $offersList = is_null($buildLead['offerLists']) ? $defArr : $this->explodeOffers($buildLead['offerLists']);
 
         $link = [];
         $unlink = [];
