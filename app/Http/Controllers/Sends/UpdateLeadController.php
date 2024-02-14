@@ -43,8 +43,6 @@ class UpdateLeadController extends SendToAmoCRM
                 $amoBillID = $this->processBill($buildLead);
                 if ($amoBillID && $amoBillID > 0) {
                     $buildLead['amoBillID'] = $amoBillID;
-                    $DeleteLeads = new DeleteLeadController([$buildLead['amoLeadID']]);
-                    $DeleteLeads->deleteLeads(false);
                 }
             }
         }else{
@@ -58,6 +56,11 @@ class UpdateLeadController extends SendToAmoCRM
         $this->updateLead($buildLead);
         AmocrmIDs::where('leadDBId','=',$buildLead['leadDBId'])
         ->update($amoData);
+
+        if (isset($buildLead['amoBillID'],$buildLead['amoLeadID'])){
+            $DeleteLeads = new DeleteLeadController([$buildLead['amoLeadID']]);
+            $DeleteLeads->deleteLeads(false);
+        }
 
         return $buildLead;
     }
