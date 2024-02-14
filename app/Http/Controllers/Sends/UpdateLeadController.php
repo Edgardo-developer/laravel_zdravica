@@ -34,20 +34,15 @@ class UpdateLeadController extends SendToAmoCRM
     public function sendDealToAmoCRM() : array{
         Log::info('Updating job for DBLead '.$this->buildlead['leadDBId']);
         $buildLead = $this->checkAmo($this->buildlead);
-        if (isset($buildLead['amoContactID'], $buildLead['amoLeadID']) && $buildLead) {
-            if (isset($buildLead['offerLists']) && $buildLead['offerLists'] && $buildLead['offerLists'] !== '') {
-                $offerLists = $this->explodeOffers($buildLead['offerLists']);
-                $buildLead['billSum'] = isset($offerLists['offerPrices']) ? array_sum(
-                    array_values($offerLists['offerPrices'])
-                ) : 0;
-                $amoBillID = $this->processBill($buildLead);
-                if ($amoBillID && $amoBillID > 0) {
-                    $buildLead['amoBillID'] = $amoBillID;
-                }
+        if (isset($buildLead['amoContactID'], $buildLead['amoLeadID'], $buildLead['offerLists']) && $buildLead && $buildLead['offerLists'] && $buildLead['offerLists'] !== '') {
+            $offerLists = $this->explodeOffers($buildLead['offerLists']);
+            $buildLead['billSum'] = isset($offerLists['offerPrices']) ? array_sum(
+                array_values($offerLists['offerPrices'])
+            ) : 0;
+            $amoBillID = $this->processBill($buildLead);
+            if ($amoBillID && $amoBillID > 0) {
+                $buildLead['amoBillID'] = $amoBillID;
             }
-        }else{
-            dispatch(new CreateLeadJob($this->buildlead))->onQueue('createLead');
-            return [];
         }
         $this->updatePatID($buildLead);
 
