@@ -42,8 +42,8 @@ class UpdateLeadController extends SendToAmoCRM
                 if ($amoBillID && $amoBillID > 0){
                     $buildLead['amoBillID']  = $amoBillID;
                 }
-                dispatch(new ProcessBulkLead((string)$buildLead['amoLeadID'],false))->onQueue('bulkLead')
-                    ->delay(now()->addSeconds(7));
+//                dispatch(new ProcessBulkLead((string)$buildLead['amoLeadID'],false))->onQueue('bulkLead')
+//                    ->delay(now()->addSeconds(7));
             }
         }else{
             dispatch(new CreateLeadJob($this->buildlead))->onQueue('createLead');
