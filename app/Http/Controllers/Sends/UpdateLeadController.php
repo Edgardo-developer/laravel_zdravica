@@ -35,7 +35,7 @@ class UpdateLeadController extends SendToAmoCRM
         Log::info('Updating job for DBLead '.$this->buildlead['leadDBId']);
         $buildLead = $this->checkAmo($this->buildlead);
         if (isset($buildLead['amoContactID'], $buildLead['amoLeadID']) && $buildLead) {
-            if (isset($buildLead['offerLists'])){
+            if (isset($buildLead['offerLists']) && $buildLead['offerLists'] && $buildLead['offerLists'] !== ''){
                 $offerLists = $this->explodeOffers($buildLead['offerLists']);
                 $buildLead['billSum'] = isset($offerLists['offerPrices']) ? array_sum(array_values($offerLists['offerPrices'])) : 0;
                 $amoBillID = $this->processBill($buildLead);
