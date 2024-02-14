@@ -56,10 +56,10 @@ class UpdateLeadController extends SendToAmoCRM
         AmocrmIDs::where('leadDBId','=',$buildLead['leadDBId'])
         ->update($amoData);
 
-        if (isset($buildLead['amoBillID'],$buildLead['amoLeadID'])){
-            $DeleteLeads = new DeleteLeadController([$buildLead['amoLeadID']]);
-            $DeleteLeads->deleteLeads(false);
-        }
+//        if (isset($buildLead['amoBillID'],$buildLead['amoLeadID'])){
+//            $DeleteLeads = new DeleteLeadController([$buildLead['amoLeadID']]);
+//            $DeleteLeads->deleteLeads(false);
+//        }
 
         return $buildLead;
     }
