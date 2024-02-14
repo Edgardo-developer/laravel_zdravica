@@ -30,7 +30,12 @@ class ProcessBulkLead implements ShouldQueue
     public function handle(): void
     {
         $withreason = filter_var($this->withReason, FILTER_VALIDATE_BOOLEAN);
-        $DeleteLeads = new DeleteLeadController($this->amoLeadIDs);
+        if (is_array($this->amoLeadIDs)){
+            $amoLeadIds = $this->amoLeadIDs;
+        }else{
+            $amoLeadIds = [$this->amoLeadIDs];
+        }
+        $DeleteLeads = new DeleteLeadController($amoLeadIds);
         $DeleteLeads->deleteLeads($withreason);
     }
 }
