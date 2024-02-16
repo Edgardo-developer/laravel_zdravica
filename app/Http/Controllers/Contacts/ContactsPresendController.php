@@ -65,12 +65,8 @@ class ContactsPresendController extends Controller
      */
     public function checkExists(array $contactDB,array $contacts): int
     {
-        if (count($contacts) > 0){
             $contactAmoID = $this->checkMultipleContacts($contacts,$contactDB);
             return $contactAmoID ?? 0;
-        }
-
-        return 0;
     }
 
     /**
@@ -135,6 +131,19 @@ class ContactsPresendController extends Controller
             foreach ($customFields as $customField){
                 if($customField['field_id'] === 391181){
                     if($customField['values'][0]['value'] === $FIO){
+                        return $amoContact['id'];
+                    }
+                    $wordsFromAPI = preg_split('#(s{1,2}|\x{A0})#u',$customField['values'][0]['value']);
+                    $wordsFromDB = explode(' ', $FIO);
+                    if (count($wordsFromAPI) === count($wordsFromDB)){
+                        sort($wordsFromAPI);
+                        sort($wordsFromDB);
+                        $words = array_combine($wordsFromAPI,$wordsFromDB);
+                        foreach ($words as $APIWord => $DBWord){
+                            if (strtolower($APIWord) !== strtolower($DBWord)){
+                                break 2;
+                            }
+                        }
                         return $amoContact['id'];
                     }
                 }

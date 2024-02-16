@@ -26,7 +26,7 @@ class SendToAmoCRM extends Controller
     /**
      * @return array
      */
-    public function sendDealToAmoCRM(): array
+    public function sendDealToAmoCRM(int $contactID = 0): array
     {
         Log::info('Creating jobs for DBLead '.$this->DBlead['leadDBId']);
         $buildLead = $this->DBlead;
@@ -39,7 +39,8 @@ class SendToAmoCRM extends Controller
         }
 
         if ($buildLead && $buildContact) {
-            $buildLead['amoContactID'] = $this->ContactsController->getAmoID($buildContact);
+            $buildLead['amoContactID'] = $contactID > 0 ?
+                $contactID : $this->ContactsController->getAmoID($buildContact);
             $buildLead['amoLeadID'] = $this->LeadController->getAmoID($buildLead);
 
             $this->updateLead($buildLead);

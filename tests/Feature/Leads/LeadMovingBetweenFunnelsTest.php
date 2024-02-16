@@ -4,6 +4,7 @@ namespace Leads;
 
 use App\Http\Controllers\Leads\LeadController;
 use App\Http\Controllers\Sends\DeleteLeadController;
+use App\Http\Controllers\Sends\UpdateLeadController;
 use App\Http\Controllers\SendToAmoCRM;
 use App\Models\AmoCrmLead;
 use GuzzleHttp\Client;
@@ -38,10 +39,19 @@ class LeadMovingBetweenFunnelsTest extends TestCase
         $array = $findedArray->toArray();
         $this->assertIsArray($array);
         $SendToAmoCRM = new SendToAmoCRM($array);
-        $SendToAmoCRMArr = $SendToAmoCRM->sendDealToAmoCRM();
+        $SendToAmoCRMArr = $SendToAmoCRM->sendDealToAmoCRM(20284111);
+        $this->assertIsArray($SendToAmoCRMArr);
+        $this->assertNotEmpty($SendToAmoCRMArr);
 
-        $delete = new DeleteLeadController([$SendToAmoCRMArr['amoLeadID']]);
-        self::assertEquals(200,$delete->deleteLeads(false)->getStatusCode());
+        $SendToAmoCRMArr['offerLists'] = 'Эстеразный ингибитор С1 комплемента - функциональный###2000|||Новая услуга###3000';
+        $UpdateAmoCRM = new UpdateLeadController($SendToAmoCRMArr);
+        $updated = $UpdateAmoCRM->sendDealToAmoCRM();
+        $this->assertGreaterThan(0,$updated['amoLeadID']);
+        $this->assertGreaterThan(0,$updated['amoBillID']);
+
+        $delete = new DeleteLeadController([$updated['amoLeadID']]);
+        $deleted = $delete->deleteLeads(false);
+        self::assertEquals(200,$deleted->getStatusCode());
     }
 
     public function testToFailure(): void

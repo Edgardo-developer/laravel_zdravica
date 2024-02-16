@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class LeadChildTest extends TestCase
+class findChildTest extends TestCase
 {
     use RefreshDatabase;
     private static $amoFatherID = 20284111;

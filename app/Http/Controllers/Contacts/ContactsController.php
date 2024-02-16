@@ -61,7 +61,7 @@ class ContactsController extends Controller
                 $contacts = $this->ContactsPresendController->checkExistsByFIO($contactDB['FIO']);
             }
         }
-        if ($contacts){
+        if ($contacts && count($contacts) > 0){
             return $this->ContactsPresendController->checkExists($contactDB, $contacts);
         }
         return 0;

@@ -40,7 +40,7 @@ class BillController extends Controller
 
     public function updateBill(array $billDB, int $billStatus) : array|Response{
         if ($billStatus === 0){
-            $billDB = $this->prepare($billDB, $billStatus);
+            $billDB = [$this->prepare($billDB, $billStatus)];
         }
         return BillRequestController::update($this->client, $billDB);
     }

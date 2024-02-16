@@ -31,7 +31,7 @@ class UpdateLeadController extends SendToAmoCRM
         $this->buildlead = $buildlead;
     }
 
-    public function sendDealToAmoCRM() : array{
+    public function sendDealToAmoCRM(int $contactID = 0) : array{
         Log::info('Updating job for DBLead '.$this->buildlead['leadDBId']);
         $buildLead = $this->checkAmo($this->buildlead);
         if (isset($buildLead['amoContactID'], $buildLead['amoLeadID']) && $buildLead) {
@@ -56,10 +56,10 @@ class UpdateLeadController extends SendToAmoCRM
         AmocrmIDs::where('leadDBId','=',$buildLead['leadDBId'])
         ->update($amoData);
 
-//        if (isset($buildLead['amoBillID'],$buildLead['amoLeadID'])){
-//            $DeleteLeads = new DeleteLeadController([$buildLead['amoLeadID']]);
-//            $DeleteLeads->deleteLeads(false);
-//        }
+        if (isset($buildLead['amoBillID'],$buildLead['amoLeadID'])){
+            $DeleteLeads = new DeleteLeadController([$buildLead['amoLeadID']]);
+            $DeleteLeads->deleteLeads(false);
+        }
 
         return $buildLead;
     }

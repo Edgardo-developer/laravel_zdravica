@@ -52,7 +52,7 @@ class BillRequestController extends RequestController
         $RequestExt = self::getRequestExt();
         $headers = $RequestExt['headers'];
         try{
-            $jsonData = json_encode([$preparedData], JSON_THROW_ON_ERROR);
+            $jsonData = json_encode($preparedData, JSON_THROW_ON_ERROR);
             $request = new Request(
                 'PATCH', self::$URI, $headers,
                 $jsonData

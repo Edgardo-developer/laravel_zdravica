@@ -16,7 +16,7 @@ class DeleteLeadController extends Controller
     private LeadController $LeadController;
     private array $amoIDs;
 
-    public function __construct($amoIDs = []){
+    public function __construct(array $amoIDs = []){
         $client = new Client(['verify'=>false]);
         $this->BillController = new BillController($client);
         $this->LeadController = new LeadController($client);
@@ -37,7 +37,7 @@ class DeleteLeadController extends Controller
                     $this->LeadController->finishLead($amoID);
             }
             if ($leadObj && (int)$leadObj->amoBillID > 0 && !$withReason) {
-                $billArray[] = $this->BillController->builder($leadObj->amoBillID);
+                $billArray[] = $this->BillController->builder((int)$leadObj->amoBillID);
             }
             //$leadObj->delete();
         }

@@ -78,4 +78,12 @@ class BillTest extends TestCase
         $billResponse = $Bill->updateBill($billDB,0);
         $this->assertEquals(200,$billResponse->getStatusCode());
     }
+
+    public function testMakeBillPaid(){
+        $client = new Client(['verify'=>false]);
+        $BillController = new BillController($client);
+        $billArray = $BillController->builder(544997);
+        $response = $BillController->updateBill([$billArray], 1);
+        self::assertEquals(200,$response->getStatusCode());
+    }
 }
