@@ -46,6 +46,7 @@ class BulkProducts extends Command
                         'amoID' => (integer)$proids[$k],
                     ];
                 }
+                dd($amoProduct);
             }
             AmoProducts::create($amoProduct);
         }
