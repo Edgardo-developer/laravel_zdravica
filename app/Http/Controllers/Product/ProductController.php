@@ -41,6 +41,7 @@ class ProductController extends Controller
     public function prepare(array $offers) : array{
         $products = [];
         foreach ($offers as $offer) {
+            $offer = (array)$offer;
             if (isset($offer['name']) || isset($offer['LABEL'])){
                 $name = $offer['LABEL'] ?? $offer['name'];
                 $products[] = [

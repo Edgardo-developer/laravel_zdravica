@@ -30,7 +30,6 @@ class BulkProducts extends Command
     public function handle()
     {
         $offers = (array)OffersDB::get(['LABEL','FM_SERV_ID','CODE']);
-        dd($offers);
         $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify' => false]);
 
@@ -39,6 +38,7 @@ class BulkProducts extends Command
             $preparedProducts = $ProductController->prepare($offersChunk);
             $proids = $ProductController->create($preparedProducts);
             foreach ($offersChunk as $k => $product) {
+                $product = (array)$product;
                 if (isset($proids[$k])
                 && $product['LABEL'] !== ''
                     && $product['FM_SERV_ID'] > 0
