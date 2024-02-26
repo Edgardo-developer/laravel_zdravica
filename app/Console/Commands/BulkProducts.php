@@ -34,6 +34,7 @@ class BulkProducts extends Command
         $client = new Client(['verify' => false]);
 
         $ProductController = new ProductController($client);
+        dd(count($offersChunks));
         foreach ($offersChunks as $offersChunk) {
             $preparedProducts = $ProductController->prepare($offersChunk);
             $proids = $ProductController->create($preparedProducts);
