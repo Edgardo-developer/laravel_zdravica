@@ -119,9 +119,10 @@ class SendToAmoCRM extends Controller
     }
 
     private function getAge(string $birthday) : int{
-        $time = strtotime($birthday);
-        $timeDataTime = date('Y',$time);
-        $timeDataNow = date('Y');
-        return $timeDataNow - $timeDataTime;
+        $timeBirth = strtotime($birthday);
+        $timeDataTime = new \DateTime();
+        $timeDataTime->setTimestamp($timeBirth);
+        $timeDataNow = new \DateTime();
+        return $timeDataNow->diff($timeDataTime)->y;
     }
 }

@@ -38,15 +38,17 @@ class ContactsController extends Controller
 
         $prepared = $this->prepare($contactDB);
         $contactResponse = $this->create($prepared);
-        try {
-            $result = json_decode($contactResponse->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
-            if ($result['_embedded'] && $result['_embedded']['contacts']){
-                return $result['_embedded']['contacts'][0]['id'];
+        if ($contactResponse->getStatusCode() === 200){
+            try {
+                $result = json_decode($contactResponse->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
+                if ($result['_embedded'] && $result['_embedded']['contacts']){
+                    return $result['_embedded']['contacts'][0]['id'];
+                }
+            }catch (JsonException $ex){
+                Log::warning($ex->getMessage());
+                Log::warning($ex->getFile());
+                Log::warning($ex->getLine());
             }
-        }catch (JsonException $ex){
-            Log::warning($ex->getMessage());
-            Log::warning($ex->getFile());
-            Log::warning($ex->getLine());
         }
         return 0;
     }

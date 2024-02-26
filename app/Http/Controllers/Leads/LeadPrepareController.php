@@ -46,7 +46,8 @@ class LeadPrepareController extends Controller
             } else {
                 foreach ($fieldValue as $subFieldName => $subFieldID) {
                     $val = self::matchFields($subFieldName, $leadDB);
-                    if ($val && $val !== 0 && $val !== 'null') {
+                    if ($val &&
+                        $val !== 0 && $val !== 'null') {
                         $prepared['custom_fields_values'][] = [
                             'field_id' => $subFieldID,
                             'values' => [['value' => self::matchFields($subFieldName, $leadDB)]]
