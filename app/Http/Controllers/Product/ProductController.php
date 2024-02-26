@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Models\AmoProducts;
+use App\Models\OffersDB;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -23,9 +24,15 @@ class ProductController extends Controller
 
     protected function getAmoIDFromDB(string $offerName): int
     {
-        $offerRaw = amoProducts::where('name', '=', trim($offerName));
-        if ($offerRaw->count() > 0 && $offerRaw->first()->amoID > 0) {
-            return (int)$offerRaw->first()->amoID;
+        $offerDBRaw = (array) OffersDB::where('LABEL','=',trim($offerName))->get();
+        if ($offerDBRaw){
+            if (count($offerDBRaw) > 0 && $offerDBRaw[0]['FM_SERV_ID'] > 0) {
+                $product = AmoProducts::where('DBId','=',$offerDBRaw[0]['FM_SERV_ID']);
+                $productArr = $product->toArray();
+                if (count($productArr) > 0){
+                    return $productArr[0]['amoID'];
+                }
+            }
         }
         return 0;
     }
@@ -82,9 +89,9 @@ class ProductController extends Controller
             $amoID = $this->getAmoIDFromDB($amoProductName);
             if ($amoID === 0) {
                 $undefinedAmo[] = $amoProductName;
-            } else {
-                $ids[] = $amoID;
+                continue;
             }
+            $ids[] = $amoID;
         }
         return [
             'ids'   => $ids,

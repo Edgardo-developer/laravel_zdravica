@@ -29,7 +29,7 @@ class BulkProducts extends Command
      */
     public function handle()
     {
-        $offers = OffersDB::all(['LABEL','FM_SERV_ID'])->toArray();
+        $offers = OffersDB::all(['LABEL','FM_SERV_ID','CODE'])->toArray();
         $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify' => false]);
 
@@ -37,7 +37,6 @@ class BulkProducts extends Command
         foreach ($offersChunks as $offersChunk) {
             $preparedProducts = $ProductController->prepare($offersChunk, 1);
             $proids = $ProductController->create($preparedProducts);
-//            $amoProduct = [];
             foreach ($offersChunk as $k => $product) {
                 if (isset($proids[$k])
                 && $product['LABEL'] !== ''
@@ -48,6 +47,7 @@ class BulkProducts extends Command
                         'name' => (string)$product['LABEL'],
                         'DBId' => (integer)$product['FM_SERV_ID'],
                         'amoID' => (integer)$proids[$k],
+                        'sku' => (integer)$product['CODE'],
                     ]);
                 }
             }
