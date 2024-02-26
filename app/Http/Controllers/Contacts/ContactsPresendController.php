@@ -99,14 +99,15 @@ class ContactsPresendController extends Controller
     private function getByAge(array $amoContacts, array $contactDB) : int{
         foreach ($amoContacts as $amoContact){
             $customFields = $amoContact['custom_fields_values'];
-            foreach ($customFields as $customField){
-                if($customField['field_id'] === 391183){
+            if ($customFields){
+                foreach ($customFields as $customField){
+                    if($customField['field_id'] === 391183){
 
-                    $birthDay = date('d.m.Y',strtotime($customField['values'][0]['value']));
-                    $contactDBDateBirthTime = date('d.m.Y', strtotime($contactDB['NE_LE']));
-                    if ($contactDBDateBirthTime === $birthDay){
-                        return $amoContact['id'];
-                    }
+                        $birthDay = date('d.m.Y',strtotime($customField['values'][0]['value']));
+                        $contactDBDateBirthTime = date('d.m.Y', strtotime($contactDB['NE_LE']));
+                        if ($contactDBDateBirthTime === $birthDay){
+                            return $amoContact['id'];
+                        }
 //                    $birthString = str_replace('.','/',$customField['values'][0]['value']);
 //                    $birthDay = date('Y',strtotime($birthString));
 //                    $now = date('Y');
@@ -114,6 +115,7 @@ class ContactsPresendController extends Controller
 //                    if (($diff > 18 && !$is_child) || ($diff < 18 && $is_child)){
 //                        return $amoContact['id'];
 //                    }
+                    }
                 }
             }
         }
