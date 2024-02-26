@@ -36,9 +36,9 @@ class BulkProducts extends Command
         $ProductController = new ProductController($client);
         foreach ($offersChunks as $offersChunk) {
             $preparedProducts = $ProductController->prepare($offersChunk);
+            dd($offersChunk[0]);
             $proids = $ProductController->create($preparedProducts);
             foreach ($offersChunk as $k => $product) {
-                dd($product);
                 if (isset($proids[$k])
                 && $product['LABEL'] !== ''
                     && $product['FM_SERV_ID'] > 0
