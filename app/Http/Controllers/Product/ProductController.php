@@ -49,6 +49,10 @@ class ProductController extends Controller
                         [
                             'field_id' => 1550012,
                             'values' => [['value' => 'Все товары']]
+                        ],
+                        [
+                            'field_id'  => 1550006,
+                            'values' => [['value' => $offer['CODE']]]
                         ]
                     ]
                 ];
