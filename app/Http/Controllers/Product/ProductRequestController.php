@@ -50,7 +50,6 @@ class ProductRequestController extends RequestController
         if ($res) {
             try {
                 $result = json_decode($res->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
-                dd($result['_embedded']);
                 if ($result && $result['_embedded']) {
                     $ids = [];
                     foreach ($result['_embedded']['elements'] as $element) {
