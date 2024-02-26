@@ -49,10 +49,9 @@ class BulkProducts extends Command
                         'DBId' => (integer)$product['FM_SERV_ID'],
                         'amoID' => (integer)$proids[$k],
                     ];
+                    AmoProducts::create($amoProduct);
                 }
             }
-            dd($product['label']);
-            AmoProducts::create($amoProduct);
         }
     }
 }
