@@ -43,7 +43,6 @@ class BulkProducts extends Command
                     && $product['FM_SERV_ID'] > 0
                     && $proids[$k] > 0
                 ){
-                    dd($product['CODE']);
                     AmoProducts::create([
                         'name' => (string)$product['LABEL'],
                         'DBId' => (integer)$product['FM_SERV_ID'],
