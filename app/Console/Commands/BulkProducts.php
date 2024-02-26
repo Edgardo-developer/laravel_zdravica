@@ -35,7 +35,6 @@ class BulkProducts extends Command
 
         $ProductController = new ProductController($client);
         foreach ($offersChunks as $offersChunk) {
-            dd($offersChunk[0]);
             $preparedProducts = $ProductController->prepare($offersChunk);
             $proids = $ProductController->create($preparedProducts);
             foreach ($offersChunk as $k => $product) {
