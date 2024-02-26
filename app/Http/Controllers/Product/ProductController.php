@@ -24,7 +24,7 @@ class ProductController extends Controller
 
     protected function getAmoIDFromDB(string $offerName): int
     {
-        $offerDBRaw = (array) OffersDB::where('LABEL',trim($offerName))->first();
+        $offerDBRaw = OffersDB::where('LABEL',trim($offerName))->first();
         if ($offerDBRaw){
             $product = AmoProducts::where('DBId',$offerDBRaw->FM_SERV_ID)->first();
             if ($product){
@@ -91,11 +91,11 @@ class ProductController extends Controller
         foreach ($amoProductNames as $amoProductName) {
             if ($amoProductName !== ''){
                 $amoID = $this->getAmoIDFromDB($amoProductName);
-                if ($amoID === 0) {
-                    $undefinedAmo[] = $amoProductName;
+                if ($amoID > 0) {
+                    $ids[] = $amoID;
                     continue;
                 }
-                $ids[] = $amoID;
+                $undefinedAmo[] = $amoProductName;
             }
         }
         return [
