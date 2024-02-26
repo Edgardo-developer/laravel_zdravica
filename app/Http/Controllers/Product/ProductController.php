@@ -33,15 +33,18 @@ class ProductController extends Controller
     public function prepare(array $offers) : array{
         $products = [];
         foreach ($offers as $offer) {
-            $products[] = [
-                'name' => $offer,
-                'custom_fields_values' => [
-                    [
-                        'field_id' => 1550012,
-                        'values' => [['value' => 'Все товары']]
+            if (isset($offer['name']) || isset($offer['label'])){
+                $name = $offer['label'] ?? $offer['name'];
+                $products[] = [
+                    'name' => $name,
+                    'custom_fields_values' => [
+                        [
+                            'field_id' => 1550012,
+                            'values' => [['value' => 'Все товары']]
+                        ]
                     ]
-                ]
-            ];
+                ];
+            }
         }
         return $products;
     }

@@ -19,7 +19,6 @@ class ProductRequestController extends RequestController
         $headers = $RequestExt['headers'];
         try {
             $jsonData = json_encode($preparedData, JSON_THROW_ON_ERROR);
-            dd($jsonData);
             $request = new Request('POST', self::$URI, $headers, $jsonData);
             return self::validateCreateResponse(self::handleErrors($client, $request));
         }catch (JsonException $ex){
