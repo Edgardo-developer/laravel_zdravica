@@ -74,7 +74,7 @@ class ContactsPresendController extends Controller
      * @param $contactDB
      * @return int|mixed
      */
-    private function checkMultipleContacts($contacts, $contactDB){
+    private function checkMultipleContacts(array $contacts, array $contactDB){
         if (isset($contactDB['FIO'])){
             $byFIO = $this->getByFIO($contacts,$contactDB['FIO']);
             if ((int)$byFIO > 0){
@@ -128,23 +128,25 @@ class ContactsPresendController extends Controller
     private function getByFIO(array $amoContacts, string $FIO){
         foreach ($amoContacts as $amoContact){
             $customFields = $amoContact['custom_fields_values'];
-            foreach ($customFields as $customField){
-                if($customField['field_id'] === 391181){
-                    if($customField['values'][0]['value'] === $FIO){
-                        return $amoContact['id'];
-                    }
-                    $wordsFromAPI = preg_split('#(s{1,2}|\x{A0})#u',$customField['values'][0]['value']);
-                    $wordsFromDB = explode(' ', $FIO);
-                    if (count($wordsFromAPI) === count($wordsFromDB)){
-                        sort($wordsFromAPI);
-                        sort($wordsFromDB);
-                        $words = array_combine($wordsFromAPI,$wordsFromDB);
-                        foreach ($words as $APIWord => $DBWord){
-                            if (strtolower($APIWord) !== strtolower($DBWord)){
-                                break 2;
-                            }
+            if ($customFields){
+                foreach ($customFields as $customField){
+                    if($customField['field_id'] === 391181){
+                        if($customField['values'][0]['value'] === $FIO){
+                            return $amoContact['id'];
                         }
-                        return $amoContact['id'];
+                        $wordsFromAPI = preg_split('#(s{1,2}|\x{A0})#u',$customField['values'][0]['value']);
+                        $wordsFromDB = explode(' ', $FIO);
+                        if (count($wordsFromAPI) === count($wordsFromDB)){
+                            sort($wordsFromAPI);
+                            sort($wordsFromDB);
+                            $words = array_combine($wordsFromAPI,$wordsFromDB);
+                            foreach ($words as $APIWord => $DBWord){
+                                if (strtolower($APIWord) !== strtolower($DBWord)){
+                                    break 2;
+                                }
+                            }
+                            return $amoContact['id'];
+                        }
                     }
                 }
             }
