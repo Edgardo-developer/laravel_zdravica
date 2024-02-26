@@ -39,6 +39,7 @@ class BulkProducts extends Command
             $proids = $ProductController->create($preparedProducts);
             $amoProduct = [];
             foreach ($offersChunk as $k => $product) {
+                dd($proids[$k]);
                 if (isset($proids[$k])){
                     $amoProduct[] = [
                         'name' => $product['label'],
