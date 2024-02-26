@@ -39,14 +39,17 @@ class BulkProducts extends Command
             $proids = $ProductController->create($preparedProducts);
             $amoProduct = [];
             foreach ($offersChunk as $k => $product) {
-                if (isset($proids[$k])){
+                if (isset($proids[$k])
+                && $product['label'] !== ''
+                    && $product['FM_SERV_ID'] > 0
+                    && $proids[$k] > 0
+                ){
                     $amoProduct[] = [
                         'name' => (string)$product['label'],
                         'DBId' => (integer)$product['FM_SERV_ID'],
                         'amoID' => (integer)$proids[$k],
                     ];
                 }
-                dd($amoProduct);
             }
             AmoProducts::create($amoProduct);
         }
