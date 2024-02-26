@@ -45,7 +45,7 @@ class BulkProducts extends Command
                     && $proids[$k] > 0
                 ){
                     $amoProduct[] = [
-                        'name' => (string)$product['label'],
+                        'name' => (string)$product['LABEL'],
                         'DBId' => (integer)$product['FM_SERV_ID'],
                         'amoID' => (integer)$proids[$k],
                     ];
