@@ -29,13 +29,11 @@ class BulkProducts extends Command
      */
     public function handle()
     {
-        $offers = OffersDB::all();
-        dd($offers[0]->CODE);
+        $offers = OffersDB::all()->toArray();
         $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify' => false]);
 
         $ProductController = new ProductController($client);
-        dd(count($offersChunks));
         foreach ($offersChunks as $offersChunk) {
             $preparedProducts = $ProductController->prepare($offersChunk);
             $proids = $ProductController->create($preparedProducts);
