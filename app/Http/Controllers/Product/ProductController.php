@@ -23,7 +23,7 @@ class ProductController extends Controller
 
     protected function getAmoIDFromDB(string $offerName): int
     {
-        $offerRaw = amoProducts::where('name', '=', $offerName);
+        $offerRaw = amoProducts::where('name', '=', trim($offerName));
         if ($offerRaw->count() > 0 && $offerRaw->first()->amoID > 0) {
             return (int)$offerRaw->first()->amoID;
         }
