@@ -30,6 +30,7 @@ class BulkProducts extends Command
     public function handle()
     {
         $offers = OffersDB::all(['name', 'id'])->toArray();
+        dd($offers);
         $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify' => false]);
 
