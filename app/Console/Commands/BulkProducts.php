@@ -43,7 +43,7 @@ class BulkProducts extends Command
                     $amoProduct[] = [
                         'name' => $product['label'],
                         'DBId' => $product['FM_SERV_ID'],
-                        'amoID' => $proids[$k]['id'],
+                        'amoID' => $proids[$k],
                     ];
                 }
             }
