@@ -47,10 +47,10 @@ class BulkProducts extends Command
                         'name' => (string)$product['LABEL'],
                         'DBId' => (integer)$product['FM_SERV_ID'],
                         'amoID' => (integer)$proids[$k],
-                        'sku' => $product['CODE'],
+                        'sku' => (string)$product['CODE'],
                     ]);
+                    dd($product);
                 }
-                dd($product);
             }
         }
     }
