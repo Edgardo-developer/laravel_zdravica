@@ -29,8 +29,7 @@ class BulkProducts extends Command
      */
     public function handle()
     {
-        $offers = OffersDB::all(['name', 'id'])->toArray();
-        dd($offers);
+        $offers = OffersDB::all(['label','FM_SERV_ID'])->toArray();
         $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify' => false]);
 
@@ -41,8 +40,8 @@ class BulkProducts extends Command
             $amoProduct = [];
             foreach ($offersChunk as $k => $product) {
                 $amoProduct[] = [
-                    'name' => $product['name'],
-                    'DBId' => $product['id'],
+                    'name' => $product['label'],
+                    'DBId' => $product['FM_SERV_ID'],
                     'amoID' => $proids[$k]['id'],
                 ];
             }
