@@ -31,7 +31,6 @@ class BulkProducts extends Command
     {
         $offers = OffersDB::all(['LABEL','FM_SERV_ID','CODE'])->toArray();
         $offersChunks = array_chunk($offers, 40);
-        dd($offersChunks[0]);
         $client = new Client(['verify' => false]);
 
         $ProductController = new ProductController($client);
@@ -48,9 +47,10 @@ class BulkProducts extends Command
                         'name' => (string)$product['LABEL'],
                         'DBId' => (integer)$product['FM_SERV_ID'],
                         'amoID' => (integer)$proids[$k],
-                        'sku' => (integer)$product['CODE'],
+                        'sku' => $product['CODE'],
                     ]);
                 }
+                dd($product['CODE']);
             }
         }
     }
