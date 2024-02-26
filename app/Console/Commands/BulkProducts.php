@@ -29,8 +29,8 @@ class BulkProducts extends Command
      */
     public function handle()
     {
-        $offers = (array)OffersDB::all()->get(['LABEL','FM_SERV_ID','CODE']);
-        dd($offers[0]);
+        $offers = (array)OffersDB::get(['LABEL','FM_SERV_ID','CODE']);
+        dd($offers);
         $offersChunks = array_chunk($offers, 40);
         $client = new Client(['verify' => false]);
 
