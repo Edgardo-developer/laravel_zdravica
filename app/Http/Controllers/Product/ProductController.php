@@ -24,14 +24,15 @@ class ProductController extends Controller
 
     protected function getAmoIDFromDB(string $offerName): int
     {
-        $offerDBRaw = (array) OffersDB::where('LABEL','=',trim($offerName))->get();
+        $offerDBRaw = (array) OffersDB::where('LABEL',trim($offerName))->first();
         if ($offerDBRaw){
-            if (count($offerDBRaw) > 0 && $offerDBRaw[0]['FM_SERV_ID'] > 0) {
-                $product = AmoProducts::where('DBId','=',$offerDBRaw[0]['FM_SERV_ID']);
-                $productArr = $product->toArray();
-                if (count($productArr) > 0){
-                    return $productArr[0]['amoID'];
+            $product = AmoProducts::where('DBId',$offerDBRaw->FM_SERV_ID)->first();
+            if ($product){
+                if (trim($offerName) !== trim($product->name)){
+                    $product->name = trim($offerName);
+                    $product->save();
                 }
+               return $product->amoID;
             }
         }
         return 0;
@@ -83,15 +84,14 @@ class ProductController extends Controller
         $undefinedAmo = [];
         $ids = [];
         foreach ($amoProductNames as $amoProductName) {
-            if ($amoProductName === ''){
-                continue;
+            if ($amoProductName !== ''){
+                $amoID = $this->getAmoIDFromDB($amoProductName);
+                if ($amoID === 0) {
+                    $undefinedAmo[] = $amoProductName;
+                    continue;
+                }
+                $ids[] = $amoID;
             }
-            $amoID = $this->getAmoIDFromDB($amoProductName);
-            if ($amoID === 0) {
-                $undefinedAmo[] = $amoProductName;
-                continue;
-            }
-            $ids[] = $amoID;
         }
         return [
             'ids'   => $ids,
