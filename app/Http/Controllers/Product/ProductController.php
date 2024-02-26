@@ -36,7 +36,7 @@ class ProductController extends Controller
             if (isset($offer['name']) || isset($offer['label'])){
                 $name = $offer['label'] ?? $offer['name'];
                 $products[] = [
-                    'name' => $name,
+                    'name' => trim($name),
                     'custom_fields_values' => [
                         [
                             'field_id' => 1550012,
@@ -44,7 +44,6 @@ class ProductController extends Controller
                         ]
                     ]
                 ];
-                dd($products);
             }
         }
         return $products;
