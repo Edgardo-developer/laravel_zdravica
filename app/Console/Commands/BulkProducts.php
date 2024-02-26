@@ -51,6 +51,7 @@ class BulkProducts extends Command
                     ];
                 }
             }
+            dd($product['label']);
             AmoProducts::create($amoProduct);
         }
     }
