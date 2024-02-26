@@ -50,7 +50,7 @@ class BulkProducts extends Command
                         'sku' => $product['CODE'],
                     ]);
                 }
-                dd($product['CODE']);
+                dd($product);
             }
         }
     }
