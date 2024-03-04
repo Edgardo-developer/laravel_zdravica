@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Sends\UpdateLeadController;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -140,5 +141,16 @@ class checkDiffProductsTest extends TestCase
         $offers = $updateLead->explodeOffers($listsOffers);
         $this->assertCount(1,$offers['offerNames']);
         $this->assertCount(1,$offers['offerPrices']);
+    }
+
+    public function testCheckLongWords()
+    {
+        $updateLead = new UpdateLeadController([]);
+        $listsOffers = 'Видеогастроскопия (с тестом на лактазную недостаточность по биопсии)+Видеоколоноскопия под наркозом###3300.00|||';
+        $offers = $updateLead->explodeOffers($listsOffers);
+        $this->assertCount(1,$offers['offerNames']);
+        $this->assertCount(1,$offers['offerPrices']);
+        $this->assertEquals('Видеогастроскопия (с тестом на лактазную недостаточность по биопсии)+Видеоколоноскопия под наркозом',$offers['offerNames'][0]);
+        $this->assertEquals('3300.00',$offers['offerPrices'][0]);
     }
 }

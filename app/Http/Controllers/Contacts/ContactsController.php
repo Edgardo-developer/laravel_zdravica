@@ -38,7 +38,7 @@ class ContactsController extends Controller
 
         $prepared = $this->prepare($contactDB);
         $contactResponse = $this->create($prepared);
-        if ($contactResponse->getStatusCode() === 200){
+        if (!is_array($contactResponse) && $contactResponse->getStatusCode() === 200){
             try {
                 $result = json_decode($contactResponse->getBody(), 'true', 512, JSON_THROW_ON_ERROR);
                 if ($result['_embedded'] && $result['_embedded']['contacts']){
