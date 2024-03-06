@@ -67,7 +67,7 @@ class ProductController extends Controller
         $undefinedAmo = $checkThem['undefinedAmo'];
         $ids = $checkThem['ids'];
         if (count($undefinedAmo) > 0) {
-            Log::info(print_r($undefinedAmo));
+            Log::info(print_r($undefinedAmo,true));
             $prepared = $this->prepare($undefinedAmo);
             $newIds = $this->create($prepared);
             $this->ProductPresendController->saveToDB($undefinedAmo, $newIds);
