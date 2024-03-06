@@ -153,4 +153,13 @@ class checkDiffProductsTest extends TestCase
         $this->assertEquals('Видеогастроскопия (с тестом на лактазную недостаточность по биопсии)+Видеоколоноскопия под наркозом',$offers['offerNames'][0]);
         $this->assertEquals('3300.00',$offers['offerPrices'][0]);
     }
+    public function testCheckLongistWords()
+    {
+        $updateLead = new UpdateLeadController([]);
+        $listsOffers = 'Восстановление временного зуба пломбой II, III класс по Блэку с использованием стоматологических цементов (СИЦ, компомер)###3100.00|||Фторирование всех зубов (аппликация фтористого геля Флюокаль, Топекс-пена, Дюрофат) у детей###1150.00|||Профессиональная гигиена полости рта и зубов у детей с использованием проф.пасты и щетки###1500.00|||Инфильтрационная анестезия###650.00|||Радиовизиография, 1 зуб###350.00|||';
+        $offers = $updateLead->explodeOffers($listsOffers);
+        $this->assertCount(5,$offers['offerNames']);
+        $this->assertCount(5,$offers['offerPrices']);
+        dd($offers);
+    }
 }
