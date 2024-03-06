@@ -7,8 +7,6 @@ use App\Http\Controllers\Contacts\ContactsController;
 use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SendToAmoCRM;
-use App\Jobs\CreateLeadJob;
-use App\Jobs\ProcessBulkLead;
 use App\Models\AmocrmIDs;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -186,25 +184,36 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     private function getDiffOffersUnlink($amoOffers,$offersList) : array{
-        // Те, что в амо. Их должно быть больше
-        $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
-        // Те, что в БД. Их должно быть меньше
-        $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
+        if (count($amoOffers['offerNames']) === count($amoOffers['offerPrices']) &&
+            count($offersList['offerNames']) === count($offersList['offerPrices'])
+        ){
+            // Те, что в амо. Их должно быть больше
+            $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
+            // Те, что в БД. Их должно быть меньше
+            $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
-        $result = array_diff_assoc($amoFullOffers, $DBFullOffers);
+            $result = array_diff_assoc($amoFullOffers, $DBFullOffers);
 
-        return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
+            return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
+        }
+        return [];
     }
 
     private function getDiffOffersLink($amoOffers,$offersList) : array{
-        // Те, что в амо. Их должно быть меньше
-        $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
-        // Те, что в БД. Их должно быть больше
-        $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
-        $result = array_diff_assoc($DBFullOffers, $amoFullOffers);
+        if (count($amoOffers['offerNames']) === count($amoOffers['offerPrices']) &&
+            count($offersList['offerNames']) === count($offersList['offerPrices'])
+        ){
+            // Те, что в амо. Их должно быть меньше
+            $amoFullOffers = array_combine($amoOffers['offerNames'],$amoOffers['offerPrices']);
+            // Те, что в БД. Их должно быть больше
+            $DBFullOffers = array_combine($offersList['offerNames'],$offersList['offerPrices']);
 
-        return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
+            $result = array_diff_assoc($DBFullOffers, $amoFullOffers);
+
+            return ['offerNames'=>array_keys($result),'offerPrices'=>array_values($result)];
+        }
+        return [];
     }
 
     protected function checkAmo(array &$dbLead): array
