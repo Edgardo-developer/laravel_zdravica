@@ -7,7 +7,6 @@ use App\Http\Controllers\LeadLinks\LeadLinksController;
 use App\Models\AmoProducts;
 use App\Models\OffersDB;
 use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -22,7 +21,7 @@ class ProductController extends Controller
         $this->LeadLinksController = new LeadLinksController($this->client);
     }
 
-    protected function getAmoIDFromDB(string $offerName): int
+    protected function getAmoIDFromDB(string $offerName): int|object
     {
         $offerDBRaw = OffersDB::where('LABEL',trim($offerName))->first();
         if ($offerDBRaw){
@@ -34,6 +33,7 @@ class ProductController extends Controller
                 }
                return $product->amoID;
             }
+            return $offerDBRaw->toArray();
         }
         return 0;
     }
@@ -91,11 +91,13 @@ class ProductController extends Controller
         foreach ($amoProductNames as $amoProductName) {
             if ($amoProductName !== ''){
                 $amoID = $this->getAmoIDFromDB($amoProductName);
-                if ($amoID > 0) {
+                if (is_int($amoID) && $amoID > 0) {
                     $ids[] = $amoID;
                     continue;
                 }
-                $undefinedAmo[] = $amoProductName;
+                if (is_object($amoID)){
+                    $undefinedAmo[] = $amoID;
+                }
             }
         }
         return [
