@@ -63,7 +63,6 @@ class ProductController extends Controller
     }
 
     public function getAmoIDs(array $amoProductNames) : array{
-        Log::info(print_r($amoProductNames,true));
         $checkThem = $this->checkUndefined($amoProductNames);
         $undefinedAmo = $checkThem['undefinedAmo'];
         $ids = $checkThem['ids'];

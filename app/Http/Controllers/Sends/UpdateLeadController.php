@@ -157,7 +157,7 @@ class UpdateLeadController extends SendToAmoCRM
         ];
         $amoOffers = is_null($buildLead['amoOffers']) ? $defArr : $this->explodeOffers($buildLead['amoOffers']);
         $offersList = is_null($buildLead['offerLists']) ? $defArr : $this->explodeOffers($buildLead['offerLists']);
-
+        Log::info(print_r($buildLead['offerLists'],true));
         $link = [];
         $unlink = [];
         if (count($amoOffers['offerNames']) > 0 && count($offersList['offerNames']) > 0){
