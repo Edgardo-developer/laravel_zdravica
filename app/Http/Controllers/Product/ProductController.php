@@ -63,11 +63,11 @@ class ProductController extends Controller
     }
 
     public function getAmoIDs(array $amoProductNames) : array{
+        Log::info(print_r($amoProductNames,true));
         $checkThem = $this->checkUndefined($amoProductNames);
         $undefinedAmo = $checkThem['undefinedAmo'];
         $ids = $checkThem['ids'];
         if (count($undefinedAmo) > 0) {
-            Log::info(print_r($undefinedAmo,true));
             $prepared = $this->prepare($undefinedAmo);
             $newIds = $this->create($prepared);
             $this->ProductPresendController->saveToDB($undefinedAmo, $newIds);
