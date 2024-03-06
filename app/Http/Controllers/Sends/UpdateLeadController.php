@@ -30,10 +30,10 @@ class UpdateLeadController extends SendToAmoCRM
     }
 
     public function sendDealToAmoCRM(int $contactID = 0) : array{
-        Log::info('Updating job for DBLead '.$this->buildlead['leadDBId']);
         $buildLead = $this->checkAmo($this->buildlead);
         if (isset($buildLead['amoContactID'], $buildLead['amoLeadID']) && $buildLead) {
             if (isset($buildLead['offerLists']) && $buildLead['offerLists'] && $buildLead['offerLists'] !== ''){
+                Log::info(print_r($buildLead['offerLists'],true));
                 $offerLists = $this->explodeOffers($buildLead['offerLists']);
                 $buildLead['billSum'] = isset($offerLists['offerPrices']) ? array_sum(
                     array_values($offerLists['offerPrices'])
@@ -157,7 +157,7 @@ class UpdateLeadController extends SendToAmoCRM
         ];
         $amoOffers = is_null($buildLead['amoOffers']) ? $defArr : $this->explodeOffers($buildLead['amoOffers']);
         $offersList = is_null($buildLead['offerLists']) ? $defArr : $this->explodeOffers($buildLead['offerLists']);
-        Log::info(print_r($buildLead['offerLists'],true));
+
         $link = [];
         $unlink = [];
         if (count($amoOffers['offerNames']) > 0 && count($offersList['offerNames']) > 0){
