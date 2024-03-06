@@ -11,9 +11,12 @@ class LeadPresendController extends Controller
 {
     public function getAmoID(Client $client, array $DBLead): int
     {
-        $leadID = $this->checkExists($client, $DBLead,61034278);
+        $leadID = $this->checkExists($client, $DBLead,64430610);
         if (!$leadID) {
             $leadID = $this->checkExists($client,$DBLead,61034282);
+            if (!$leadID){
+                $leadID = $this->checkExists($client,$DBLead,61034286);
+            }
         }
         return $leadID ?: 0;
     }

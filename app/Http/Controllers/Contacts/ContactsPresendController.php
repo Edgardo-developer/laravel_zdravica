@@ -70,8 +70,8 @@ class ContactsPresendController extends Controller
     }
 
     /**
-     * @param $contacts
-     * @param $contactDB
+     * @param array $contacts
+     * @param array $contactDB
      * @return int|mixed
      */
     private function checkMultipleContacts(array $contacts, array $contactDB){
