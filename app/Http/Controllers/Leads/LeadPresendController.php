@@ -16,6 +16,9 @@ class LeadPresendController extends Controller
             $leadID = $this->checkExists($client,$DBLead,61034282);
             if (!$leadID){
                 $leadID = $this->checkExists($client,$DBLead,61034286);
+                if (!$leadID){
+                    $leadID = $this->checkExists($client,$DBLead,65769214);
+                }
             }
         }
         return $leadID ?: 0;

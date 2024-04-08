@@ -14,13 +14,13 @@ use Tests\TestCase;
 class CasesLeadsTest extends TestCase
 {
     use RefreshDatabase;
-    private static $amoCurrentEmptyLeadID = 13632087;
+    private static $amoCurrentEmptyLeadID = 16961985;
 
     public function testWhenLeadIsEmpty()
     {
         $client = new Client(['verify' => false]);
         $leadController = new LeadController($client);
-        $amoID = $leadController->getAmoID(['amoContactID' => 20284111]);
+        $amoID = $leadController->getAmoID(['amoContactID' => 19195845]);
         $this->assertEquals(self::$amoCurrentEmptyLeadID, $amoID);
     }
 }
